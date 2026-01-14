@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { MdOutlineMenu, MdMenuOpen, MdLightMode, MdNotifications } from "react-icons/md";
@@ -10,6 +10,7 @@ import { FaShieldAlt } from "react-icons/fa";
 import Logout from '@mui/icons-material/Logout';
 import SearchBox from '../SearchBox';
 import Divider from '@mui/material/Divider';
+import { Mycontext } from '../../App';
 
 const Header = () => {
 
@@ -31,6 +32,10 @@ const Header = () => {
     setNotificationAnchorEl(null);
   };
 
+  const context = useContext(Mycontext);
+
+
+
   return (
     <header className="header d-flex align-items-center">
       <div className="container-fluid w-100">
@@ -45,9 +50,15 @@ const Header = () => {
 
           {/* Menu + Search */}
           <div className="col-md-5 col-sm-6 d-flex align-items-center part2 gap-3">
-            <Button className="rounded-circle menu-btn" aria-label="Open menu">
-              <MdMenuOpen />
+            <Button
+              className="rounded-circle menu-btn"
+              onClick={() =>
+                context.setIsToggleSidebar(prev => !prev)
+              }
+            >
+              {context.isToggleSidebar ? <MdMenuOpen /> : <MdOutlineMenu />}
             </Button>
+
             <SearchBox />
           </div>
 
@@ -148,82 +159,88 @@ const Header = () => {
               </Menu>
             </div>
 
+            {
+              context.isLogin !== true ?
+                <Link to={'/login'}>
+                  <Button className='btn-square'>Sign In</Button>
+                </Link> :
+                <div className="myAccWrapper d-flex align-items-center">
+                  <Button className="myAcc d-flex align-items-center p-0" style={{ gap: '0.5rem' }}
+                    onClick={handleClick}
+                  >
+                    <div className="userImg">
+                      <span className="rounded-circle">
+                        <img
+                          src="./i_passport.jpg"
+                          className="rounded-circle"
+                          alt="User"
+                        />
+                      </span>
+                    </div>
 
-            <div className="myAccWrapper d-flex align-items-center">
-              <Button className="myAcc d-flex align-items-center p-0" style={{ gap: '0.5rem' }}
-                onClick={handleClick}
-              >
-                <div className="userImg">
-                  <span className="rounded-circle">
-                    <img
-                      src="./i_passport.jpg"
-                      className="rounded-circle"
-                      alt="User"
-                    />
-                  </span>
-                </div>
+                    <div className="userInfo">
+                      <h5>Anand Bagchi</h5>
+                      <p>@anand007</p>
+                    </div>
 
-                <div className="userInfo">
-                  <h5>Anand Bagchi</h5>
-                  <p>@anand007</p>
-                </div>
-
-              </Button>
-              <Menu
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                onClick={handleClose}
-                slotProps={{
-                  paper: {
-                    elevation: 0,
-                    sx: {
-                      overflow: 'visible',
-                      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                      mt: 1.5,
-                      '& .MuiAvatar-root': {
-                        width: 32,
-                        height: 32,
-                        ml: -0.5,
-                        mr: 1,
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={open}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                    slotProps={{
+                      paper: {
+                        elevation: 0,
+                        sx: {
+                          overflow: 'visible',
+                          filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                          mt: 1.5,
+                          '& .MuiAvatar-root': {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                          },
+                          '&::before': {
+                            content: '""',
+                            display: 'block',
+                            position: 'absolute',
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: 'background.paper',
+                            transform: 'translateY(-50%) rotate(45deg)',
+                            zIndex: 0,
+                          },
+                        },
                       },
-                      '&::before': {
-                        content: '""',
-                        display: 'block',
-                        position: 'absolute',
-                        top: 0,
-                        right: 14,
-                        width: 10,
-                        height: 10,
-                        bgcolor: 'background.paper',
-                        transform: 'translateY(-50%) rotate(45deg)',
-                        zIndex: 0,
-                      },
-                    },
-                  },
-                }}
-                transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-              >
-                <MenuItem onClick={handleClose}>
-                  <Avatar /> My account
-                </MenuItem>
+                    }}
+                    transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+                  >
+                    <MenuItem onClick={handleClose}>
+                      <Avatar /> My account
+                    </MenuItem>
 
-                <MenuItem onClick={handleClose}>
-                  <ListItemIcon>
-                    <FaShieldAlt />
-                  </ListItemIcon>
-                  Reset Password
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                  <ListItemIcon>
-                    <Logout />
-                  </ListItemIcon>
-                  Logout
-                </MenuItem>
-              </Menu>
-            </div>
+                    <MenuItem onClick={handleClose}>
+                      <ListItemIcon>
+                        <FaShieldAlt />
+                      </ListItemIcon>
+                      Reset Password
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <ListItemIcon>
+                        <Logout />
+                      </ListItemIcon>
+                      Logout
+                    </MenuItem>
+                  </Menu>
+                </div>
+            }
+
           </div>
         </div>
       </div>

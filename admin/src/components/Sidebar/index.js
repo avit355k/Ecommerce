@@ -1,17 +1,20 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Button from '@mui/material/Button';
 import { MdDashboard, MdOutlineMessage, MdNotifications, MdOutlineSettings, MdLogout } from "react-icons/md";
 import { FaAngleRight, FaAngleDown } from "react-icons/fa6";
 import { AiFillProduct } from "react-icons/ai";
 import { FaCartArrowDown, FaUser } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import { Mycontext } from '../../App';
 
 const Sidebar = () => {
   const [activeTab, setActiveTab] = useState(null);
+  const context = useContext(Mycontext);
 
   const toggleSubmenu = (index) => {
     setActiveTab(activeTab === index ? null : index);
   };
+
 
   return (
     <>
@@ -123,10 +126,10 @@ const Sidebar = () => {
         <div className='logoutWrapper'>
           <div className='logoutBox'>
             <Button className='w-100'>
-            <span className='icon'><MdLogout /></span>
-            Logout
-            <span className='arrow'><FaAngleRight /></span>
-          </Button>
+              <span className='icon'><MdLogout /></span>
+              Logout
+              <span className='arrow'><FaAngleRight /></span>
+            </Button>
           </div>
         </div>
       </div>

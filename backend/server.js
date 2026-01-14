@@ -14,10 +14,12 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 // Import Routes
 const categoryRoutes = require('./routes/category');
 const productRoutes = require('./routes/product');
+const userRoutes = require('./routes/user');
 
 // Use Routes
 app.use("/api/category", categoryRoutes);
 app.use("/api/product", productRoutes);
+app.use("/api/user", userRoutes);
 
 // Start Server
 app.listen(process.env.PORT, () => {
