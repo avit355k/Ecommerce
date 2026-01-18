@@ -7,13 +7,14 @@ import Sidebar from './components/Sidebar';
 import {createContext, useEffect, useState} from 'react';
 import Login from './pages/Login';
 import Signup from "./pages/SignUp";
+import ProductDetails from "./pages/ProductDetails";
 
 const Mycontext = createContext();
 
 function App() {
 
     const [isToggleSidebar, setIsToggleSidebar] = useState(true);
-    const [isLogin, setisLogin] = useState(false);
+    const [isLogin, setisLogin] = useState(true);
     const [isHideSidebarHeader, setisHideSidebarHeader] = useState(false);
 
     const values = {
@@ -51,6 +52,7 @@ function App() {
                             <Route path="/" exact={true} element={<Dashboard/>}/>
                             <Route path="/login" exact={true} element={<Login/>}/>
                             <Route path="/sign-up" exact={true} element={<Signup/>}/>
+                            <Route path="/product/details" exact={true} element={<ProductDetails/>}/>
                         </Routes>
                     </div>
                 </div>

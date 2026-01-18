@@ -119,7 +119,7 @@ header button.btn-square {
     background: #0858f7;
 }
 
-.myAcc .userImg {
+.userImg {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -131,17 +131,17 @@ header button.btn-square {
     padding: 2px;
 }
 
-.myAcc .userImg img {
+.userImg img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.myAcc .userInfo {
+.myAcc .userinfo {
     margin-left: 10px;
 }
 
-.myAcc .userInfo h5 {
+.myAcc .userinfo h5 {
     font-size: 14px;
     font-weight: bold;
     margin: 0;
@@ -149,7 +149,7 @@ header button.btn-square {
     text-transform: capitalize;
 }
 
-.myAcc .userInfo p {
+.myAcc .userinfo p {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.6);
     margin: 0;
@@ -830,3 +830,211 @@ table td .new {
     text-decoration: underline;
 }
 
+.sliderSm *, .sliderBig * {
+    transition: all 0.1s ease;
+}
+
+.sliderBig {
+    border-radius: 7px !important;
+    overflow: hidden;
+    border: 1px dashed #ddd;
+}
+
+.sliderBig img {
+    width: 100%;
+    max-height: 420px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.sliderSm .slick-slide {
+    padding-right: 10px;
+}
+
+.sliderSm .slick-slide .item {
+    border-radius: 7px !important;
+    overflow: hidden;
+    border: 1px dashed #ddd;
+}
+
+.sliderSm img {
+    width: 100%;
+    height: 90px;
+    object-fit: contain;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.sliderSm .slick-current img {
+    border: 2px solid #1976d2;
+}
+
+.productDetailsSection .productInfo .icon {
+    width: 22px;
+    font-size: 20px;
+    margin-right: 6px;
+}
+
+.productDetailsSection .productInfo .name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.productDetailsSection .productInfo .row {
+    margin-bottom: 10px;
+}
+
+.productDetailsSection .productInfo .row .col-sm-9 {
+    display: flex;
+    align-items: center;
+}
+
+.productDetailsSection .productInfo .row .col-sm-9 span {
+    opacity: 0.8;
+}
+
+.tags, .price {
+    margin-bottom: 0px !important;
+}
+
+.tags li span {
+    background: #989898;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+.tags li span:hover {
+    background: #666;
+}
+
+.price li span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    font-size: 15px;
+}
+
+.price .newPrice {
+    font-size: 18px;
+    font-weight: 700;
+    color: #00ff59;
+}
+
+.price .oldPrice {
+    text-decoration: line-through;
+    color: #d32f2f;
+    margin-left: 6px;
+}
+
+.ratingSection {
+    width: 500px;
+}
+
+.ratingSection .ratingRow {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.ratingSection .ratingRow .col-1 {
+    width: 15%;
+    flex: 0 0 15%;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.ratingSection .ratingRow .col-2 {
+    width: 60%;
+    flex: 0 0 60%;
+    padding: 0 10px;
+}
+
+.ratingSection .ratingRow .col-3 {
+    width: 25%;
+    flex: 0 0 25%;
+    padding: 0 !important; /* override p-5 */
+    font-size: 14px;
+    text-align: right;
+}
+
+.ratingSection .ratingRow .progress {
+    height: 6px !important;
+    background-color: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ratingSection .ratingRow .progress .progress-bar {
+    background: #fcc419;
+    border-radius: 10px;
+}
+
+.reviewSection {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.reviewRow {
+    background: #F0F5FF;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+/* User info */
+.userInfo {
+    display: flex;
+    align-items: center;
+}
+
+.userInfo .info h6 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.userInfo .info span {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.reviewRow p {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+}
+
+.replyBtn {
+    background: #2563eb !important;
+    text-transform: none !important;
+    font-size: 13px !important;
+    padding: 6px 14px !important;
+    border-radius: 20px !important;
+    box-shadow: none !important;
+}
+
+.replyBtn:hover {
+    background: #1d4ed8 !important;
+}
+
+.reviewSection .reply {
+    width: 90%;
+    margin-left: auto;
+}
+
+.reviewForm {
+    width: 100%;
+}
+
+.reviewForm textarea {
+    width: 100%;
+    height: 200px;
+    background: #F0F5FF;
+    outline: #ccc solid 1px;
+    padding: 16px;
+    border-radius: 5px;
+}
