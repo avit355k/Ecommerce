@@ -1038,3 +1038,131 @@ table td .new {
     padding: 16px;
     border-radius: 5px;
 }
+
+.form .form-group {
+    margin-bottom: 25px;
+}
+
+.form .form-group input {
+    background: #F0F5FF;
+    width: 100%;
+    outline: none;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 46px;
+    font-size: 14px;
+    padding: 0 15px;
+    border-radius: 3px;
+}
+
+.form .form-group textarea {
+    background: #F0F5FF;
+    width: 100%;
+    outline: none;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 14px;
+    padding: 0 15px;
+    border-radius: 3px;
+}
+
+.media-card {
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+/* Image Section */
+.imagesUploadSec {
+    flex-wrap: wrap;
+}
+
+/* Uploaded Image Box */
+.uploadBox {
+    position: relative;
+    width: 110px;
+    height: 150px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+}
+
+.previewBox {
+    width: 100%;
+    height: 100%;
+    padding: 2px;
+}
+
+.previewBox img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+    background: #fff;
+}
+
+/* Remove Button */
+.uploadBox .remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ef4444;
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Upload Placeholder */
+.uploadPlaceholder {
+    width: 110px;
+    height: 150px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.uploadPlaceholder:hover {
+    background: #eef2ff;
+    border-color: #6366f1;
+}
+
+.uploadPlaceholder .icon {
+    font-size: 26px;
+}
+
+.uploadPlaceholder p {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 6px;
+}
+
+/* Publish Button */
+.publishBtn {
+    width: 100%;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.publishBtn:hover {
+    background: #1d4ed8;
+}
+
+.org-input {
+    display: flex;
+    gap: 10px;
+}

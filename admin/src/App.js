@@ -8,6 +8,7 @@ import {createContext, useEffect, useState} from 'react';
 import Login from './pages/Login';
 import Signup from "./pages/SignUp";
 import ProductDetails from "./pages/ProductDetails";
+import Productupload from "./pages/Productupload";
 
 const Mycontext = createContext();
 
@@ -53,6 +54,7 @@ function App() {
                             <Route path="/login" exact={true} element={<Login/>}/>
                             <Route path="/sign-up" exact={true} element={<Signup/>}/>
                             <Route path="/product/details" exact={true} element={<ProductDetails/>}/>
+                            <Route path="/product/upload" exact={true} element={<Productupload/>}/>
                         </Routes>
                     </div>
                 </div>

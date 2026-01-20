@@ -75,7 +75,7 @@ const ProductDetails = () => {
 
                 <Breadcrumbs className="ms-auto breadcrumb_">
                     <StyledBreadcrumb label="Dashboard"/>
-                    <StyledBreadcrumb label="Product"/>
+                    <StyledBreadcrumb label="Products"/>
                     <StyledBreadcrumb label="Product View"/>
                 </Breadcrumbs>
             </div>
