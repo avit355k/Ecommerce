@@ -8,17 +8,19 @@ require("./connection/conn");
 
 // Middleware
 app.use(cors());
-app.use(express.json({ limit: "10mb" })); // replaces body-parser
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(express.json({limit: "10mb"})); // replaces body-parser
+app.use(express.urlencoded({extended: true, limit: "10mb"}));
 
 // Import Routes
 const categoryRoutes = require('./routes/category');
 const productRoutes = require('./routes/product');
+const varientRoutes = require('./routes/productVarient');
 const userRoutes = require('./routes/user');
 
 // Use Routes
 app.use("/api/category", categoryRoutes);
 app.use("/api/product", productRoutes);
+app.use("/api/varient", varientRoutes);
 app.use("/api/user", userRoutes);
 
 // Start Server

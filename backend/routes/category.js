@@ -1,50 +1,39 @@
-const Category = require('../models/category');
 const express = require('express');
 const router = express.Router();
-const pLimit = require("p-limit");
-const cloudinary = require('cloudinary').v2;
+const Category = require('../models/category');
+const slugify = require("slugify");
+const {uploadSingle} = require("../middlewares/multer");
+const {uploadSingleImage, deleteImage} = require("../utils/cloudinary");
 
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 // Create Category
-router.post('/create', async (req, res) => {
+router.post('/create', uploadSingle, async (req, res) => {
     try {
-        const limit = pLimit(2);
+        // Create new category
+        const {name, parent, level, color} = req.body;
 
-        // Upload images to Cloudinary with concurrency limit
-        const imagestoUpload = req.body.images.map((image) => {
-            return limit(async () => {
-                const result = await cloudinary.uploader.upload(image);
-                return result;
-            });
-        });
-
-        const uploadStatus = await Promise.all(imagestoUpload);
-
-        if (!uploadStatus || uploadStatus.length === 0) {
-            return res.status(500).json({
-                error: "Images couldn't be uploaded",
-                status: false
-            });
+        if (!name) {
+            return res.status(400).json({success: false, message: "Category name required"});
         }
 
-        // Extract image URLs
-        const imgurl = uploadStatus.map((item) => item.secure_url);
+        let image = null;
 
-        // Create new category
-        let category = new Category({
-            name: req.body.name,
-            images: imgurl,
-            color: req.body.color
+        if (req.file) {
+            image = await uploadSingleImage(req.file, "categories");
+        }
+
+        const category = new Category({
+            name,
+            slug: slugify(name),
+            parent: parent || null,
+            level: level || 0,
+            image: image,
+            color,
         });
 
-        category = await category.save();
+        const savedCategory = await category.save();
 
-        res.status(201).json(category);
+        res.status(201).json(savedCategory);
     } catch (err) {
         res.status(500).json({
             error: err.message,
@@ -56,15 +45,15 @@ router.post('/create', async (req, res) => {
 // Get all categories
 router.get('/', async (req, res) => {
     try {
-        const categoryList = await Category.find();
+        const categoryList = await Category.find({isActive: true});
 
         if (!categoryList) {
-            return res.status(404).json({ success: false, message: "No categories found" });
+            return res.status(404).json({success: false, message: "No categories found"});
         }
 
-        res.status(200).json(categoryList);
+        res.status(200).json({success: true, count: categoryList.length, data: categoryList});
     } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
+        res.status(500).json({success: false, error: err.message});
     }
 });
 
@@ -74,54 +63,83 @@ router.get('/:id', async (req, res) => {
         const category = await Category.findById(req.params.id);
 
         if (!category) {
-            return res.status(404).json({ success: false, message: "No categories found" });
+            return res.status(404).json({success: false, message: "No categories found"});
         }
 
-        return res.status(200).send(category);
+        return res.status(200).send({success: true, data: category});
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({success: false, error: error.message});
     }
+});
+
+//Get Sub-categories by Parent
+router.get("/parent/:parentId", async (req, res) => {
+    const categories = await Category.find({
+        parent: req.params.parentId,
+        isActive: true
+    });
+
+    res.json({success: true, data: categories});
 });
 
 // Update Category by ID
-router.put('/:id', async (req, res) => {
-  try {
-    const { name, images, color } = req.body;
+router.put("/:id", uploadSingle, async (req, res) => {
+    try {
+        const {name, color, parent, level, isActive} = req.body;
 
-    const category = await Category.findByIdAndUpdate(
-      req.params.id,
-      {
-        name,
-        images,
-        color
-      },
-      { new: true } // return updated doc
-    );
+        const category = await Category.findById(req.params.id);
+        if (!category) {
+            return res.status(404).json({success: false, message: "Category not found"});
+        }
 
-    if (!category) {
-      return res.status(404).json({ success: false, message: "Category not found" });
+        let image = category.image;
+
+        if (req.file) {
+            // delete old image
+            if (category.image?.public_id) {
+                await deleteImage(category.image.public_id);
+            }
+
+            image = await uploadSingleImage(req.file, "categories");
+        }
+
+        category.name = name ?? category.name;
+        category.slug = name ? slugify(name) : category.slug;
+        category.color = color ?? category.color;
+        category.parent = parent ?? category.parent;
+        category.level = level ?? category.level;
+        category.isActive = isActive ?? category.isActive;
+        category.image = image;
+
+        const updatedCategory = await category.save();
+
+        res.status(200).json({success: true, data: updatedCategory});
+
+    } catch (error) {
+        res.status(500).json({success: false, error: error.message});
     }
-
-    res.status(200).json(category);
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
 });
 
 // Delete Category by ID
-router.delete('/:id', async (req, res) => {
-  try {
-    const category = await Category.findByIdAndDelete(req.params.id); 
+router.delete("/:id", async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.id);
 
-    if (!category) {
-      return res.status(404).json({ success: false, message: "Category not found" });
+        if (!category) {
+            return res.status(404).json({success: false, message: "Category not found"});
+        }
+
+        if (category.image?.public_id) {
+            await deleteImage(category.image.public_id);
+        }
+
+        await category.deleteOne();
+
+        res.status(200).json({success: true, message: "Category deleted successfully"});
+
+    } catch (error) {
+        res.status(500).json({success: false, error: error.message});
     }
-
-    res.status(200).json({ success: true, message: "Category deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
 });
-
 
 module.exports = router;

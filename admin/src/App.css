@@ -1104,6 +1104,7 @@ table td .new {
     position: absolute;
     top: -8px;
     right: -8px;
+    z-index: 2;
     background: #ef4444;
     color: #fff;
     width: 22px;

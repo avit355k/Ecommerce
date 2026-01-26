@@ -1,153 +1,159 @@
-const Product = require('../models/product');
-const Category = require('../models/category');
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const pLimit = require("p-limit");
-const cloudinary = require('cloudinary').v2;
+const slugify = require("slugify");
 
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-// Utility: Upload images to Cloudinary
-const uploadImages = async (filesOrUrls) => {
-    const limit = pLimit(3);
-    const uploads = filesOrUrls.map(item =>
-        limit(() => cloudinary.uploader.upload(
-            item.tempFilePath || item, // handles both file and URL
-            { folder: "products" }
-        ))
-    );
-    const results = await Promise.all(uploads);
-    return results.map(r => r.secure_url);
-};
+const Product = require("../models/product");
+const Category = require("../models/category");
 
-// Create Product
-router.post('/create', async (req, res) => {
+
+const {uploadMultiple} = require("../middlewares/multer");
+const {uploadMultipleImages, deleteImage} = require("../utils/cloudinary");
+
+
+//create new products
+router.post("/create", uploadMultiple, async (req, res) => {
     try {
-        const { name, brand, description, price, category, countInStock, images } = req.body;
+        const {
+            name,
+            description,
+            category,
+            brand,
+            isFeatured
+        } = req.body;
 
-        if (!name || !price || !category) {
-            return res.status(400).json({ success: false, message: "Name, price, and category are required" });
+        if (!name || !category) {
+            return res.status(400).json({success: false, message: "Required fields missing"});
         }
 
-        const categoryExists = await Category.findById(category);
-        if (!categoryExists) {
-            return res.status(400).json({ success: false, message: "Invalid category" });
+        const cat = await Category.findById(category);
+        if (!cat) {
+            return res.status(400).json({success: false, message: "Invalid category"});
         }
 
-        let imageUrls = [];
-
-        if (req.files?.images) {
-            const files = Array.isArray(req.files.images) ? req.files.images : [req.files.images];
-            imageUrls = await uploadImages(files);
-        } else if (images) {
-            const urls = Array.isArray(images) ? images : [images];
-            imageUrls = await uploadImages(urls);
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({success: false, message: "At least one image required"});
         }
+
+        const images = await uploadMultipleImages(req.files, "products");
 
         const product = new Product({
             name,
-            brand,
+            slug: slugify(name),
             description,
-            price,
             category,
-            countInStock,
-            images: imageUrls
+            brand,
+            images,
+            isFeatured
         });
 
-        const savedProduct = await product.save();
-        res.status(201).json({ success: true, data: savedProduct });
+        const saved = await product.save();
+        res.status(201).json({success: true, data: saved});
 
     } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
-});
-// Get all products
-router.get('/', async (req, res) => {
-    try {
-        const productList = await Product.find().populate("category");
-
-        if (!productList || productList.length === 0) {
-            return res.status(404).json({ success: false, message: "No products found" });
-        }
-
-        res.status(200).json(productList);
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
+        res.status(500).json({success: false, error: err.message});
     }
 });
 
-// Get product by ID
-router.get('/:id', async (req, res) => {
+//get all products
+router.get("/", async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id).populate("category");
-        if (!product) {
-            return res.status(404).json({ success: false, message: "Product not found" });
-        }
-        res.status(200).json({ success: true, data: product });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
-});
+        const products = await Product.find()
+            .populate("category", "name slug");
 
-// Update product
-router.put('/:id', async (req, res) => {
-    try {
-        const { category, images } = req.body;
-
-        if (category) {
-            const categoryExists = await Category.findById(category);
-            if (!categoryExists) {
-                return res.status(400).json({ success: false, message: "Invalid category" });
-            }
-        }
-
-        let imageUrls = [];
-
-        if (req.files?.images) {
-            const files = Array.isArray(req.files.images) ? req.files.images : [req.files.images];
-            imageUrls = await uploadImages(files);
-        } else if (images) {
-            const urls = Array.isArray(images) ? images : [images];
-            imageUrls = await uploadImages(urls);
-        }
-
-        const updateData = { ...req.body };
-
-        if (imageUrls.length > 0) {
-            // Option A: Replace old images
-            updateData.images = imageUrls;
-        }
-        const updatedProduct = await Product.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true }
-        );
-
-        if (!updatedProduct) {
-            return res.status(404).json({ success: false, message: "Product not found" });
-        }
-
-        res.status(200).json({ success: true, data: updatedProduct });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
-});
-
-//delete Products
-router.delete('/:id', async (req, res) => {
-    try {
-        const deleteProduct = await Product.findByIdAndDelete(req.params.id);
-
-        if (!deleteProduct) {
-            return res.status(404).json({ success: false, message: "Product not found" });
-        }
-
-        res.status(200).json({ success: true, message: "Product deleted successfully" });
+        res.status(200).json({
+            success: true,
+            count: products.length,
+            data: products
+        });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        res.status(500).json({success: false, error: error.message});
+    }
+});
+
+//get products by id
+router.get("/:id", async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id)
+            .populate("category", "name slug");
+
+        if (!product) {
+            return res.status(404).json({success: false, message: "Product not found"});
+        }
+
+        res.status(200).json({success: true, data: product});
+    } catch (error) {
+        res.status(500).json({success: false, error: error.message});
+    }
+});
+
+//update products
+router.put("/:id", uploadMultiple, async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({success: false, message: "Product not found"});
+        }
+
+        if (req.body.name) {
+            product.name = req.body.name;
+            product.slug = slugify(req.body.name);
+        }
+
+        if (req.body.category) {
+            const categoryExists = await Category.findById(req.body.category);
+            if (!categoryExists) {
+                return res.status(400).json({success: false, message: "Invalid category"});
+            }
+            product.category = req.body.category;
+        }
+
+        product.description = req.body.description ?? product.description;
+        product.brand = req.body.brand ?? product.brand;
+        product.isFeatured = req.body.isFeatured ?? product.isFeatured;
+
+        // Replace images
+        if (req.files && req.files.length > 0) {
+            // delete old images
+            for (const img of product.images) {
+                await deleteImage(img.public_id);
+            }
+
+            product.images = await uploadMultipleImages(req.files, "products");
+        }
+
+        const updated = await product.save();
+
+        res.status(200).json({success: true, data: updated});
+
+    } catch (error) {
+        res.status(500).json({success: false, error: error.message});
+    }
+});
+
+//delete products
+router.delete("/:id", async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({success: false, message: "Product not found"});
+        }
+
+        // delete all images
+        for (const img of product.images) {
+            await deleteImage(img.public_id);
+        }
+
+        await product.deleteOne();
+
+        res.status(200).json({
+            success: true,
+            message: "Product deleted successfully"
+        });
+
+    } catch (error) {
+        res.status(500).json({success: false, error: error.message});
     }
 });
 
