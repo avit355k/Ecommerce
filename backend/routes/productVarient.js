@@ -36,6 +36,76 @@ router.post("/add", async (req, res) => {
     }
 });
 
+
+//get Full Product Details along with Varient
+router.get('/:productId', async (req, res) => {
+    try {
+        const {productId} = req.params;
+
+        //Fetch product
+        const product = await Product.findById(productId)
+            .populate('category', 'name slug');
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found'
+            });
+        }
+
+        // Fetch variants
+        const variants = await ProductVariant.find({
+            product: product._id,
+            isActive: true,
+        });
+
+        //  Aggregate pricing & stock
+        let minPrice = null;
+        let maxPrice = null;
+        let totalStock = 0;
+
+        variants.forEach(v => {
+            const price = v.discountedPrice || v.price;
+
+            minPrice = minPrice === null ? price : Math.min(minPrice, price);
+            maxPrice = maxPrice === null ? price : Math.max(maxPrice, price);
+
+            totalStock += v.countInStock;
+        });
+
+        res.status(200).json({
+            success: true,
+            data: {
+                product,
+                variants,
+                priceRange: {min: minPrice, max: maxPrice},
+                totalStock
+            }
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+//get ProductVarient Of a particular Product
+router.get("/:productId", async (req, res) => {
+    try {
+        const variants = await ProductVariant.find({
+            product: req.params.productId,
+            isActive: true
+        });
+
+        res.status(200).json({success: true, data: variants});
+
+    } catch (err) {
+        res.status(500).json({success: false, error: err.message});
+    }
+});
+
 //Edit Product Varient
 router.put("/update/:id", async (req, res) => {
     try {
@@ -67,20 +137,6 @@ router.put("/update/:id", async (req, res) => {
     }
 });
 
-//get ProductVarient Of a particular Product
-router.get("/product/:productId", async (req, res) => {
-    try {
-        const variants = await ProductVariant.find({
-            product: req.params.productId,
-            isActive: true
-        });
-
-        res.status(200).json({success: true, data: variants});
-
-    } catch (err) {
-        res.status(500).json({success: false, error: err.message});
-    }
-});
 //delete ProductVarient
 router.delete("/delete/:id", async (req, res) => {
     try {

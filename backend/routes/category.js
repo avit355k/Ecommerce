@@ -10,7 +10,7 @@ const {uploadSingleImage, deleteImage} = require("../utils/cloudinary");
 router.post('/create', uploadSingle, async (req, res) => {
     try {
         // Create new category
-        const {name, parent, level, color} = req.body;
+        const {name, parent, level, color, isFeatured} = req.body;
 
         if (!name) {
             return res.status(400).json({success: false, message: "Category name required"});
@@ -29,6 +29,7 @@ router.post('/create', uploadSingle, async (req, res) => {
             level: level || 0,
             image: image,
             color,
+            isFeatured
         });
 
         const savedCategory = await category.save();
@@ -85,7 +86,7 @@ router.get("/parent/:parentId", async (req, res) => {
 // Update Category by ID
 router.put("/:id", uploadSingle, async (req, res) => {
     try {
-        const {name, color, parent, level, isActive} = req.body;
+        const {name, color, parent, level, isFeatured, isActive} = req.body;
 
         const category = await Category.findById(req.params.id);
         if (!category) {
@@ -108,6 +109,7 @@ router.put("/:id", uploadSingle, async (req, res) => {
         category.color = color ?? category.color;
         category.parent = parent ?? category.parent;
         category.level = level ?? category.level;
+        category.isFeatured = isFeatured ?? isFeatured;
         category.isActive = isActive ?? category.isActive;
         category.image = image;
 

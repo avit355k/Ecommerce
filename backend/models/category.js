@@ -32,10 +32,14 @@ const categorySchema = new mongoose.Schema({
             type: String,
             default: null, //Used Color-code for Sub-Category frontend sections
         },
+        isFeatured: {
+            type: Boolean,
+            default: false
+        },
         isActive: {
             type: Boolean,
             default: true
-        }
+        },
     },
     {timestamps: true}
 );

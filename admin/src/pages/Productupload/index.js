@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import {emphasize, styled} from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
@@ -7,6 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from '@mui/material/Button';
 import {IoCloseSharp, IoCloudUploadSharp} from "react-icons/io5";
 import {PiImageBrokenThin} from "react-icons/pi";
+import API from "../../services/api";
 
 import {LazyLoadImage} from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
@@ -27,7 +28,106 @@ const StyledBreadcrumb = styled(Chip)(({theme}) => ({
 
 const Productupload = () => {
     const [categoryVal, setCategoryVal] = useState("");
-    const [brandVal, setBrandVal] = useState("");
+    const [isFeatured, setIsFeatured] = useState("");
+    const [categories, setCategories] = useState([]);
+
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [brand, setBrand] = useState("");
+
+    const [specifications, setSpecifications] = useState([{field: "", value: ""}]);
+    const [images, setImages] = useState([]);
+
+    // Fetch categories from API
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await API.get("/api/category/");
+                console.log("Fetched categories:", res.data);
+
+                if (res.data && Array.isArray(res.data.data)) {
+                    setCategories(res.data.data); // Use the correct array
+                } else {
+                    console.error("Unexpected categories format:", res.data);
+                    setCategories([]);
+                }
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+                setCategories([]);
+            }
+        };
+        fetchCategories();
+    }, []);
+
+    // Add a new specification input
+    const addSpecification = () => {
+        setSpecifications([...specifications, {field: "", value: ""}]);
+    };
+
+    // Handle specification change
+    const handleSpecificationChange = (index, key, value) => {
+        const newSpecs = [...specifications];
+        newSpecs[index][key] = value;
+        setSpecifications(newSpecs);
+    };
+
+    // Handle image selection
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setImages(prev => [...prev, ...files]);
+    };
+
+    // Remove image
+    const removeImage = (index) => {
+        setImages(images.filter((_, i) => i !== index));
+    };
+
+    // Submit product to API
+    const handleSubmit = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("name", title);
+            formData.append("description", description);
+            formData.append("brand", brand);
+            formData.append("category", categoryVal);
+            formData.append("isFeatured", isFeatured);
+
+            //  Convert specs array → object
+
+            specifications.forEach((spec) => {
+                if (spec.field && spec.value) {
+                    formData.append(
+                        `productDetails[${spec.field}]`,
+                        spec.value
+                    );
+                }
+            });
+
+            images.forEach(img => {
+                formData.append("images", img);
+            });
+
+            const res = await API.post("/api/product/create", formData, {
+                headers: {"Content-Type": "multipart/form-data"}
+            });
+
+            console.log("Product created:", res.data);
+            alert("Product created successfully!");
+            // Clear form after success
+            setTitle("");
+            setDescription("");
+            setBrand("");
+            setCategoryVal("");
+            setIsFeatured("");
+            setSpecifications([{field: "", value: ""}]);
+            setImages([]);
+
+        } catch (error) {
+            console.error("Error creating product:", error);
+            console.log(error);
+            alert("Failed to create product");
+        }
+    };
 
     return (
         <div className="right-content w-100">
@@ -45,18 +145,38 @@ const Productupload = () => {
             <div className="form">
                 <div className="row">
                     {/* LEFT SIDE */}
-                    <div className="col-sm-7">
+                    <div className="col-sm-6">
                         <div className="card p-4">
                             <h5 className="mb-4">Basic Information</h5>
 
                             <div className="form-group mb-3">
                                 <h6>TITLE</h6>
-                                <input type="text" className="form-control"/>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                />
                             </div>
 
                             <div className="form-group mb-3">
                                 <h6>DESCRIPTION</h6>
-                                <textarea className="form-control" rows="5"></textarea>
+                                <textarea
+                                    className="form-control"
+                                    rows="5"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                ></textarea>
+                            </div>
+
+                            <div className="form-group mb-3">
+                                <h6>BRAND</h6>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={brand}
+                                    onChange={(e) => setBrand(e.target.value)}
+                                />
                             </div>
 
                             <div className="row mb-3">
@@ -71,115 +191,65 @@ const Productupload = () => {
                                         <MenuItem value="">
                                             <em>Select Category</em>
                                         </MenuItem>
-                                        <MenuItem value="electronics">Electronics</MenuItem>
-                                        <MenuItem value="fashion">Fashion</MenuItem>
-                                        <MenuItem value="grocery">Grocery</MenuItem>
+                                        {Array.isArray(categories) && categories.map(cat => (
+                                            <MenuItem key={cat._id} value={cat._id}>
+                                                {cat.name}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
+
                                 </div>
 
                                 <div className="col">
-                                    <h6>BRAND</h6>
+                                    <h6>Featured</h6>
                                     <Select
-                                        value={brandVal}
-                                        onChange={(e) => setBrandVal(e.target.value)}
+                                        value={isFeatured}
+                                        onChange={(e) => setIsFeatured(e.target.value)}
                                         displayEmpty
                                         fullWidth
                                     >
                                         <MenuItem value="">
-                                            <em>Select Brand</em>
+                                            <em>Select</em>
                                         </MenuItem>
-                                        <MenuItem value="brand1">Brand 1</MenuItem>
-                                        <MenuItem value="brand2">Brand 2</MenuItem>
+                                        <MenuItem value={true}>Yes</MenuItem>
+                                        <MenuItem value={false}>No</MenuItem>
                                     </Select>
                                 </div>
-                            </div>
-
-                            <div className="row mb-3">
-                                <div className="col form-group">
-                                    <h6>REGULAR PRICE</h6>
-                                    <input type="text" className="form-control"/>
-                                </div>
-
-                                <div className="col form-group">
-                                    <h6>DISCOUNT PRICE</h6>
-                                    <input type="text" className="form-control"/>
-                                </div>
-                            </div>
-
-                            <div className="row mb-3">
-                                <div className="col form-group">
-                                    <h6>SHIPPING FEE</h6>
-                                    <input type="text" className="form-control"/>
-                                </div>
-
-                                <div className="col form-group">
-                                    <h6>IN STOCK</h6>
-                                    <input type="text" className="form-control"/>
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <h6>TAGS</h6>
-                                <textarea className="form-control" rows="3"></textarea>
                             </div>
                         </div>
                     </div>
 
                     {/* RIGHT SIDE */}
-                    <div className="col-sm-5">
+                    <div className="col-sm-6">
                         <div className="card p-4">
-                            <h5>Organization</h5>
+                            <h5>Product Details</h5>
 
-                            <div className="row mt-2">
-                                {/* Category */}
+                            <div className="row mt-3">
                                 <div className="col form-group">
-                                    <h6 className="mb-3">Add Category</h6>
-                                    <div className="org-input">
-                                        <input type="text" className="form-control" placeholder="type here"/>
-                                        <Button variant="contained">Add</Button>
-                                    </div>
+                                    <h6 className="mb-3">Add A Specification</h6>
+                                    {specifications.map((spec, index) => (
+                                        <div key={index} className="org-input mb-2">
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Field"
+                                                value={spec.field}
+                                                onChange={(e) => handleSpecificationChange(index, "field", e.target.value)}
+                                            />
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Value"
+                                                value={spec.value}
+                                                onChange={(e) => handleSpecificationChange(index, "value", e.target.value)}
+                                            />
+                                        </div>
+                                    ))}
+
+                                    <Button className="mt-2" variant="contained" onClick={addSpecification}>
+                                        Add Another Specification
+                                    </Button>
                                 </div>
-
-
-                            </div>
-
-                            <div className="row mt-2">
-                                {/* Brand */}
-                                <div className="col form-group">
-                                    <h6 className="mb-3">Add Brand</h6>
-                                    <div className="org-input">
-                                        <input type="text" className="form-control" placeholder="type here"/>
-                                        <Button variant="contained">Add</Button>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                            <div className="row mt-2">
-                                {/* Color*/}
-                                <div className="col form-group">
-                                    <h6 className="mb-3">Add Color</h6>
-                                    <div className="org-input">
-                                        <input type="text" className="form-control" placeholder="type here"/>
-                                        <Button variant="contained">Add</Button>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                            <div className="row mt-2">
-                                {/* Size */}
-                                <div className="col form-group">
-                                    <h6 className="mb-3">Add Size</h6>
-                                    <div className="org-input">
-                                        <input type="text" className="form-control" placeholder="type here"/>
-                                        <Button variant="contained">Add</Button>
-                                    </div>
-                                </div>
-
-
                             </div>
                         </div>
                     </div>
@@ -190,33 +260,37 @@ const Productupload = () => {
                 <h5 className="mb-4">Media And Published</h5>
 
                 <div className="imagesUploadSec d-flex align-items-center gap-3">
-
-                    {/* Uploaded Image */}
-                    <div className="uploadBox">
-                    <span className="remove">
-                        <IoCloseSharp/>
-                    </span>
-
-                        <div className="previewBox">
-                            <LazyLoadImage
-                                alt="product"
-                                effect="blur"
-                                src="https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/2025/JUNE/3/QgH2Akno_ac25b2519e434be6ac5afc8a8ec91c1d.jpg"
-                            />
+                    {images.map((img, index) => (
+                        <div key={index} className="uploadBox">
+                            <span className="remove" onClick={() => removeImage(index)}>
+                                <IoCloseSharp/>
+                            </span>
+                            <div className="previewBox">
+                                <LazyLoadImage
+                                    alt="product"
+                                    effect="blur"
+                                    src={URL.createObjectURL(img)}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    ))}
 
                     {/* Upload Placeholder */}
-
                     <div className="uploadPlaceholder">
                         <div className="icon"><PiImageBrokenThin/></div>
                         <p>image upload</p>
+                        <input
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            style={{position: "absolute", opacity: 0, width: "100%", height: "100%", cursor: "pointer"}}
+                            onChange={handleImageChange}
+                        />
                     </div>
-
                 </div>
 
                 {/* Publish Button */}
-                <Button variant="contained" className="publishBtn mt-4">
+                <Button variant="contained" className="publishBtn mt-4" onClick={handleSubmit}>
                     <IoCloudUploadSharp className="mx-2"/> PUBLISH AND VIEW
                 </Button>
             </div>

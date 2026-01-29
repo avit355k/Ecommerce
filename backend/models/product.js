@@ -16,6 +16,10 @@ const productSchema = new mongoose.Schema({
             type: String,
             required: true
         },
+        productDetails: {
+            type: mongoose.Schema.Types.Mixed,
+            default: {}
+        },
         category: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Category',

@@ -16,6 +16,7 @@ router.post("/create", uploadMultiple, async (req, res) => {
         const {
             name,
             description,
+            productDetails,
             category,
             brand,
             isFeatured
@@ -40,6 +41,7 @@ router.post("/create", uploadMultiple, async (req, res) => {
             name,
             slug: slugify(name),
             description,
+            productDetails,
             category,
             brand,
             images,
@@ -109,6 +111,7 @@ router.put("/:id", uploadMultiple, async (req, res) => {
         }
 
         product.description = req.body.description ?? product.description;
+        product.productDetails = req.body.productDetails ?? product.productDetails;
         product.brand = req.body.brand ?? product.brand;
         product.isFeatured = req.body.isFeatured ?? product.isFeatured;
 
