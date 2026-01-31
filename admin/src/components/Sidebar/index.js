@@ -1,16 +1,16 @@
-import React, {useContext, useState} from 'react'
+import React, {useState} from 'react'
 import Button from '@mui/material/Button';
 import {MdDashboard, MdLogout, MdNotifications, MdOutlineMessage, MdOutlineSettings} from "react-icons/md";
 import {FaAngleRight} from "react-icons/fa6";
 import {BsMenuButtonFill} from "react-icons/bs";
 import {AiFillProduct} from "react-icons/ai";
 import {FaCartArrowDown, FaUser} from "react-icons/fa";
+import {SiSinglestore} from "react-icons/si";
 import {Link} from 'react-router-dom';
-import {Mycontext} from '../../App';
 
 const Sidebar = () => {
     const [activeTab, setActiveTab] = useState(null);
-    const context = useContext(Mycontext);
+
 
     const toggleSubmenu = (index) => {
         setActiveTab(activeTab === index ? null : index);
@@ -55,13 +55,27 @@ const Sidebar = () => {
                         </Button>
                         <div className={`submenuWrapper ${activeTab === 2 ? 'colapse' : 'colapsed'}`}>
                             <ul className='submenu'>
-                                <li><Link to="">Product List</Link></li>
+                                <li><Link to="/product/list">Product List</Link></li>
                                 <li><Link to="/product/details">Product View</Link></li>
                                 <li><Link to="/product/upload">Product Upload</Link></li>
                             </ul>
                         </div>
                     </li>
 
+                    <li>
+                        <Button className={`w-100 ${activeTab === 3 ? 'active' : ''}`}
+                                onClick={() => toggleSubmenu(3)}>
+                            <span className='icon'><SiSinglestore/></span>
+                            Products Varients
+                            <span className='arrow'><FaAngleRight/></span>
+                        </Button>
+                        <div className={`submenuWrapper ${activeTab === 3 ? 'colapse' : 'colapsed'}`}>
+                            <ul className='submenu'>
+                                <li><Link to="/product/varient/list">Product varient List</Link></li>
+                                <li><Link to="/product/varient/add">Add Product Varient </Link></li>
+                            </ul>
+                        </div>
+                    </li>
                     <li>
                         <Button className='w-100'>
                             <span className='icon'><FaCartArrowDown/></span>
