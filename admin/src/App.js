@@ -13,6 +13,7 @@ import CategoryAdd from "./pages/CategoryAdd";
 import CategoryList from "./pages/CategoryList";
 import ProductList from "./pages/ProductList/ProductList";
 import VarientAdd from "./pages/ProductVarientAdd/VarientAdd";
+import VarientList from './pages/ProductVarientList/VarientList';
 
 const Mycontext = createContext();
 
@@ -62,7 +63,8 @@ function App() {
                             <Route path="/product/list" exact={true} element={<ProductList/>}/>
                             <Route path="/product/details" exact={true} element={<ProductDetails/>}/>
                             <Route path="/product/upload" exact={true} element={<Productupload/>}/>
-                            <Route path="/product/varient/add" exact={true} element={<VarientAdd/>}/>
+                            <Route path="/product/varient/:productId/add" exact={true} element={<VarientAdd/>}/>
+                            <Route path="/product/varient/list" exact={true} element={<VarientList />}/>
                         </Routes>
                     </div>
                 </div>

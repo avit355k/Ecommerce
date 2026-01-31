@@ -72,7 +72,7 @@ const Sidebar = () => {
                         <div className={`submenuWrapper ${activeTab === 3 ? 'colapse' : 'colapsed'}`}>
                             <ul className='submenu'>
                                 <li><Link to="/product/varient/list">Product varient List</Link></li>
-                                <li><Link to="/product/varient/add">Add Product Varient </Link></li>
+                                
                             </ul>
                         </div>
                     </li>

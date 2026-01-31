@@ -1,15 +1,19 @@
-import React, {useEffect, useState} from "react";
-import {emphasize, styled} from "@mui/material/styles";
+import React, { useEffect, useState } from "react";
+import { emphasize, styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import {Button, Dialog, FormControl, InputLabel, MenuItem, Pagination, Select} from "@mui/material";
-import {FaEdit, FaEye} from "react-icons/fa";
-import {MdDelete} from "react-icons/md";
+import { Button, Dialog, FormControl, InputLabel, MenuItem, Pagination, Select } from "@mui/material";
+import { FaEdit, FaEye } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { IoAddCircle } from "react-icons/io5";
 import API from "../../services/api";
+import { useNavigate } from "react-router-dom";
+
+
 
 import ProductEdit from "../../components/ProductEdit/ProductEdit";
 
-const StyledBreadcrumb = styled(Chip)(({theme}) => ({
+const StyledBreadcrumb = styled(Chip)(({ theme }) => ({
     backgroundColor: theme.palette.grey[100],
     height: theme.spacing(3),
     color: theme.palette.text.primary,
@@ -28,6 +32,8 @@ const ProductList = () => {
 
     const [openEdit, setOpenEdit] = useState(false);
     const [editProduct, setEditProduct] = useState(null);
+
+    const navigate = useNavigate();
 
     // ================= FETCH CATEGORIES =================
     useEffect(() => {
@@ -98,9 +104,9 @@ const ProductList = () => {
                 <h5 className="mb-0">Product List</h5>
 
                 <Breadcrumbs className="ms-auto breadcrumb_">
-                    <StyledBreadcrumb label="Dashboard"/>
-                    <StyledBreadcrumb label="Product"/>
-                    <StyledBreadcrumb label="Product List"/>
+                    <StyledBreadcrumb label="Dashboard" />
+                    <StyledBreadcrumb label="Product" />
+                    <StyledBreadcrumb label="Product List" />
                 </Breadcrumbs>
             </div>
 
@@ -152,78 +158,86 @@ const ProductList = () => {
                 <div className="table-responsive mt-4">
                     <table className="table table-bordered align-middle">
                         <thead className="thead-dark">
-                        <tr>
-                            <th>UID</th>
-                            <th style={{width: "300px"}}>PRODUCT</th>
-                            <th>CATEGORY</th>
-                            <th>BRAND</th>
-                            <th>PRODUCT ID</th>
-                            <th>FEATURED</th>
-                            <th>ACTION</th>
-                        </tr>
+                            <tr>
+                                <th>UID</th>
+                                <th style={{ width: "300px" }}>PRODUCT</th>
+                                <th>CATEGORY</th>
+                                <th>BRAND</th>
+                                <th>PRODUCT ID</th>
+                                <th>FEATURED</th>
+                                <th>ACTION</th>
+                            </tr>
                         </thead>
 
                         <tbody>
-                        {filteredProducts.length > 0 ? (
-                            filteredProducts.map((prodt, index) => (
-                                <tr key={prodt._id}>
-                                    <td>{index + 1}</td>
+                            {filteredProducts.length > 0 ? (
+                                filteredProducts.map((prodt, index) => (
+                                    <tr key={prodt._id}>
+                                        <td>{index + 1}</td>
 
-                                    <td>
-                                        <div className="d-flex productBox align-items-center">
-                                            <div className="imgWrapper">
-                                                <img
-                                                    src={prodt.images?.[0]?.url || "https://via.placeholder.com/150"}
-                                                    alt={prodt.name}
-                                                    className="w-100"
-                                                />
+                                        <td>
+                                            <div className="d-flex productBox align-items-center">
+                                                <div className="imgWrapper">
+                                                    <img
+                                                        src={prodt.images?.[0]?.url || "https://via.placeholder.com/150"}
+                                                        alt={prodt.name}
+                                                        className="w-100"
+                                                    />
+                                                </div>
+                                                <div className="info ms-2">
+                                                    <h6>{prodt.name}</h6>
+                                                    <p>{prodt.description}</p>
+                                                </div>
                                             </div>
-                                            <div className="info ms-2">
-                                                <h6>{prodt.name}</h6>
-                                                <p>{prodt.description}</p>
+                                        </td>
+
+                                        <td>{prodt.category?.name || "N/A"}</td>
+                                        <td>{prodt.brand}</td>
+
+                                        <td>
+                                            <h6>{prodt._id}</h6>
+                                        </td>
+
+                                        <td>{prodt.isFeatured ? "Yes" : "No"}</td>
+
+                                        <td>
+                                            <div className="actions d-flex gap-1">
+                                                <Button size="small" color="secondary">
+                                                    <FaEye />
+                                                </Button>
+                                                <Button
+                                                    size="small"
+                                                    color="success"
+                                                    onClick={() => handleEditOpen(prodt._id)}
+                                                >
+                                                    <FaEdit />
+                                                </Button>
+                                                <Button
+                                                    size="medium"
+                                                    color="success"
+                                                    onClick={() => navigate(`/product/varient/${prodt._id}/add`)}
+                                                >
+                                                    <IoAddCircle />
+                                                </Button>
+
+                                                <Button
+                                                    size="small"
+                                                    color="error"
+                                                    onClick={() => handleDelete(prodt._id)}
+                                                >
+                                                    <MdDelete />
+                                                </Button>
                                             </div>
-                                        </div>
-                                    </td>
-
-                                    <td>{prodt.category?.name || "N/A"}</td>
-                                    <td>{prodt.brand}</td>
-
-                                    <td>
-                                        <h6>{prodt._id}</h6>
-                                    </td>
-
-                                    <td>{prodt.isFeatured ? "Yes" : "No"}</td>
-
-                                    <td>
-                                        <div className="actions d-flex gap-1">
-                                            <Button size="small" color="secondary">
-                                                <FaEye/>
-                                            </Button>
-                                            <Button
-                                                size="small"
-                                                color="success"
-                                                onClick={() => handleEditOpen(prodt._id)}
-                                            >
-                                                <FaEdit/>
-                                            </Button>
-                                            <Button
-                                                size="small"
-                                                color="error"
-                                                onClick={() => handleDelete(prodt._id)}
-                                            >
-                                                <MdDelete/>
-                                            </Button>
-                                        </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="7" className="text-center text-muted">
+                                        No products found
                                     </td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="7" className="text-center text-muted">
-                                    No products found
-                                </td>
-                            </tr>
-                        )}
+                            )}
                         </tbody>
                     </table>
 
@@ -231,7 +245,7 @@ const ProductList = () => {
                         <p>
                             Showing <b>{filteredProducts.length}</b> results
                         </p>
-                        <Pagination count={1} color="secondary"/>
+                        <Pagination count={1} color="secondary" />
                     </div>
                 </div>
             </div>
