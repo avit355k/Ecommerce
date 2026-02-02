@@ -150,7 +150,7 @@ router.get("/all-products", async (req, res) => {
     }
 });
 
-//get Full Product Details along with Varient (PRODUCT + VARIANTS )
+//get Full Product Details along with Varient by productid (PRODUCT + VARIANTS )
 router.get('/product/:productId', async (req, res) => {
     try {
         const { productId } = req.params;
@@ -205,7 +205,7 @@ router.get('/product/:productId', async (req, res) => {
     }
 });
 
-//get ProductVarient Of a particular Product
+//get ProductVarient Of a particular Product by productid
 router.get("/product/:productId/list", async (req, res) => {
     try {
         const variants = await ProductVariant.find({
@@ -251,21 +251,71 @@ router.get("/available", async (req, res) => {
     }
 });
 
-//Edit Product Varient
-router.put("/:variantId", async (req, res) => {
+//get Product Varient by varientId
+router.get("/:variantId", async (req, res) => {
     try {
-        const variant = await ProductVariant.findById(req.params.variantId);
-        if (!variant) {
+        const varient = await ProductVariant.findById(req.params.variantId);
+        if (!varient) {
             return res.status(404).json({ success: false, message: "Variant not found" });
         }
+        res.status(200).json({ success: true, data: varient });
 
-        Object.assign(variant, req.body);
+    } catch (error) {
+        console.error("Error fetching variant:", error);
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+});
+
+//Edit Product Variant 
+router.put("/:variantId", async (req, res) => {
+    try {
+        const { attributes } = req.body;
+
+        const variant = await ProductVariant.findById(req.params.variantId);
+        if (!variant) {
+            return res.status(404).json({
+                success: false,
+                message: "Variant not found"
+            });
+        }
+
+        // If attributes changed → regenerate SKU
+        if (
+            attributes &&
+            JSON.stringify(attributes) !== JSON.stringify(variant.attributes)
+        ) {
+            const product = await Product.findById(variant.product);
+
+            variant.sku = await createUniqueSKU(product, attributes);
+            variant.attributes = attributes;
+        }
+
+        // Update other fields (price, stock, isActive, etc.)
+        const allowedFields = [
+            "price",
+            "discountedPrice",
+            "countInStock",
+            "isActive"
+        ];
+
+        allowedFields.forEach(field => {
+            if (req.body[field] !== undefined) {
+                variant[field] = req.body[field];
+            }
+        });
 
         const updated = await variant.save();
-        res.status(200).json({ success: true, data: updated });
+
+        res.status(200).json({
+            success: true,
+            data: updated
+        });
 
     } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
     }
 });
 

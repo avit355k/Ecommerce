@@ -140,7 +140,7 @@ const VarientAdd = () => {
                     </div>
 
                     {/* RIGHT SIDE */}
-                    <div className="col-sm-6">
+                    <div className="col-sm-6"> 
                         <div className="card p-4">
 
                             <h5 className="mb-4">Attributes</h5>

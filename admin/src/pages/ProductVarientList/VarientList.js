@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { emphasize, styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
-import { Button } from "@mui/material";
+import { Button, Dialog } from "@mui/material";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import API from "../../services/api";
+import VarientEdit from "../../components/VarientEdit/VarientEdit";
 
 const StyledBreadcrumb = styled(Chip)(({ theme }) => ({
     backgroundColor: theme.palette.grey[100],
@@ -23,20 +24,51 @@ const StyledBreadcrumb = styled(Chip)(({ theme }) => ({
 
 const VarientList = () => {
     const [productsData, setProductsData] = useState([]);
+    const [openEditModal, setOpenEditModal] = useState(false);
+    const [editModal, setEditModal] = useState(null);
 
     //fetch all products with varients
+    const fetchProductsData = async () => {
+        try {
+            const res = await API.get("/api/varient/available");
+            setProductsData(Array.isArray(res.data.data) ? res.data.data : []);
+            console.log("Products with Varients", res.data.data);
+        } catch (error) {
+            console.error("Error in fetching products data", error);
+        }
+    };
+
     useEffect(() => {
-        const fetchProductsData = async () => {
-            try {
-                const res = await API.get("/api/varient/available");
-                setProductsData(Array.isArray(res.data.data) ? res.data.data : []);
-                console.log("Products with Varients", res.data.data);
-            } catch (error) {
-                console.error("Error in fetching products data", error);
-            }
-        };
         fetchProductsData();
     }, []);
+
+    //open edit varient modal
+    const handelOpenEdit = async (varientId) => {
+        try {
+            const res = await API.get(`/api/varient/${varientId}`);
+            console.log("Edit Varient Data", res.data.data);
+            setEditModal(res.data.data);
+            setOpenEditModal(true);
+        } catch (error) {
+            console.error("Error in opening edit varient", error);
+            alert("Failed to load product");
+        }
+    }
+
+    //delete varient handler
+    const handleDeleteVarient = async (varientId) => {
+        if (!window.confirm("Are you sure you want to delete this varient?")) return;
+
+        try {
+            const res = await API.delete(`/api/varient/${varientId}`);
+            alert("Varient deleted successfully");
+            fetchProductsData(); // Refresh the product list after deletion
+
+        } catch (error) {
+            console.error("Error in deleting varient", error);
+            alert("Failed to delete varient");
+        }
+    };
 
     return (
         <div className="right-content w-100">
@@ -122,10 +154,17 @@ const VarientList = () => {
                                     {/* ACTION */}
                                     <td>
                                         <div className="actions d-flex gap-1">
-                                            <Button size="small" color="success">
+                                            <Button
+                                                size="small"
+                                                color="success"
+                                                onClick={() => handelOpenEdit(prodt._id)}>
                                                 <FaEdit />
                                             </Button>
-                                            <Button size="small" color="error">
+                                            <Button
+                                                size="small"
+                                                color="error"
+                                                onClick={() => handleDeleteVarient(prodt._id)}
+                                            >
                                                 <MdDelete />
                                             </Button>
                                         </div>
@@ -137,7 +176,29 @@ const VarientList = () => {
                     </table>
                 </div>
             </div>
-        </div>
+
+            { /* Edit Varient Modal */}
+            <Dialog
+                open={openEditModal}
+                onClose={() => {
+                    setOpenEditModal(false)
+                    setEditModal(null)
+                }}
+                maxWidth="md"
+                fullWidth
+            >
+                {editModal && (
+                    <VarientEdit
+                        varientData={editModal}
+                        onSuccess={fetchProductsData}
+                        onClose={() => {
+                            setOpenEditModal(false)
+                            setEditModal(null)
+                        }}
+                    />
+                )}
+            </Dialog>
+        </div >
     )
 }
 
