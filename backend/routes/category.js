@@ -58,6 +58,22 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET CATEGORY TREE (for navbar & mega menu)
+router.get("/tree/all", async (req, res) => {
+    const categories = await Category.find({ isActive: true }).lean();
+
+    const buildTree = (parent = null) => {
+        return categories
+            .filter(cat => String(cat.parent) === String(parent))
+            .map(cat => ({
+                ...cat,
+                children: buildTree(cat._id)
+            }));
+    };
+
+    res.json({ success: true, data: buildTree(null) });
+});
+
 // get by Category id
 router.get('/:id', async (req, res) => {
     try {
