@@ -15,12 +15,14 @@ app.use(express.urlencoded({extended: true, limit: "10mb"}));
 const categoryRoutes = require('./routes/category');
 const productRoutes = require('./routes/product');
 const varientRoutes = require('./routes/productVarient');
+const catalogRoutes = require('./routes/catalog');
 const userRoutes = require('./routes/user');
 
 // Use Routes
 app.use("/api/category", categoryRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/varient", varientRoutes);
+app.use("/api/catalog", catalogRoutes);
 app.use("/api/user", userRoutes);
 
 // Start Server

@@ -1,36 +1,126 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
 import Button from "@mui/material/Button";
 import Rating from '@mui/material/Rating';
+import LinearProgress from "@mui/material/LinearProgress";
+
 import { CiHeart } from "react-icons/ci";
 import { IoMdSwap } from "react-icons/io";
+
 import ProductZoom from '../../components/ProductZoom';
 import QuantityBox from '../../components/QuantityBox';
 import RelatedProducts from "./Relatedproducts";
-import LinearProgress from "@mui/material/LinearProgress";
 
+import API from '../../Services/api';
 
 const ProductDetails = () => {
 
-    const currentProduct = {
-        size: ["4GB", "8GB", "12GB"],
-        description: "Dynamic Island bubbles up alerts and Live Activities — so you don’t miss them while you’re doing something else. You can track your next ride, see who’s calling, check your flight status, and so much more."
-    };
+    const { id } = useParams();
+
+    const [loading, setLoading] = useState(true);
+    const [product, setProduct] = useState(null);
+    const [variants, setVariants] = useState([]);
+    const [selectedVariant, setSelectedVariant] = useState(null);
+    const [selectedAttributes, setSelectedAttributes] = useState({});
 
     const [activeTabs, setActiveTabs] = useState(0);
-    // State for selected size
-    const [selectedSize, setSelectedSize] = useState(null);
 
+    //fetch product details
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                setLoading(true);
+                const { data } = await API.get(`/api/catalog/product/${id}`);
+                if (data.success) {
+                    setProduct(data.data.product);
+                    console.log(data.data.product);
+                    setVariants(data.data.variants);
+                    console.log(data.data.variants);
+
+                    // auto select first variant
+                    if (data.data.variants.length > 0) {
+                        setSelectedVariant(data.data.variants[0]);
+                        const firstVariant = data.data.variants[0];
+                        setSelectedVariant(firstVariant);
+                        setSelectedAttributes(firstVariant.attributes || {});
+
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to load product", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProduct();
+    }, [id]);
+
+    //group attributes
+    const getAttributeMap = () => {
+        const attrMap = {};
+
+        variants.forEach((variant) => {
+            Object.entries(variant.attributes || {}).forEach(([key, value]) => {
+                if (!attrMap[key]) attrMap[key] = new Set();
+                attrMap[key].add(value);
+            });
+        });
+
+        Object.keys(attrMap).forEach(
+            (key) => (attrMap[key] = Array.from(attrMap[key]))
+        );
+
+        return attrMap;
+    };
+    // check if attribute option is valid with current selection
+    const isOptionCompatible = (attrName, attrValue) => {
+        return variants.some((variant) => {
+
+            return Object.entries(selectedAttributes).every(([key, value]) => {
+                if (key === attrName) return variant.attributes[key] === attrValue;
+                return variant.attributes[key] === value;
+            });
+        });
+    };
+    //handle attributes click
+    const handleAttributeSelect = (attrName, attrValue) => {
+        const targetAttrs = {
+            ...selectedAttributes,
+            [attrName]: attrValue
+        };
+
+        let matchedVariant = variants.find((variant) =>
+            Object.entries(targetAttrs).every(
+                ([key, value]) => variant.attributes?.[key] === value
+            )
+        );
+
+        // fallback to closest valid variant
+        if (!matchedVariant) {
+            matchedVariant = variants.find(
+                (variant) => variant.attributes?.[attrName] === attrValue
+            );
+        }
+
+        if (matchedVariant) {
+            setSelectedVariant(matchedVariant);
+            setSelectedAttributes(matchedVariant.attributes);
+        }
+    };
+
+    //review array
     const [reviewsArr, setReviewsArr] = useState([
         { review: "Amazing phone with smooth performance!", rating: 5 },
         { review: "Battery life could have been better.", rating: 3.5 },
         { review: "The camera quality is outstanding.", rating: 4.5 },
     ]);
 
-
     const [newReview, setNewReview] = useState("");
     const [newRating, setNewRating] = useState(0);
 
-    // ✅ Submit review handler
+    //  Submit review handler
     const submitReview = (e) => {
         e.preventDefault();
         if (newReview.trim() === "" || newRating === 0) {
@@ -48,21 +138,28 @@ const ProductDetails = () => {
         setNewRating(0);
     };
 
+    if (loading) return <p className="text-center mt-5">Loading...</p>;
+    if (!product) return <p className="text-center mt-5">Product not found</p>;
+
     return (
         <section className="product_details section">
             <div className='container'>
 
                 <div className='row'>
                     <div className='col-md-4 pl-5'>
-                        <ProductZoom />
+                        <ProductZoom
+                            images={product.images}
+                            discountPercent={selectedVariant?.discountPercent}
+                        />
                     </div>
+
                     <div className='col-md-7 pl-5 pr-5'>
-                        <h2 className='hd text-capitalize'>Apple iPhone 15 256GB Black</h2>
+                        <h2 className='hd text-capitalize'>{product.name}</h2>
                         <ul className='list list-inline d-flex align-items-center mt-2 '>
                             <li className='list-inline-item'>
                                 <div className='d-flex align-items-center mr-4'>
-                                    <span className='text-light'>Brands:</span>
-                                    <span className='text-dark ml-2'>Apple</span>
+                                    <span className=''>Brands:</span>
+                                    <span className='text-dark ml-2'>{product.brand}</span>
                                 </div>
                             </li>
                             <li className='list-inline-item'>
@@ -74,43 +171,76 @@ const ProductDetails = () => {
                         </ul>
 
                         <div className="d-flex info align-items-center mb-3">
-                            <span className="discountPrice">₹ 49,999</span>
-                            <span className="price text-danger ml-2">₹ 44,999</span>
+                            <span
+                                className="discountPrice">₹ {selectedVariant?.discountedPrice ?? selectedVariant?.price}</span>
+                            {selectedVariant?.discountedPrice && (
+                                <span className="price text-danger ml-2">₹ {selectedVariant.price}</span>
+                            )}
                         </div>
 
-                        <span className="text-success d-block">In Stock</span>
+                        <span
+                            className={`d-block ${selectedVariant?.countInStock > 0
+                                    ? "text-success"
+                                    : "text-danger"
+                                }`}
+                        >
+                            {selectedVariant?.countInStock > 0
+                                ? "In Stock"
+                                : "Out of Stock"}
+                        </span>
 
-                        <p className="mt-2">Dynamic Island bubbles up alerts and Live Activities —
-                            so you don’t miss them while you’re doing something else. You can track your next ride,
-                            see who’s calling, check your flight status, and so much more.
-                        </p>
+                        <p className="mt-2">{product.description} </p>
 
-                        {/* RAM Selection */}
-                        <div className="productSize d-flex align-items-center">
-                            <span className="text-dark">RAM:</span>
-                            <ul className="list list-inline mb-0 pl-4">
-                                {currentProduct.size.map((size, index) => (
-                                    <li key={index} className="list-inline-item mr-3">
-                                        <Button
-                                            variant={selectedSize === size ? "contained" : "outlined"}
-                                            size="small"
-                                            onClick={() =>
-                                                setSelectedSize(selectedSize === size ? null : size)
-                                            }
-                                            sx={{ borderRadius: "20px", minWidth: "60px" }}
-                                        >
-                                            {size}
-                                        </Button>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                        {/* VARIANTS */}
+                        {Object.entries(getAttributeMap()).map(([attrName, values]) => (
+                            <div key={attrName} className="productVarient d-flex align-items-center mb-3">
+                                <span className="text-dark" style={{ minWidth: "80px" }}>
+                                    {attrName}:
+                                </span>
 
+                                <ul className="list list-inline mb-0 pl-4">
+                                    {values.map((value) => {
+                                        const isSelected = selectedAttributes[attrName] === value;
+                                        const isCompatible = isOptionCompatible(attrName, value);
+
+                                        return (
+                                            <li key={value} className="list-inline-item mr-3">
+                                                <Button
+                                                    size="small"
+                                                    // We REMOVE 'disabled' so it's always clickable
+                                                    variant={isSelected ? "contained" : "outlined"}
+                                                    onClick={() => handleAttributeSelect(attrName, value)}
+                                                    sx={{
+                                                        borderRadius: "20px",
+                                                        minWidth: "70px",
+                                                        textTransform: "none",
+                                                        // Visual hint: if it's not compatible with current
+                                                        // selection, we make it look faded.
+                                                        opacity: isCompatible ? 1 : 0.4,
+                                                        fontWeight: isSelected ? "bold" : "normal",
+                                                        border: isSelected ? "2px solid #0858f7" : "1px solid #ccc",
+                                                        "&:hover": {
+                                                            opacity: 1
+                                                        }
+                                                    }}
+                                                >
+                                                    {value}
+                                                </Button>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div>
+                        ))}
 
 
                         <div className="d-flex align-items-center mt-4">
-                            <QuantityBox />
-                            <Button className="btn-blue btn-lg btn-big btn-round ml-3">Add to Cart</Button>
+                            <QuantityBox max={selectedVariant?.countInStock} />
+                            <Button
+                                className={`btn-blue btn-lg btn-big btn-round ml-3 ${selectedVariant?.countInStock === 0 ? "btn-disabled" : ""
+                                    }`}
+                            >Add to Cart
+                            </Button>
 
                         </div>
 
@@ -157,7 +287,7 @@ const ProductDetails = () => {
                         <br />
                         {activeTabs === 0 && (
                             <div className="tabContent">
-                                <p>{currentProduct.description}</p>
+                                <p>{product.description}</p>
                             </div>
                         )}
 
@@ -166,32 +296,20 @@ const ProductDetails = () => {
                                 <div className="table-responsive">
                                     <table className="table table-bordered">
                                         <tbody>
-                                            <tr className="stand-up">
-                                                <th>Stand Up</th>
-                                                <td><p>35″L x 24″W x 37-45″H (front to back wheel)</p></td>
-                                            </tr>
-                                            <tr className="folded">
-                                                <th>Folded</th>
-                                                <td><p>32″L x 24″W x 14″H (front to back wheel)</p></td>
-                                            </tr>
-                                            <tr className="stand-up">
-                                                <th>Stand Up</th>
-                                                <td><p>35″L x 24″W x 37-45″H (front to back wheel)</p></td>
-                                            </tr>
-                                            <tr className="stand-up">
-                                                <th>Stand Up</th>
-                                                <td><p>35″L x 24″W x 37-45″H (front to back wheel)</p></td>
-                                            </tr>
-                                            <tr className="stand-up">
-                                                <th>Stand Up</th>
-                                                <td><p>35″L x 24″W x 37-45″H (front to back wheel)</p></td>
-                                            </tr>
+                                            {Object.entries(product.productDetails || {}).map(
+                                                ([key, value]) => (
+                                                    <tr key={key}>
+                                                        <th>{key}</th>
+                                                        <td>{value}</td>
+                                                    </tr>
+                                                )
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         )}
-                        
+
                         {/* REVIEWS TAB */}
                         {activeTabs === 2 && (
                             <div className="tabContent">
@@ -317,7 +435,7 @@ const ProductDetails = () => {
 
                 <RelatedProducts title="Recently Viewed" />
             </div>
-        </section >
+        </section>
     )
 }
 
