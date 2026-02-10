@@ -1,28 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, {useContext, useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import Rating from '@mui/material/Rating';
 import LinearProgress from "@mui/material/LinearProgress";
 
-import { CiHeart } from "react-icons/ci";
-import { IoMdSwap } from "react-icons/io";
+import {CiHeart} from "react-icons/ci";
+import {IoMdSwap} from "react-icons/io";
 
 import ProductZoom from '../../components/ProductZoom';
 import QuantityBox from '../../components/QuantityBox';
 import RelatedProducts from "./Relatedproducts";
 
 import API from '../../Services/api';
+import {mycontext} from "../../App";
 
 const ProductDetails = () => {
+    const {id} = useParams();
 
-    const { id } = useParams();
+    const {setIsLogin, cartData, setCartData} = useContext(mycontext);
+
 
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
     const [variants, setVariants] = useState([]);
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [selectedAttributes, setSelectedAttributes] = useState({});
+    const [quantity, setQuantity] = useState(1);
+
 
     const [activeTabs, setActiveTabs] = useState(0);
 
@@ -31,7 +36,7 @@ const ProductDetails = () => {
         const fetchProduct = async () => {
             try {
                 setLoading(true);
-                const { data } = await API.get(`/api/catalog/product/${id}`);
+                const {data} = await API.get(`/api/catalog/product/${id}`);
                 if (data.success) {
                     setProduct(data.data.product);
                     console.log(data.data.product);
@@ -110,11 +115,63 @@ const ProductDetails = () => {
         }
     };
 
+    //reset quantity
+    useEffect(() => {
+        setQuantity(1);
+    }, [selectedVariant]);
+    //handel add to cart
+    const handleAddToCart = async () => {
+        try {
+            const token = sessionStorage.getItem("token");
+
+            if (!token) {
+                setIsLogin(false); // open login modal
+                return;
+            }
+
+            if (!selectedVariant) {
+                alert("Please select a variant");
+                return;
+            }
+
+            const payload = {
+                productId: product._id,
+                variantId: selectedVariant._id,
+                quantity
+            };
+
+            const {data} = await API.post(
+                "/api/cart/add-to-cart",
+                payload,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (data.success) {
+                const price =
+                    selectedVariant.discountedPrice ??
+                    selectedVariant.price;
+
+                setCartData({
+                    totalItems: cartData.totalItems + quantity,
+                    totalPrice: cartData.totalPrice + price * quantity
+                });
+                alert("Added to cart 🛒");
+            }
+        } catch (error) {
+            console.error(error);
+            alert(error.response?.data?.message || "Failed to add to cart");
+        }
+    };
+
     //review array
     const [reviewsArr, setReviewsArr] = useState([
-        { review: "Amazing phone with smooth performance!", rating: 5 },
-        { review: "Battery life could have been better.", rating: 3.5 },
-        { review: "The camera quality is outstanding.", rating: 4.5 },
+        {review: "Amazing phone with smooth performance!", rating: 5},
+        {review: "Battery life could have been better.", rating: 3.5},
+        {review: "The camera quality is outstanding.", rating: 4.5},
     ]);
 
     const [newReview, setNewReview] = useState("");
@@ -164,7 +221,7 @@ const ProductDetails = () => {
                             </li>
                             <li className='list-inline-item'>
                                 <div className='d-flex align-items-center'>
-                                    <Rating name="read-only" value={5} readOnly size="small" precision={0.5} />
+                                    <Rating name="read-only" value={5} readOnly size="small" precision={0.5}/>
                                     <span className='ml-2 cursor'>6 Review</span>
                                 </div>
                             </li>
@@ -180,9 +237,9 @@ const ProductDetails = () => {
 
                         <span
                             className={`d-block ${selectedVariant?.countInStock > 0
-                                    ? "text-success"
-                                    : "text-danger"
-                                }`}
+                                ? "text-success"
+                                : "text-danger"
+                            }`}
                         >
                             {selectedVariant?.countInStock > 0
                                 ? "In Stock"
@@ -194,7 +251,7 @@ const ProductDetails = () => {
                         {/* VARIANTS */}
                         {Object.entries(getAttributeMap()).map(([attrName, values]) => (
                             <div key={attrName} className="productVarient d-flex align-items-center mb-3">
-                                <span className="text-dark" style={{ minWidth: "80px" }}>
+                                <span className="text-dark" style={{minWidth: "80px"}}>
                                     {attrName}:
                                 </span>
 
@@ -235,27 +292,36 @@ const ProductDetails = () => {
 
 
                         <div className="d-flex align-items-center mt-4">
-                            <QuantityBox max={selectedVariant?.countInStock} />
+                            <QuantityBox
+                                value={quantity}
+                                setValue={setQuantity}
+                                max={selectedVariant?.countInStock}
+                            />
                             <Button
-                                className={`btn-blue btn-lg btn-big btn-round ml-3 ${selectedVariant?.countInStock === 0 ? "btn-disabled" : ""
-                                    }`}
-                            >Add to Cart
+                                className={`btn-blue btn-lg btn-big btn-round ml-3 ${
+                                    selectedVariant?.countInStock === 0 ? "btn-disabled" : ""
+                                }`}
+                                disabled={selectedVariant?.countInStock === 0}
+                                onClick={handleAddToCart}
+                            >
+                                Add to Cart
                             </Button>
+
 
                         </div>
 
                         <div className="d-flex align-items-center mt-5">
                             <Button className="btn-round btn-sml actions" variant="outlined">
-                                <CiHeart />&nbsp;Add to Wishlist
+                                <CiHeart/>&nbsp;Add to Wishlist
                             </Button>
                             <Button className="btn-round btn-sml actions ml-3" variant="outlined">
-                                <IoMdSwap /> &nbsp;Compare
+                                <IoMdSwap/> &nbsp;Compare
                             </Button>
                         </div>
                     </div>
                 </div>
 
-                <br />
+                <br/>
                 <div className="card mt-5 p-5 detailspageTabs">
                     <div className="customTabs">
                         <ul className="list list-inline">
@@ -284,7 +350,7 @@ const ProductDetails = () => {
                                 </Button>
                             </li>
                         </ul>
-                        <br />
+                        <br/>
                         {activeTabs === 0 && (
                             <div className="tabContent">
                                 <p>{product.description}</p>
@@ -296,14 +362,14 @@ const ProductDetails = () => {
                                 <div className="table-responsive">
                                     <table className="table table-bordered">
                                         <tbody>
-                                            {Object.entries(product.productDetails || {}).map(
-                                                ([key, value]) => (
-                                                    <tr key={key}>
-                                                        <th>{key}</th>
-                                                        <td>{value}</td>
-                                                    </tr>
-                                                )
-                                            )}
+                                        {Object.entries(product.productDetails || {}).map(
+                                            ([key, value]) => (
+                                                <tr key={key}>
+                                                    <th>{key}</th>
+                                                    <td>{value}</td>
+                                                </tr>
+                                            )
+                                        )}
                                         </tbody>
                                     </table>
                                 </div>
@@ -317,7 +383,7 @@ const ProductDetails = () => {
                                     {/* LEFT SIDE: Reviews */}
                                     <div className="col-md-8">
                                         <h3>Customer Reviews</h3>
-                                        <br />
+                                        <br/>
 
                                         {/* EXISTING REVIEWS */}
                                         {reviewsArr.map((item, index) => (
@@ -378,12 +444,12 @@ const ProductDetails = () => {
 
                                     {/* RIGHT SIDE: Rating Summary */}
                                     <div className="col-md-4">
-                                        <br />
-                                        <br />
+                                        <br/>
+                                        <br/>
                                         <div className="rating-summary">
                                             <h4>Customer Rating</h4>
                                             <div className="overall-rating d-flex align-items-center">
-                                                <Rating value={4.8} precision={0.1} readOnly />
+                                                <Rating value={4.8} precision={0.1} readOnly/>
                                                 <span className="ml-2">4.8 out of 5</span>
                                             </div>
 
@@ -429,11 +495,11 @@ const ProductDetails = () => {
                     </div>
                 </div>
 
-                <br />
+                <br/>
                 {/* RELATED PRODUCTS */}
-                <RelatedProducts title="Related Products" />
+                <RelatedProducts title="Related Products"/>
 
-                <RelatedProducts title="Recently Viewed" />
+                <RelatedProducts title="Recently Viewed"/>
             </div>
         </section>
     )

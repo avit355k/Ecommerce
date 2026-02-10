@@ -1,106 +1,115 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import QuantityBox from '../../components/QuantityBox'
-import { IoMdClose } from "react-icons/io";
+import React, {useContext, useEffect, useState} from 'react'
 import Button from '@mui/material/Button';
-import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import {IoShieldCheckmarkOutline} from "react-icons/io5";
+import {mycontext} from '../../App';
+
+import QuantityBox from "../../components/QuantityBox";
+import API from '../../Services/api';
 
 const Cart = () => {
+    const {setIsHeaderFooterVisible} = useContext(mycontext);
+    const [cart, setCart] = useState({items: []});
+
+
+    useEffect(() => {
+        setIsHeaderFooterVisible(false);
+        fetchCart();
+
+        return () => setIsHeaderFooterVisible(true);
+    }, [setIsHeaderFooterVisible]);
+
+    //fetch cart data
+    const fetchCart = async () => {
+        try {
+            const token = sessionStorage.getItem("token");
+            const {data} = await API.get("/api/cart", {
+                headers: {Authorization: `Bearer ${token}`}
+            });
+            if (data.success) setCart(data.cart);
+            console.log(data.cart);
+        } catch (err) {
+            console.error("Cart error", err);
+            console.log(err);
+        }
+    }
+
+
     return (
-        <section className='section cartPage'>
-            <div className='container'>
-                <h2 className='hd'>My Cart</h2>
-                <p>There are <b className='text-red'>3</b> products in your cart</p>
+        <section className='cartPage'>
+            <div className="cartHeader">
+                <h2 className="hd">
+                    Shopping Cart <span className="text-red">({cart.items.length} Items)</span>
+                </h2>
+            </div>
 
-                <div className='row'>
+            <div className='row'>
+                {/*left side*/}
+                <div className="col-md-8">
+                    <div className="cartList">
+                        {/*rendering cart items*/}
+                        {
+                            cart.items.map(item => (
+                                <div className="cartItem" key={item.variant._id}>
+                                    <div className="d-flex">
+                                        <div className="cartImg">
+                                            <img
+                                                src={item.product.images[0]?.url}
+                                                alt={item.product.name}
+                                            />
+                                        </div>
+                                        <div className="cartInfo pl-3 flex-grow-1">
+                                            <h6 className="product-title"> {item.product.name} </h6>
 
-                    <div className='col-md-8'>
-                        <table className='table'>
-                            <thead>
-                                <tr>
-                                    <th style={{ width: "35%" }}>Product</th>
-                                    <th style={{ width: "20%" }}>Unit Price</th>
-                                    <th style={{ width: "20%" }}>Quantity</th>
-                                    <th style={{ width: "15%" }}>Subtotal</th>
-                                    <th style={{ width: "10%" }}>Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td width="45%">
-                                        <Link to="/product/1">
-                                            <div className='d-flex align-items-center cartItemWrapper'>
-                                                <div className='imgWrapper'>
-                                                    <img
-                                                        src='https://api.spicezgold.com/download/file_1734528708304_apple-iphone-13-128-gb-midnight-black-digital-o491997699-p590798548-0-202208221207.webp'
-                                                        className='w-100'
-                                                        alt="Apple iPhone 15"
-                                                    />
-                                                </div>
-                                                <div className='info px-3'>
-                                                    <h6>Apple iPhone 15 256GB Black</h6>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    </td>
-                                    <td width="15%"><strong>₹44,999</strong></td>
-                                    <td width="20%"><QuantityBox /></td>
-                                    <td width="15%"><strong>₹44,999</strong></td>
-                                    <td width="10%"><span className='remove'><IoMdClose /></span></td>
-                                </tr>
-                                <tr>
-                                    <td width="35%">
-                                        <Link to="/product/1">
-                                            <div className='d-flex align-items-center cartItemWrapper'>
-                                                <div className='imgWrapper'>
-                                                    <img
-                                                        src='https://api.spicezgold.com/download/file_1734528708304_apple-iphone-13-128-gb-midnight-black-digital-o491997699-p590798548-0-202208221207.webp'
-                                                        className='w-100'
-                                                        alt="Apple iPhone 15"
-                                                    />
-                                                </div>
-                                                <div className='info px-3'>
-                                                    <h6>Apple iPhone 15 256GB Black</h6>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    </td>
-                                    <td width="20%"><strong>₹44,999</strong></td>
-                                    <td width="20%"><QuantityBox /></td>
-                                    <td width="15%"><strong>₹44,999</strong></td>
-                                    <td width="10%"><span className='remove'><IoMdClose /></span></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                            {
+                                                item.variant.attributes &&
+                                                Object.entries(item.variant.attributes).map(([key, value]) => (
+                                                    <p className="mb-1 text-muted">
+                                                        {key}: <strong>{value}</strong>
+                                                    </p>
+                                                ))
+                                            }
 
-                    </div>
-                    <div className='col-md-4'>
-                        <div className='card shadow-sm p-3 cartDetails'>
-                            <h4>CART TOTALS</h4>
-                            <div className='d-flex align-items-center'>
-                                <span>Subtotal</span>
-                                <span className='ml-auto text-red'><strong>₹44,999</strong></span>
-                            </div>
-                            <div className='d-flex align-items-center mt-2'>
-                                <span>Shipping</span>
-                                <span className='ml-auto'><strong>Free</strong></span>
-                            </div>
-                            <div className='d-flex align-items-center mt-2'>
-                                <span>Estimate for</span>
-                                <span className='ml-auto'><strong>India</strong></span>
-                            </div>
-                            <div className='d-flex align-items-center mt-2 mb-3'>
-                                <span>Total</span>
-                                <span className='ml-auto text-red'><strong>₹44,999</strong></span>
-                            </div>
-                            <Button> <IoShieldCheckmarkOutline/><span>Check Out</span></Button>
-                        </div>
+                                            <div className="d-flex align-items-center mt-2">
+                                                <QuantityBox
+                                                    value={item.quantity}
+                                                />
+                                                <span className="action-link ml-3">Delete</span>
+                                                <span className="action-link ml-3">Save for later</span>
+                                                <span className="action-link ml-3">Share</span></div>
+                                        </div>
+                                        <div className="cartPrice "><span className="price">₹{item.price}</span></div>
+                                    </div>
+                                </div>
+                            ))
+                        }
                     </div>
                 </div>
+                {/*right side*/}
+                <div className='col-md-4'>
+                    <div className='card shadow-sm p-3 cartDetails'>
+                        <h4>Price details</h4>
 
+                        <div className='d-flex align-items-center'><span>Subtotal</span> <span
+                            className='ml-auto text-red'><strong>₹{cart.subtotal}</strong></span>
+                        </div>
+                        <div className='d-flex align-items-center mt-2'>
+                            <span>Discount</span>
+                            <span className='ml-auto text-success'><strong>₹{cart.discount}</strong></span>
+                        </div>
+                        <div className='d-flex align-items-center mt-2'>
+                            <span>Delivery Charge</span>
+                            <span className='ml-auto'><strong>free</strong></span>
+                        </div>
+                        <div className='total-price d-flex align-items-center mt-2 mb-3'><span>Total Amount</span>
+                            <span className='ml-auto text-red'><strong>₹{cart.totalPrice}</strong></span>
+                        </div>
+                        <Button>
+                            <IoShieldCheckmarkOutline/>
+                            <span>Check Out</span>
+                        </Button>
+                    </div>
+                </div>
             </div>
-        </section>
-    )
+        </section>)
 }
-
-export default Cart
+export default Cart;

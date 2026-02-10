@@ -17,6 +17,7 @@ const productRoutes = require('./routes/product');
 const varientRoutes = require('./routes/productVarient');
 const catalogRoutes = require('./routes/catalog');
 const userRoutes = require('./routes/user');
+const cartRoutes = require('./routes/cart');
 
 // Use Routes
 app.use("/api/category", categoryRoutes);
@@ -24,6 +25,7 @@ app.use("/api/product", productRoutes);
 app.use("/api/varient", varientRoutes);
 app.use("/api/catalog", catalogRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/cart", cartRoutes);
 
 // Start Server
 app.listen(process.env.PORT, () => {

@@ -52,7 +52,7 @@ const Sidebar = ({ filters, setFilters, filtersData }) => {
                             setFilters(prev => ({ ...prev, sort: e.target.value }))
                         }
                         disableUnderline
-                        IconComponent={() => <IoIosArrowDown className="text-dark" />}
+                        IconComponent={() => <IoIosArrowDown className="cursor" />}
                     >
                         <MenuItem value="newest">Newest</MenuItem>
                         <MenuItem value="priceLowHigh">Price: Low to High</MenuItem>

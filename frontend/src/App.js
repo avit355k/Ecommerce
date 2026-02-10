@@ -19,6 +19,18 @@ function App() {
     const [countryList, setCountryList] = useState([]);
     const [isHeaderFooterVisible, setIsHeaderFooterVisible] = useState(true);
     const [isLogin, setIsLogin] = useState(false);
+    //global cart state
+    const [cartData, setCartData] = useState({
+        totalItems: 0,
+        totalPrice: 0
+    });
+    useEffect(() => {
+        const token = sessionStorage.getItem('token');
+        if (token) {
+            setIsLogin(true);
+        }
+    }, []);
+
 
     useEffect(() => {
         getCountry("https://countriesnow.space/api/v0.1/countries/");
@@ -36,7 +48,10 @@ function App() {
     return (
         <BrowserRouter>
             <mycontext.Provider
-                value={{countryList, isHeaderFooterVisible, setIsHeaderFooterVisible, isLogin, setIsLogin}}>
+                value={{
+                    countryList, isHeaderFooterVisible, setIsHeaderFooterVisible, isLogin, setIsLogin, cartData,
+                    setCartData
+                }}>
                 {
                     isHeaderFooterVisible && <Header/>
                 }
