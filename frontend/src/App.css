@@ -1628,7 +1628,10 @@ footer .linkWrap ul li a:hover {
 .cartDetails button:hover {
     background-color: #32c786 !important;
 }
-
+.cartPage .emptyCart {
+    text-align: center;
+    padding: 50px 20px;
+}
 .signin-page {
     width: 100%;
     height: 100vh;

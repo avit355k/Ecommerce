@@ -177,35 +177,39 @@ router.put("/update", authenticateToken, async (req, res) => {
         res.status(500).json({message: error.message});
     }
 });
-//remove cart item
-router.delete("/remove/:varientId", authenticateToken, async (req, res) => {
-    try {
-        const {variantId} = req.params;
-        const userId = req.user.id;
+// remove cart item
+router.delete("/remove/:variantId", authenticateToken, async (req, res) => {
+  try {
+    const { variantId } = req.params;
+    const userId = req.user.id;
 
-        const cart = await Cart.findOne({user: userId});
+    const cart = await Cart.findOne({ user: userId });
 
-        if (!cart) {
-            return res.status(404).json({message: "Cart not found"});
-        }
-        cart.items = cart.items.filter(
-            item => item.variant.toString() !== variantId
-        );
-
-        cart.totalPrice = cart.items.reduce(
-            (total, item) => total + item.quantity * item.price,
-            0
-        );
-        await cart.save();
-        res.status(200).json({
-            success: true,
-            message: "Item removed from cart",
-            cart
-        })
-    } catch (error) {
-        res.status(500).json({message: error.message});
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
     }
+
+    cart.items = cart.items.filter(
+      item => item.variant._id.toString() !== variantId
+    );
+
+    cart.totalPrice = cart.items.reduce(
+      (total, item) => total + item.quantity * item.price,
+      0
+    );
+
+    await cart.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Item removed from cart",
+      cart
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
+
 //clear cart
 router.delete("/clear", authenticateToken, async (req, res) => {
     try {
