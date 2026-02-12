@@ -10,6 +10,8 @@ import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import Checkout from './pages/CheckOut';
+import OrderSuccess from './pages/OrderSuccess/OrderSuccess';
 
 
 const mycontext = createContext();
@@ -60,6 +62,8 @@ function App() {
                     <Route path="/category/:slug" exact={true} element={<Listings/>}/>
                     <Route path="/product/:id" exact={true} element={<ProductDetails/>}/>
                     <Route path="/cart" exact={true} element={<Cart/>}/>
+                    <Route path="/checkout" exact={true} element={<Checkout/>}/>
+                    <Route path="/order-success" element={<OrderSuccess/>}/>
                     <Route path="/signIn" exact={true} element={<SignIn/>}/>
                     <Route path="/signUp" exact={true} element={<SignUp/>}/>
                 </Routes>

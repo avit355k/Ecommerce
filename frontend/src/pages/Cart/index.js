@@ -1,12 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import Button from '@mui/material/Button';
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
+
 import { mycontext } from '../../App';
 import QuantityBox from "../../components/QuantityBox";
 import API from '../../Services/api';
 
 const Cart = () => {
     const { setIsHeaderFooterVisible } = useContext(mycontext);
+    const navigate = useNavigate();
 
     const [cartData, setCartData] = useState({
         items: [],
@@ -175,7 +179,7 @@ const Cart = () => {
                                 <strong className='ml-auto text-red'>₹{cartData.totalPrice}</strong>
                             </div>
 
-                            <Button className="mt-3">
+                            <Button className="mt-3" onClick={() => navigate("/checkout")}>
                                 <IoShieldCheckmarkOutline />
                                 <span className="ml-1">Check Out</span>
                             </Button>

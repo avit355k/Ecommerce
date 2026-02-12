@@ -1628,10 +1628,158 @@ footer .linkWrap ul li a:hover {
 .cartDetails button:hover {
     background-color: #32c786 !important;
 }
+
 .cartPage .emptyCart {
     text-align: center;
     padding: 50px 20px;
 }
+
+/*checkout page*/
+.checkoutPage {
+    background: #ebeded;
+    padding: 25px;
+}
+
+.address-container {
+    background: #fff;
+    border-radius: 2px;
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+
+}
+
+.address-header-blue {
+    background-color: #2874f0;
+    color: #fff;
+    padding: 12px 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+}
+
+.step-box {
+    background: #fff;
+    color: #2874f0;
+    padding: 0px 7px;
+    border-radius: 2px;
+    margin-right: 15px;
+    font-size: 12px;
+}
+
+.address-item {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.address-info .user-name {
+    font-weight: 600;
+}
+
+.address-info .address-text {
+    font-size: 14px;
+    color: #212121;
+    margin-bottom: 5px;
+}
+
+.address-info .deliver-here-btn {
+    background-color: #fb641b !important;
+    color: #fff !important;
+    padding: 10px 30px !important;
+    font-weight: 600 !important;
+}
+
+.address-info .edit-btn {
+    color: #2874f0 !important;
+    font-weight: 600 !important;
+}
+
+.address-footer-actions .view-all-btn {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: capitalize;
+    align-items: center;
+    justify-content: start;
+    gap: 16px;
+}
+
+.newAddress {
+    background: #fff;
+    border-radius: 7px;
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 10px;
+}
+
+.modal-header-custom {
+    font-size: 18px;
+    font-weight: 600;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #333;
+}
+
+.address-form-container {
+    background-color: #f5f7fa;
+    padding: 20px !important;
+}
+
+.address-custom-form .custom-form-group {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 5px 12px;
+}
+
+.address-custom-form .custom-form-group label {
+    font-size: 12px;
+    color: #878787;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.address-custom-form .custom-form-group input,
+.address-custom-form .custom-form-group textarea,
+.address-custom-form .custom-select-input {
+    border: none;
+    outline: none;
+    font-size: 15px;
+    padding: 4px 0;
+    width: 100%;
+    color: #212121;
+}
+
+.address-custom-form .custom-select-input {
+    background: transparent;
+    cursor: pointer;
+}
+
+.save-address-btn {
+    background-color: #fb641b;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-weight: 600;
+    border-radius: 2px;
+    margin-right: 15px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .2);
+}
+
+.cancel-btn {
+    background: none;
+    border: none;
+    color: #2874f0;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.address-custom-form .custom-form-group:focus-within {
+    border-color: #2874f0;
+    box-shadow: inset 0 0 0 1px #2874f0;
+}
+
 .signin-page {
     width: 100%;
     height: 100vh;
