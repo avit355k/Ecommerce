@@ -8,39 +8,41 @@ import React, {useContext, useEffect, useState} from 'react';
 import {mycontext} from "../../App";
 
 
-const CountryDropDown = () => {
+const CityDropDown = () => {
 
     const [isOpenModal, setIsOpenModal] = useState(false);
-    const [selectedCountry, setSelectedCountry] = useState("India");
-    const [country, setCountry] = useState([]);
+    const [selectedCity, setSelectedCity] = useState("Kolkata");
+    const [filteredCities, setFilteredCities] = useState([]);
 
 
-    const {countryList} = useContext(mycontext);
+    const {cityList} = useContext(mycontext);
 
     useEffect(() => {
-        setCountry(countryList);
-    }, [countryList]);
+        setFilteredCities(cityList);
+    }, [cityList]);
+
 
     const filterList = (e) => {
         const keyword = e.target.value.toLowerCase();
-        const filtered = countryList.filter((item) =>
-            item.country.toLowerCase().includes(keyword)
+        const filtered = cityList.filter((city) =>
+            city.toLowerCase().includes(keyword)
         );
-        setCountry(filtered);
+        setFilteredCities(filtered);
     };
 
-    const selectCountry = (name) => {
-        setSelectedCountry(name);
+    const selectCity = (name) => {
+        setSelectedCity(name);
         setIsOpenModal(false);
     };
 
+
     return (
         <>
-            <Button className="countrydropdown" onClick={() => setIsOpenModal(true)}>
+            <Button className="citydropdown" onClick={() => setIsOpenModal(true)}>
                 <div className='info d-flex flex-column'>
                     <span className="label">Your Location</span>
                     <span className="name">
-                        {selectedCountry}
+                        {selectedCity}
                     </span>
                 </div>
                 <span className="ml-auto"><MdOutlineArrowDropDownCircle/></span>
@@ -58,13 +60,13 @@ const CountryDropDown = () => {
                     <Button className="close_"> <FaSearch/></Button>
                 </div>
 
-                <ul className="countryList mt-3">
-                    {country.map((item, index) => (
+                <ul className="cityList mt-3">
+                    {filteredCities.map((city, index) => (
                         <li key={index}>
                             <Button
-                                onClick={() => selectCountry(item.country)}
-                                className={`countryItem ${selectedCountry === item.country ? 'active' : ''}`}>
-                                {item.country}
+                                onClick={() => selectCity(city)}
+                                className={`cityItem ${selectedCity === city ? 'active' : ''}`}>
+                                {city}
                             </Button>
                         </li>
                     ))}
@@ -75,4 +77,4 @@ const CountryDropDown = () => {
     );
 }
 
-export default CountryDropDown;
+export default CityDropDown;

@@ -12,13 +12,16 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Checkout from './pages/CheckOut';
 import OrderSuccess from './pages/OrderSuccess/OrderSuccess';
+import MyAccount from "./pages/MyAccount";
+import MyOrders from "./pages/MyOrders";
+import OrderDetails from "./pages/OrderDetails";
 
 
 const mycontext = createContext();
 
 function App() {
 
-    const [countryList, setCountryList] = useState([]);
+    const [cityList, setCityList] = useState([]);
     const [isHeaderFooterVisible, setIsHeaderFooterVisible] = useState(true);
     const [isLogin, setIsLogin] = useState(false);
     //global cart state
@@ -35,15 +38,21 @@ function App() {
 
 
     useEffect(() => {
-        getCountry("https://countriesnow.space/api/v0.1/countries/");
+        getIndianCities();
     }, []);
 
-    const getCountry = async (url) => {
+    const getIndianCities = async () => {
         try {
-            const response = await axios.get(url);
-            setCountryList(response.data.data || []);
+            const response = await axios.post(
+                "https://countriesnow.space/api/v0.1/countries/cities",
+                {
+                    country: "India"
+                }
+            );
+
+            setCityList(response.data.data || []);
         } catch (error) {
-            console.error("Error fetching country data:", error);
+            console.error("Error fetching Indian cities:", error);
         }
     };
 
@@ -51,7 +60,7 @@ function App() {
         <BrowserRouter>
             <mycontext.Provider
                 value={{
-                    countryList, isHeaderFooterVisible, setIsHeaderFooterVisible, isLogin, setIsLogin, cartData,
+                    cityList, isHeaderFooterVisible, setIsHeaderFooterVisible, isLogin, setIsLogin, cartData,
                     setCartData
                 }}>
                 {
@@ -64,6 +73,9 @@ function App() {
                     <Route path="/cart" exact={true} element={<Cart/>}/>
                     <Route path="/checkout" exact={true} element={<Checkout/>}/>
                     <Route path="/order-success" element={<OrderSuccess/>}/>
+                    <Route path="/my-account" exact={true} element={<MyAccount/>}/>
+                    <Route path="/my-account/orders" exact={true} element={<MyOrders/>}/>
+                    <Route path="/my-account/orders/order-details" exact={true} element={<OrderDetails/>}/>
                     <Route path="/signIn" exact={true} element={<SignIn/>}/>
                     <Route path="/signUp" exact={true} element={<SignUp/>}/>
                 </Routes>

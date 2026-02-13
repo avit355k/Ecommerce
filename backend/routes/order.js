@@ -52,7 +52,7 @@ router.post("/create-razorpay-order", authenticateToken, async (req, res) => {
         res.status(200).json({
             success: true,
             razorpayOrder,
-            shippingAddress
+            shippingAddressId
         });
 
     } catch (error) {

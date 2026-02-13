@@ -21,16 +21,16 @@ const AccountDropdown = () => {
     return (
         <div className="account-dropdown">
             <div className="account-header">
-                <Link to="/account">
+                <Link to="/my-account">
                     <h6 className="account-title">My Account</h6>
+                    <p>9641404096</p>
                 </Link>
-                <p>9641404096</p>
             </div>
 
             <ul className="account-links">
-                <li><Link to="/orders">My Orders</Link></li>
-                <li><Link to="/addresses">Saved Addresses</Link></li>
-                <li><Link to="/wishlist">My Wishlist</Link></li>
+                <li><Link to="/my-account/orders">My Orders</Link></li>
+                <li><Link to="/my-account/addresses">Saved Addresses</Link></li>
+                <li><Link to="/my-account/wishlist">My Wishlist</Link></li>
                 <li>E-Gift Cards</li>
                 <li>Notifications</li>
                 <li>FAQ’s</li>

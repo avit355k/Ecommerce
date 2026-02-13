@@ -2,8 +2,6 @@ import {useContext, useEffect} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Logo from '../../assets/images/logo.png'
 import {Link} from 'react-router-dom';
-
-import CountryDropDown from '../CountryDropDown';
 import SearchBox from './SearchBox';
 import Navigation from './Navigations';
 import AccountDropdown from './../AccountDropdown/index';
@@ -16,9 +14,10 @@ import Button from '@mui/material/Button';
 
 import {mycontext} from '../../App';
 import API from '../../Services/api';
+import CityDropDown from "../CityDropDown";
 
 const Header = () => {
-    const {countryList, isLogin, cartData, setCartData} = useContext(mycontext);
+    const {cityList, isLogin, cartData, setCartData} = useContext(mycontext);
 
     // Fetch cart
     useEffect(() => {
@@ -71,7 +70,9 @@ const Header = () => {
                         </div>
 
                         <div className='col-sm-10 d-flex align-items-center part2'>
-                            {countryList.length > 0 && <CountryDropDown/>}
+                            {Array.isArray(cityList) && cityList.length > 0 && (
+                                <CityDropDown/>
+                            )}
                             <SearchBox/>
 
                             <div className='part3 d-flex align-items-center '>
