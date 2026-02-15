@@ -1907,6 +1907,15 @@ footer .linkWrap ul li a:hover {
     padding: 25px;
 }
 
+.MyOrderPage .Titlebar h4 {
+    background: #ffffff;
+    padding: 15px;
+    margin-bottom: 8px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+}
+
 .order-card {
     background: #fff;
     border-radius: 8px;
@@ -1918,12 +1927,10 @@ footer .linkWrap ul li a:hover {
     object-fit: contain;
 }
 
-.review-link {
-    cursor: pointer;
-}
-
-.review-link:hover {
-    text-decoration: underline;
+.order-product-name h6 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /*Order Details page */
@@ -1999,3 +2006,38 @@ footer .linkWrap ul li a:hover {
     border-radius: 6px;
 }
 
+.section-title {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.delivery-info p {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.delivery-info .icon {
+    color: #000;
+}
+
+.delivery-info .price-box {
+    background: #fafafa;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    font-size: 14px;
+}
+
+.invoice-btn {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.invoice-btn:hover {
+    background: #f5f5f5;
+}

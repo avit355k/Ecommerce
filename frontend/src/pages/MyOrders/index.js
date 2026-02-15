@@ -1,125 +1,88 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-
-import {FaStar} from "react-icons/fa";
+import API from "../../Services/api";
 
 const MyOrders = () => {
+
+    const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchOrders();
+    }, []);
+
+    const fetchOrders = async () => {
+        try {
+            const res = await API.get("/api/order/my-orders");
+            setOrders(res.data.orders);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <section className="MyOrderPage py-4">
-            <div className="container">
-                <h4 className="mb-4">My Orders</h4>
-
-                {/* ================= ORDER 1 ================= */}
-                <div className="order-card mb-3 p-3">
-                    <div className="row align-items-center cursor"
-                         onClick={() => navigate("/my-account/orders/order-details")}>
-
-                        <div className="col-md-2 text-center">
-                            <img
-                                src="https://rukminim2.flixcart.com/image/1366/1366/xif0q/perfume/r/3/z/100-luxure-oudh-perfume-100ml-eau-de-parfum-la-french-men-original-imah8h9zfgckfthx.jpeg?q=90"
-                                alt="Product"
-                                className="img-fluid order-img"
-                            />
-                        </div>
-
-                        <div className="col-md-6">
-                            <h6 className="mb-1">
-                                CRALOFT Black Sling Bag Mini Sling Bag
-                            </h6>
-                            <p className="text-muted mb-0">Color: Black</p>
-                        </div>
-
-                        <div className="col-md-2 text-md-end">
-                            <h6>₹440</h6>
-                        </div>
-
-                        <div className="col-md-2 text-md-end">
-                            <p className="mb-1 text-success">
-                                ● Delivered on Sep 30, 2023
-                            </p>
-                            <small className="text-primary review-link">
-                                <FaStar/> Rate & Review Product
-                            </small>
-                        </div>
-
-                    </div>
+            <div>
+                <div className="Titlebar">
+                    <h4 className="mb-4">My Orders</h4>
                 </div>
 
-                {/* ================= ORDER 2 ================= */}
-                <div className="order-card mb-3 p-3">
-                    <div className="row align-items-center"
-                         onClick={() => navigate("/my-account/orders/order-details")}>
+                {orders.map((order) => (
+                    <div key={order._id} className="order-card mb-3 p-3" style={{cursor: "pointer"}}
+                         onClick={() => navigate(`/my-account/orders/order-details/${order._id}`)}
+                    >
+                        <div className="row ">
 
-                        <div className="col-md-2 text-center">
-                            <img
-                                src="https://rukminim2.flixcart.com/image/1366/1366/xif0q/perfume/r/3/z/100-luxure-oudh-perfume-100ml-eau-de-parfum-la-french-men-original-imah8h9zfgckfthx.jpeg?q=90"
-                                alt="Product"
-                                className="img-fluid order-img"
-                            />
+                            {/* Image */}
+                            <div className="col-md-3 text-left">
+                                <img
+                                    src={order.items[0]?.product?.images[0].url}
+                                    alt="Product"
+                                    className="img-fluid order-img"
+                                />
+                            </div>
+
+                            {/* Name */}
+                            <div className="col-md-4 ps-2 order-product-name">
+                                <h6 className="mb-1 ">
+                                    {order.items[0]?.product?.name}
+                                </h6>
+
+                                <p className="text-muted mb-0">
+                                    {order.items[0]?.variant?.attributes && Object.entries(order.items[0].variant.attributes).map(([key, value], index) => (
+                                        <span key={index} className="me-2">
+                                           {key}: {value}
+                                         </span>))
+                                    }
+                                </p>
+
+                            </div>
+
+                            {/* Price */}
+                            <div className="col-md-2 text-md-end">
+                                <h6>₹{order.totalAmount}</h6>
+                            </div>
+
+                            {/* Status */}
+                            <div className="col-md-3 text-left">
+                                {order.orderStatus === "delivered" && (<p className="text-success mb-0">
+                                    ● Delivered
+                                </p>)}
+
+                                {order.orderStatus === "refund" && (<p className="text-danger mb-0">
+                                    ● Refund completed
+                                </p>)}
+
+                                {order.orderStatus === "processing" && (<p className="text-warning mb-0">
+                                    ● Processing
+                                </p>)}
+                            </div>
+
                         </div>
-
-                        <div className="col-md-6">
-                            <h6 className="mb-1">
-                                density Men Multicolor Sandals
-                            </h6>
-                            <p className="text-muted mb-0">
-                                Color: Blue | Size: 8
-                            </p>
-                        </div>
-
-                        <div className="col-md-2 text-md-end">
-                            <h6>₹525</h6>
-                        </div>
-
-                        <div className="col-md-2 text-md-end">
-                            <p className="mb-1 text-success">
-                                ● Delivered on Sep 18, 2023
-                            </p>
-                            <small className="text-primary review-link">
-                                <FaStar/> Rate & Review Product
-                            </small>
-                        </div>
-
-                    </div>
-                </div>
-
-                {/* ================= ORDER 3 ================= */}
-                <div className="order-card mb-3 p-3">
-                    <div className="row align-items-center"
-                         onClick={() => navigate("/my-account/orders/order-details")}>
-
-                        <div className="col-md-2 text-center">
-                            <img
-                                src="https://rukminim2.flixcart.com/image/1366/1366/xif0q/perfume/r/3/z/100-luxure-oudh-perfume-100ml-eau-de-parfum-la-french-men-original-imah8h9zfgckfthx.jpeg?q=90"
-                                alt="Product"
-                                className="img-fluid order-img"
-                            />
-                        </div>
-
-                        <div className="col-md-6">
-                            <h6 className="mb-1">
-                                WILDAUK Men Black Artificial Leather Wallet
-                            </h6>
-                            <p className="text-muted mb-0">Color: Black</p>
-                        </div>
-
-                        <div className="col-md-2 text-md-end">
-                            <h6>₹186</h6>
-                        </div>
-
-                        <div className="col-md-2 text-md-end">
-                            <p className="mb-0 text-danger">
-                                ● Refund completed
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
+                    </div>))}
 
             </div>
-        </section>
-    );
+        </section>);
 };
 
 export default MyOrders;

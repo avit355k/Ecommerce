@@ -4,13 +4,13 @@ const router = express.Router();
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { authenticateToken } = require("../Auth/authUser");
+const {authenticateToken} = require("../Auth/authUser");
 
 //sign up
 router.post('/signup', async (req, res) => {
 
     try {
-        const { name, phone, email, password } = req.body;
+        const {name, phone, email, password} = req.body;
 
         if (!name || !email || !password) {
             return res.status(400).json({
@@ -19,10 +19,10 @@ router.post('/signup', async (req, res) => {
             });
         }
 
-        const existingUser = await User.findOne({ email: email });
+        const existingUser = await User.findOne({email: email});
 
         if (existingUser) {
-            return res.status(400).json({ success: false, message: "User already exists" });
+            return res.status(400).json({success: false, message: "User already exists"});
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,31 +35,34 @@ router.post('/signup', async (req, res) => {
         });
 
         console.log("User signed up:", result);
-        return res.status(200).json({ success: true, message: "User created successfully", user: result, });
+        return res.status(200).json({success: true, message: "User created successfully", user: result,});
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal Server Error" })
+        res.status(500).json({success: false, message: "Internal Server Error"})
     }
 });
 
 //sign-in
 router.post('/signin', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const {email, password} = req.body;
 
-        const existingUser = await User.findOne({ email: email });
+        const existingUser = await User.findOne({email: email});
 
         if (!existingUser) {
-            return res.status(404).json({ success: false, message: "User not found" });
+            return res.status(404).json({success: false, message: "User not found"});
         }
 
         const matchPassword = await bcrypt.compare(password, existingUser.password);
 
         if (!matchPassword) {
-            return res.status(400).json({ success: false, message: "Invalid credentials" });
+            return res.status(400).json({success: false, message: "Invalid credentials"});
         }
 
-        const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, process.env.Jwt_key, { expiresIn: "1h" });
+        const token = jwt.sign({
+            email: existingUser.email,
+            id: existingUser._id
+        }, process.env.Jwt_key, {expiresIn: "12h"});
 
         res.status(200).json({
             success: true,
@@ -69,7 +72,7 @@ router.post('/signin', async (req, res) => {
         })
     } catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "Internal Server Error" })
+        res.status(500).json({success: false, message: "Internal Server Error"})
     }
 });
 
@@ -100,14 +103,14 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 //get count of users
-router.get('/get/count',authenticateToken, async (req, res) => {
+router.get('/get/count', authenticateToken, async (req, res) => {
     try {
         const userCount = await User.countDocuments();
 
-        return res.status(200).json({ success: true, userCount });
+        return res.status(200).json({success: true, userCount});
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ success: false, message: "Internal Server Error" });
+        return res.status(500).json({success: false, message: "Internal Server Error"});
     }
 });
 
@@ -140,9 +143,9 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 //update user by id
-router.put('/:id',authenticateToken, async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
     try {
-        const { name, phone, email, password } = req.body;
+        const {name, phone, email, password} = req.body;
         const userexits = await User.findById(req.params.id);
         let newPassword;
         if (password) {
@@ -152,22 +155,22 @@ router.put('/:id',authenticateToken, async (req, res) => {
         }
 
         const user = await User.findByIdAndUpdate(req.params.id, {
-            name: name,
-            phone: phone,
-            email: email,
-            password: newPassword
-        },
-            { new: true }
+                name: name,
+                phone: phone,
+                email: email,
+                password: newPassword
+            },
+            {new: true}
         );
 
         if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
+            return res.status(404).json({success: false, message: "User not found"});
         }
-        return res.status(200).json({ success: true, message: "User updated successfully", user });
+        return res.status(200).json({success: true, message: "User updated successfully", user});
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ success: false, message: "Internal Server Error" });
+        return res.status(500).json({success: false, message: "Internal Server Error"});
     }
 })
 

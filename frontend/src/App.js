@@ -75,7 +75,7 @@ function App() {
                     <Route path="/order-success" element={<OrderSuccess/>}/>
                     <Route path="/my-account" exact={true} element={<MyAccount/>}/>
                     <Route path="/my-account/orders" exact={true} element={<MyOrders/>}/>
-                    <Route path="/my-account/orders/order-details" exact={true} element={<OrderDetails/>}/>
+                    <Route path="/my-account/orders/order-details/:id" exact={true} element={<OrderDetails/>}/>
                     <Route path="/signIn" exact={true} element={<SignIn/>}/>
                     <Route path="/signUp" exact={true} element={<SignUp/>}/>
                 </Routes>

@@ -1,5 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Dashboard from './pages/Dashboard/index';
 import Header from './components/Header/index';
@@ -14,6 +17,7 @@ import CategoryList from "./pages/CategoryList";
 import ProductList from "./pages/ProductList/ProductList";
 import VarientAdd from "./pages/ProductVarientAdd/VarientAdd";
 import VarientList from './pages/ProductVarientList/VarientList';
+import OrderList from "./pages/OrderList";
 
 const Mycontext = createContext();
 
@@ -64,7 +68,8 @@ function App() {
                             <Route path="/product/details" exact={true} element={<ProductDetails/>}/>
                             <Route path="/product/upload" exact={true} element={<Productupload/>}/>
                             <Route path="/product/varient/:productId/add" exact={true} element={<VarientAdd/>}/>
-                            <Route path="/product/varient/list" exact={true} element={<VarientList />}/>
+                            <Route path="/product/varient/list" exact={true} element={<VarientList/>}/>
+                            <Route path="/Orderlist" exact={true} element={<OrderList/>}/>
                         </Routes>
                     </div>
                 </div>
