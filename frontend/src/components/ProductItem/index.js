@@ -1,20 +1,28 @@
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
 
 import {TfiFullscreen} from "react-icons/tfi";
-import {IoIosHeartEmpty} from "react-icons/io";
+import {IoIosHeart, IoIosHeartEmpty} from "react-icons/io";
 
 import ProductModal from "../ProductModal";
+import {mycontext} from "../../App";
+
 
 const ProductItem = ({product, itemView}) => {
 
     const [isOpenProductmodal, setIsOpenProductmodal] = useState(false);
+
+    const context = useContext(mycontext);
+
     const navigate = useNavigate();
 
     if (!product) return null;
+    if (!context.wishlistLoaded) return null;
+
+    const isWishlisted = context.wishlistItems.includes(product._id);
 
     const goToProduct = () => {
         navigate(`/product/${product._id}`);
@@ -43,7 +51,19 @@ const ProductItem = ({product, itemView}) => {
                         <Button onClick={() => setIsOpenProductmodal(true)}>
                             <TfiFullscreen/>
                         </Button>
-                        <Button><IoIosHeartEmpty/></Button>
+
+                        <Button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                context.toggleWishlist(product._id);
+                            }}
+                            className={isWishlisted ? "activeWishlist" : ""}
+                        >
+                            {isWishlisted ?
+                                <IoIosHeart size={20}/> :
+                                <IoIosHeartEmpty size={20}/>
+                            }
+                        </Button>
                     </div>
                 </div>
 

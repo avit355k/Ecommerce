@@ -1,21 +1,23 @@
-import React from "react";
+import React, {useContext} from "react";
 
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
 
-import {IoMdClose, IoMdSwap} from "react-icons/io";
+import {IoIosHeart, IoMdClose, IoMdSwap} from "react-icons/io";
 import {CiHeart} from "react-icons/ci";
-
-import QuantityBox from "../QuantityBox";
 import ProductZoom from "../ProductZoom";
+import {mycontext} from "../../App";
 
 
 const ProductModal = ({product, isOpenModal, setIsOpenModal}) => {
 
-    if (!product) return null;
+    const context = useContext(mycontext);
 
+    if (!product) return null;
+    
+    const isWishlisted = context.wishlistItems.includes(product._id);
 
     return (
         <>
@@ -65,15 +67,25 @@ const ProductModal = ({product, isOpenModal, setIsOpenModal}) => {
                             {product.description}
                         </p>
 
-                        <div className="d-flex align-items-center mt-3">
-                            <QuantityBox/>
-                            <Button className="btn-blue btn-lg btn-big btn-round ml-3">Add to Cart</Button>
-                        </div>
 
                         <div className="d-flex align-items-center mt-5">
-                            <Button className="btn-round btn-sml actions" variant="outlined">
-                                <CiHeart/>&nbsp;Add to Wishlist
+                            <Button
+                                onClick={() => context.toggleWishlist(product._id)}
+                                className={`btn-round btn-sml actions ${
+                                    isWishlisted ? "activeWishlistModal" : ""
+                                }`}
+                            >
+                                {isWishlisted ? (
+                                    <>
+                                        <IoIosHeart/> &nbsp; Wishlisted
+                                    </>
+                                ) : (
+                                    <>
+                                        <CiHeart/> &nbsp; Add to Wishlist
+                                    </>
+                                )}
                             </Button>
+
                             <Button className="btn-round btn-sml actions ml-3" variant="outlined">
                                 <IoMdSwap/> &nbsp;Compare
                             </Button>

@@ -4,6 +4,8 @@ import Home from './pages/Home';
 import Header from './components/Header/index';
 import {createContext, useEffect, useState} from 'react';
 import axios from 'axios';
+import API from "./Services/api";
+
 import Footer from './components/Footer';
 import Listings from './pages/Listings';
 import ProductDetails from './pages/ProductDetails';
@@ -29,6 +31,10 @@ function App() {
         totalItems: 0,
         totalPrice: 0
     });
+    //global wishlist state
+    const [wishlistItems, setWishlistItems] = useState([]);
+    const [wishlistLoaded, setWishlistLoaded] = useState(false);
+
     useEffect(() => {
         const token = sessionStorage.getItem('token');
         if (token) {
@@ -56,12 +62,69 @@ function App() {
         }
     };
 
+    useEffect(() => {
+        const fetchWishlist = async () => {
+            try {
+                const token = sessionStorage.getItem("token");
+                if (!token) return;
+
+                const response = await API.get("/api/wishlist");
+
+                const productIds = response.data.items.map(
+                    item => item.product?._id || item.product
+                );
+
+                setWishlistItems(productIds);
+                setWishlistLoaded(true);
+
+            } catch (error) {
+                console.error("Wishlist load error:", error);
+            }
+        };
+
+        if (isLogin) {
+            fetchWishlist();
+        } else {
+            setWishlistItems([]);
+            setWishlistLoaded(false);
+        }
+
+    }, [isLogin]);
+
+
+    const toggleWishlist = async (productId) => {
+
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            alert("Please login first");
+            return;
+        }
+
+        const exists = wishlistItems.includes(productId);
+        const previousState = [...wishlistItems];
+
+        // Optimistic Update
+        if (exists) {
+            setWishlistItems(prev => prev.filter(id => id !== productId));
+        } else {
+            setWishlistItems(prev => [...prev, productId]);
+        }
+
+        try {
+            await API.post("/api/wishlist/toggle", {productId});
+        } catch (error) {
+            console.error("Wishlist update failed:", error);
+            setWishlistItems(previousState); // rollback
+        }
+    };
+
+
     return (
         <BrowserRouter>
             <mycontext.Provider
                 value={{
                     cityList, isHeaderFooterVisible, setIsHeaderFooterVisible, isLogin, setIsLogin, cartData,
-                    setCartData
+                    setCartData, wishlistItems, wishlistLoaded, toggleWishlist
                 }}>
                 {
                     isHeaderFooterVisible && <Header/>

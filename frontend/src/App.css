@@ -716,6 +716,25 @@ body {
     opacity: 1 !important;
 }
 
+/* ===============================
+   Wishlist Active State
+================================ */
+
+/* Red background when wishlisted */
+.productItem .actions button.activeWishlist,
+.productItem .actions .MuiButton-root.activeWishlist {
+    background-color: #ed184a !important;
+    border-color: transparent !important;
+}
+
+/* White icon when wishlisted */
+.productItem .actions button.activeWishlist svg,
+.productItem .actions button.activeWishlist svg * {
+    color: #fff !important;
+    fill: #fff !important;
+    opacity: 1 !important;
+}
+
 /* --- remove pointer-events none from svg (so icon can receive styling reliably) --- */
 .productItem .actions button svg {
     color: #000 !important;
@@ -1058,6 +1077,17 @@ footer .linkWrap ul li a:hover {
 
 .productModal .actions button svg {
     font-size: 15px;
+}
+
+.productModal .activeWishlistModal {
+    background-color: #ed184a !important;
+    border-color: transparent !important;
+    color: #fff !important;
+}
+
+.productModal .activeWishlistModal svg {
+    color: #fff !important;
+    fill: #fff !important;
 }
 
 .product_listings_page {
