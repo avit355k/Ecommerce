@@ -20,6 +20,11 @@ const userRoutes = require('./routes/user');
 const cartRoutes = require('./routes/cart');
 const orderRoutes = require('./routes/order');
 const addressRoutes = require('./routes/address');
+const newProductRoutes = require('./routes/newProducts');
+const recentlyViewedRoutes = require('./routes/recentlyViewed');
+const relatedProductsRoutes = require('./routes/relatedProducts');
+const topDealRoutes = require('./routes/topDeals');
+
 
 // Use Routes
 app.use("/api/category", categoryRoutes);
@@ -30,6 +35,10 @@ app.use("/api/user", userRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/address", addressRoutes);
+app.use("/api/recentlyViewed", recentlyViewedRoutes);
+app.use("/api/relatedProducts", relatedProductsRoutes);
+app.use("/api/newProduct", newProductRoutes);
+app.use("/api/topDeals", topDealRoutes);
 
 // Start Server
 app.listen(process.env.PORT, () => {

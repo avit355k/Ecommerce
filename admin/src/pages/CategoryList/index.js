@@ -18,6 +18,7 @@ import {
 
 import {FaEdit} from "react-icons/fa";
 import {MdDelete} from "react-icons/md";
+import {CiSearch} from "react-icons/ci";
 
 const StyledBreadcrumb = styled(Chip)(({theme}) => ({
     backgroundColor: theme.palette.grey[100],
@@ -31,9 +32,17 @@ const StyledBreadcrumb = styled(Chip)(({theme}) => ({
 
 const CategoryList = () => {
     const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
-    /* ===== Edit dialog state ===== */
+    /* Search + pagination */
+    const [search, setSearch] = useState("");
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalResults, setTotalResults] = useState(0);
+
+    const PER_PAGE = 10;
+
+    /* Edit dialog state */
     const [openEdit, setOpenEdit] = useState(false);
     const [editId, setEditId] = useState(null);
 
@@ -47,14 +56,33 @@ const CategoryList = () => {
     const [image, setImage] = useState(null);
     const [preview, setPreview] = useState(null);
 
+    /* ===============================
+       Debounced Fetch
+    =============================== */
     useEffect(() => {
-        fetchCategories();
-    }, []);
+        const delayDebounce = setTimeout(() => {
+            fetchCategories();
+        }, 500);
+
+        return () => clearTimeout(delayDebounce);
+    }, [page, search]);
 
     const fetchCategories = async () => {
         try {
-            const res = await API.get("/api/category");
+            setLoading(true);
+
+            const res = await API.get("/api/category", {
+                params: {
+                    page: page,
+                    limit: PER_PAGE,
+                    search: search
+                }
+            });
+
             setCategories(res.data.data || []);
+            setTotalPages(res.data.totalPages || 1);
+            setTotalResults(res.data.total || 0);
+
         } catch (err) {
             console.error(err);
         } finally {
@@ -62,7 +90,9 @@ const CategoryList = () => {
         }
     };
 
-    /* ===== OPEN EDIT ===== */
+    /* ===============================
+       Open Edit
+    =============================== */
     const handleEditOpen = async (id) => {
         try {
             const res = await API.get(`/api/category/${id}`);
@@ -76,7 +106,7 @@ const CategoryList = () => {
             setIsFeatured(Boolean(cat.isFeatured));
             setIsActive(Boolean(cat.isActive));
 
-            setPreview(cat.image || null);
+            setPreview(cat.image?.url || null);
             setImage(null);
 
             setOpenEdit(true);
@@ -86,7 +116,9 @@ const CategoryList = () => {
         }
     };
 
-    /* ===== UPDATE ===== */
+    /* ===============================
+       Update
+    =============================== */
     const handleUpdate = async () => {
         if (!name.trim()) {
             alert("Category name is required");
@@ -117,13 +149,18 @@ const CategoryList = () => {
         }
     };
 
-    /* ===== DELETE ===== */
+    /*  Delete*/
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this category?")) return;
 
         try {
             await API.delete(`/api/category/${id}`);
-            fetchCategories();
+
+            if (categories.length === 1 && page > 1) {
+                setPage(page - 1);
+            } else {
+                fetchCategories();
+            }
 
             alert("Category deleted successfully");
         } catch (err) {
@@ -146,6 +183,26 @@ const CategoryList = () => {
             </div>
 
             <div className="card p-4 mt-3">
+                <h3 className="hd">All Categories</h3>
+
+                <div className="row mt-3">
+                    <div className="col-md-12">
+                        <div className="searchBox position-relative d-flex align-items-center">
+                            <CiSearch style={{marginRight: '0.5rem'}}/>
+                            <input
+                                type="text"
+                                placeholder="Search for Categories"
+                                aria-label="Search input"
+                                value={search}
+                                onChange={(e) => {
+                                    setSearch(e.target.value);
+                                    setPage(1);
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 {loading ? (
                     <p className="text-muted">Loading...</p>
                 ) : (
@@ -166,9 +223,17 @@ const CategoryList = () => {
                             </thead>
 
                             <tbody>
+                            {categories.length === 0 && (
+                                <tr>
+                                    <td colSpan="9" className="text-center text-muted">
+                                        No categories found
+                                    </td>
+                                </tr>
+                            )}
+
                             {categories.map((cat, index) => (
                                 <tr key={cat._id}>
-                                    <td>{index + 1}</td>
+                                    <td>{(page - 1) * PER_PAGE + index + 1}</td>
 
                                     <td>
                                         <div className="d-flex productBox align-items-center">
@@ -217,14 +282,22 @@ const CategoryList = () => {
                         </table>
 
                         <div className="tableFooter">
-                            <p>Showing <b>{categories.length}</b> results</p>
-                            <Pagination count={1} color="secondary"/>
+                            <p>
+                                Showing <b>{categories.length}</b> of <b>{totalResults}</b> results
+                            </p>
+
+                            <Pagination
+                                count={totalPages}
+                                page={page}
+                                onChange={(event, value) => setPage(value)}
+                                color="secondary"
+                            />
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* ===== EDIT DIALOG ===== */}
+            {/* EDIT DIALOG */}
             <Dialog open={openEdit} onClose={() => setOpenEdit(false)} fullWidth maxWidth="sm">
                 <DialogTitle>Edit Category</DialogTitle>
 

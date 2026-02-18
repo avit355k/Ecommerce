@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 
-import { FormControl, MenuItem, Select } from "@mui/material";
+import {FormControl, MenuItem, Select} from "@mui/material";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { IoIosArrowDown } from "react-icons/io";
+import {IoIosArrowDown} from "react-icons/io";
 
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
-const Sidebar = ({ filters, setFilters, filtersData }) => {
+const Sidebar = ({filters, setFilters, filtersData}) => {
 
     const [value, setValue] = useState([filters.minPrice, filters.maxPrice]);
 
@@ -49,10 +49,10 @@ const Sidebar = ({ filters, setFilters, filtersData }) => {
                     <Select
                         value={filters.sort}
                         onChange={(e) =>
-                            setFilters(prev => ({ ...prev, sort: e.target.value }))
+                            setFilters(prev => ({...prev, sort: e.target.value}))
                         }
                         disableUnderline
-                        IconComponent={() => <IoIosArrowDown className="cursor" />}
+                        IconComponent={() => <IoIosArrowDown className="cursor"/>}
                     >
                         <MenuItem value="newest">Newest</MenuItem>
                         <MenuItem value="priceLowHigh">Price: Low to High</MenuItem>
@@ -91,9 +91,9 @@ const Sidebar = ({ filters, setFilters, filtersData }) => {
                 <div className='filterBox'>
                     <h6>Filter By Price</h6>
                     <RangeSlider
-                        min={100}
+                        min={10}
                         max={100000}
-                        step={100}
+                        step={10}
                         value={value}
                         onInput={(val) => {
                             setValue(val);
@@ -225,10 +225,14 @@ const Sidebar = ({ filters, setFilters, filtersData }) => {
                         </div>
                     ))}
 
-                <br />
+                <br/>
 
-                <Link to="#"><img src='https://m.media-amazon.com/images/G/31/img21/Watches2021/Dec_22_watches/New_launches_A/Titan-newlaunch._CB617707897_.gif' className='w-100' /></Link>
-                <Link to="#"><img src='https://m.media-amazon.com/images/G/31/2025/Auto/BIF/Helmets__riding_gears._SY530_QL85_FMpng_.png' className='mt-4 w-100' /></Link>
+                <Link to="#"><img
+                    src='https://m.media-amazon.com/images/G/31/img21/Watches2021/Dec_22_watches/New_launches_A/Titan-newlaunch._CB617707897_.gif'
+                    className='w-100'/></Link>
+                <Link to="#"><img
+                    src='https://m.media-amazon.com/images/G/31/2025/Auto/BIF/Helmets__riding_gears._SY530_QL85_FMpng_.png'
+                    className='mt-4 w-100'/></Link>
             </div>
         </div>
     )

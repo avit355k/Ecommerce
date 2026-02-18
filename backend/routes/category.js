@@ -46,13 +46,39 @@ router.post('/create', uploadSingle, async (req, res) => {
 // Get all categories
 router.get('/', async (req, res) => {
     try {
-        const categoryList = await Category.find({isActive: true});
+        const {page = 1, limit = 10, search = ""} = req.query;
+
+        const pageNumber = Number(page);
+        const limitNumber = Number(limit);
+
+        const query = {
+            isActive: true
+        };
+
+        // Search by category name
+        if (search && search.trim() !== "") {
+            query.name = {$regex: search, $options: "i"};
+        }
+
+        const total = await Category.countDocuments(query);
+
+        const categoryList = await Category.find(query)
+            .sort({createdAt: -1})
+            .skip((pageNumber - 1) * limitNumber)
+            .limit(limitNumber);
 
         if (!categoryList) {
             return res.status(404).json({success: false, message: "No categories found"});
         }
 
-        res.status(200).json({success: true, count: categoryList.length, data: categoryList});
+        res.status(200).json({
+            success: true,
+            total: total,
+            count: categoryList.length,
+            data: categoryList,
+            totalPages: Math.ceil(total / limitNumber),
+            currentPage: pageNumber
+        });
     } catch (err) {
         res.status(500).json({success: false, error: err.message});
     }
@@ -60,7 +86,7 @@ router.get('/', async (req, res) => {
 
 // GET CATEGORY TREE (for navbar & mega menu)
 router.get("/tree/all", async (req, res) => {
-    const categories = await Category.find({ isActive: true }).lean();
+    const categories = await Category.find({isActive: true}).lean();
 
     const buildTree = (parent = null) => {
         return categories
@@ -71,7 +97,32 @@ router.get("/tree/all", async (req, res) => {
             }));
     };
 
-    res.json({ success: true, data: buildTree(null) });
+    res.json({success: true, data: buildTree(null)});
+});
+
+//get Featured Categories
+router.get("/featured", async (req, res) => {
+    try {
+        const featuredCategories = await Category.find({
+            isFeatured: true,
+            isActive: true,
+        }).sort({createdAt: 1});
+
+        if (!featuredCategories || featuredCategories.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No featured categories found"
+            });
+        }
+        res.status(200).json({
+            success: true,
+            count: featuredCategories.length,
+            data: featuredCategories
+        });
+
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 // get by Category id

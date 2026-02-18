@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
 
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Pagination from '@mui/material/Pagination';
-import { TiThMenu } from "react-icons/ti";
-import { BsFillGridFill, BsGrid3X3GapFill } from "react-icons/bs";
-import { FaAngleDown } from "react-icons/fa6";
+import {TiThMenu} from "react-icons/ti";
+import {BsFillGridFill, BsGrid3X3GapFill} from "react-icons/bs";
+import {FaAngleDown} from "react-icons/fa6";
 
 import Sidebar from '../../components/Sidebar'
 import ProductItem from '../../components/ProductItem';
@@ -15,7 +15,7 @@ import API from "../../Services/api";
 
 
 const Listings = () => {
-    const { slug } = useParams();
+    const {slug} = useParams();
 
     const [products, setProducts] = useState([]);
     const [filtersData, setFiltersData] = useState({});
@@ -27,7 +27,7 @@ const Listings = () => {
         brands: [],
         attributes: {},
         details: {},
-        minPrice: 100,
+        minPrice: 10,
         maxPrice: 100000,
         discount: null,
         includeOutOfStock: false,
@@ -40,7 +40,7 @@ const Listings = () => {
             brands: [],
             attributes: {},
             details: {},
-            minPrice: 100,
+            minPrice: 10,
             maxPrice: 100000,
             discount: null,
             includeOutOfStock: false,
@@ -62,7 +62,7 @@ const Listings = () => {
     // Fetch dynamic filters
     useEffect(() => {
         const fetchFilters = async () => {
-            const { data } = await API.get(`/api/catalog/filters/${slug}`);
+            const {data} = await API.get(`/api/catalog/filters/${slug}`);
             if (data.success) setFiltersData(data.filters);
         };
         fetchFilters();
@@ -113,9 +113,9 @@ const Listings = () => {
                     params.sort = filters.sort;
                 }
 
-                const { data } = await API.get(
+                const {data} = await API.get(
                     `/api/catalog/category/${slug}`,
-                    { params }
+                    {params}
                 );
                 if (data.success) {
                     setProducts(data.data);
@@ -143,7 +143,7 @@ const Listings = () => {
                         <div className='content-right'>
                             <img
                                 src='https://m.media-amazon.com/images/G/31/img24hp/tf/WhatsApp_Image_2025-08-18_at_14.55.27_d0f5e261._CB802203197_.jpg'
-                                className='w-100' style={{ borderRadius: '7px' }} alt='Banner' />
+                                className='w-100' style={{borderRadius: '7px'}} alt='Banner'/>
 
                             <div className='showBy mt-3 mb-3 d-flex align-items-center'>
                                 <div className='d-flex align-items-center btnWrapper'>
@@ -151,19 +151,19 @@ const Listings = () => {
                                         onClick={() => setProductView('one')}
                                         className={productView === 'one' && 'active'}
                                     >
-                                        <TiThMenu />
+                                        <TiThMenu/>
                                     </Button>
                                     <Button
                                         onClick={() => setProductView('three')}
                                         className={productView === 'three' && 'active'}
                                     >
-                                        <BsFillGridFill />
+                                        <BsFillGridFill/>
                                     </Button>
                                     <Button
                                         onClick={() => setProductView('four')}
                                         className={productView === 'four' && 'active'}
                                     >
-                                        <BsGrid3X3GapFill />
+                                        <BsGrid3X3GapFill/>
                                     </Button>
                                 </div>
                                 <div className='ml-auto showByFilter'>
@@ -172,7 +172,7 @@ const Listings = () => {
                                         id="basic-button"
                                         ref={buttonRef} // keep a reference to measure width
                                     >
-                                        Show 10 <FaAngleDown />
+                                        Show 10 <FaAngleDown/>
                                     </Button>
 
                                     <Menu
@@ -214,7 +214,7 @@ const Listings = () => {
 
 
                             <div className='d-flex align-items-center justify-content-center mt-4'>
-                                <Pagination count={10} color="primary" />
+                                <Pagination count={10} color="primary"/>
                             </div>
                         </div>
                     </div>

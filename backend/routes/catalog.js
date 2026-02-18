@@ -6,16 +6,16 @@ const Category = require("../models/category");
 const ProductVariant = require('../models/ProductVariant');
 
 
-const { getAllChildCategories } = require("../utils/category");
-const { getSortStage } = require("../utils/sort");
+const {getAllChildCategories} = require("../utils/category");
+const {getSortStage} = require("../utils/sort");
 
 // GET PRODUCTS BY CATEGORY SLUG
 router.get("/category/:slug", async (req, res) => {
     try {
-        const { slug } = req.params;
-        const { sort, minPrice, maxPrice, brands, discount, includeOutOfStock, ...dynamicFilters } = req.query;
+        const {slug} = req.params;
+        const {sort, minPrice, maxPrice, brands, discount, includeOutOfStock, ...dynamicFilters} = req.query;
         //category validation
-        const category = await Category.findOne({ slug, isActive: true });
+        const category = await Category.findOne({slug, isActive: true});
         if (!category) {
             return res.status(404).json({
                 success: false,
@@ -23,17 +23,17 @@ router.get("/category/:slug", async (req, res) => {
             });
         }
 
-        const allCategories = await Category.find({ isActive: true }).lean();
+        const allCategories = await Category.find({isActive: true}).lean();
         const childCategoryIds = getAllChildCategories(allCategories, category._id);
         const categoryIds = [category._id, ...childCategoryIds];
 
-       //base product match (category + optional brand)
+        //base product match (category + optional brand)
         const productMatch = {
-            category: { $in: categoryIds }
+            category: {$in: categoryIds}
         };
 
         if (brands) {
-            productMatch.brand = { $in: brands.split(",") };
+            productMatch.brand = {$in: brands.split(",")};
         }
 
         // product details filters (optional)
@@ -46,7 +46,7 @@ router.get("/category/:slug", async (req, res) => {
             }
         });
 
-       //varient attribute filters (optional) - these will be applied in the $lookup pipeline to ensure we only join relevant variants, improving performance
+        //varient attribute filters (optional) - these will be applied in the $lookup pipeline to ensure we only join relevant variants, improving performance
         const variantAttrConditions = [];
 
         Object.keys(dynamicFilters).forEach(key => {
@@ -58,52 +58,52 @@ router.get("/category/:slug", async (req, res) => {
             }
         });
 
-      //aggregate query to fetch products with their lowest priced active variant, applying all filters and sorting
+        //aggregate query to fetch products with their lowest priced active variant, applying all filters and sorting
         const products = await Product.aggregate([
-            { $match: productMatch },
+            {$match: productMatch},
 
             {
                 $lookup: {
                     from: "productvariants",
-                    let: { productId: "$_id" },
+                    let: {productId: "$_id"},
                     pipeline: [
                         {
                             $match: {
                                 $expr: {
                                     $and: [
-                                        { $eq: ["$product", "$$productId"] },
-                                        { $eq: ["$isActive", true] },
-                                        { $gt: ["$countInStock", 0] },
+                                        {$eq: ["$product", "$$productId"]},
+                                        {$eq: ["$isActive", true]},
+                                        {$gt: ["$countInStock", 0]},
                                         ...(variantAttrConditions.length
-                                            ? [{ $and: variantAttrConditions }]
+                                            ? [{$and: variantAttrConditions}]
                                             : [])
                                     ]
                                 }
                             }
                         },
-                        { $sort: { price: 1 } },
-                        { $limit: 1 }
+                        {$sort: {price: 1}},
+                        {$limit: 1}
                     ],
                     as: "variant"
                 }
             },
 
             // unwind the variant array (will be empty if no active variants, but that's fine as we handle that in $addFields)
-            { $unwind: "$variant" },
+            {$unwind: "$variant"},
 
-           // calculate price, discount, stock based on the joined variant (if exists)
+            // calculate price, discount, stock based on the joined variant (if exists)
             {
                 $addFields: {
-                    price: { $ifNull: ["$variant.price", null] },
-                    discountedPrice: { $ifNull: ["$variant.discountedPrice", null] },
-                    countInStock: { $ifNull: ["$variant.countInStock", 0] },
+                    price: {$ifNull: ["$variant.price", null]},
+                    discountedPrice: {$ifNull: ["$variant.discountedPrice", null]},
+                    countInStock: {$ifNull: ["$variant.countInStock", 0]},
 
                     discountPercent: {
                         $cond: [
                             {
                                 $and: [
                                     "$variant.discountedPrice",
-                                    { $gt: ["$variant.price", 0] }
+                                    {$gt: ["$variant.price", 0]}
                                 ]
                             },
                             {
@@ -133,30 +133,30 @@ router.get("/category/:slug", async (req, res) => {
                 }
             },
 
-           // final match stage to apply price range, discount, stock availability filters
+            // final match stage to apply price range, discount, stock availability filters
             {
                 $match: {
                     ...(minPrice || maxPrice
                         ? {
                             price: {
-                                ...(minPrice && { $gte: Number(minPrice) }),
-                                ...(maxPrice && { $lte: Number(maxPrice) })
+                                ...(minPrice && {$gte: Number(minPrice)}),
+                                ...(maxPrice && {$lte: Number(maxPrice)})
                             }
                         }
                         : {}),
 
                     ...(discount
-                        ? { discountPercent: { $gte: Number(discount) } }
+                        ? {discountPercent: {$gte: Number(discount)}}
                         : {}),
 
                     ...(includeOutOfStock === "true"
                         ? {}
-                        : { $or: [{ price: null }, { countInStock: { $gt: 0 } }] })
+                        : {$or: [{price: null}, {countInStock: {$gt: 0}}]})
                 }
             },
 
-            { $project: { variant: 0 } },
-            { $sort: getSortStage(sort) }
+            {$project: {variant: 0}},
+            {$sort: getSortStage(sort)}
         ]);
 
         res.status(200).json({
@@ -182,7 +182,7 @@ router.get("/category/:slug", async (req, res) => {
 //get Products details along with varients by productid
 router.get('/product/:productId', async (req, res) => {
     try {
-        const { productId } = req.params;
+        const {productId} = req.params;
 
         //Fetch product
         const product = await Product.findById(productId)
@@ -220,7 +220,7 @@ router.get('/product/:productId', async (req, res) => {
             data: {
                 product,
                 variants,
-                priceRange: { min: minPrice, max: maxPrice },
+                priceRange: {min: minPrice, max: maxPrice},
                 totalStock,
 
             }
@@ -235,16 +235,16 @@ router.get('/product/:productId', async (req, res) => {
 });
 //Get Filters for a Category
 router.get("/filters/:slug", async (req, res) => {
-    const category = await Category.findOne({ slug: req.params.slug, isActive: true });
-    if (!category) return res.json({ success: true, filters: {} });
+    const category = await Category.findOne({slug: req.params.slug, isActive: true});
+    if (!category) return res.json({success: true, filters: {}});
 
-    const allCategories = await Category.find({ isActive: true }).lean();
+    const allCategories = await Category.find({isActive: true}).lean();
     const childCategoryIds = getAllChildCategories(allCategories, category._id);
     const categoryIds = [category._id, ...childCategoryIds];
 
-    const products = await Product.find({ category: { $in: categoryIds } });
+    const products = await Product.find({category: {$in: categoryIds}});
     const variants = await ProductVariant.find({
-        product: { $in: products.map(p => p._id) },
+        product: {$in: products.map(p => p._id)},
         isActive: true
     });
 

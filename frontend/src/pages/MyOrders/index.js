@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../../Services/api";
 
 const MyOrders = () => {
@@ -28,8 +28,8 @@ const MyOrders = () => {
                 </div>
 
                 {orders.map((order) => (
-                    <div key={order._id} className="order-card mb-3 p-3" style={{cursor: "pointer"}}
-                         onClick={() => navigate(`/my-account/orders/order-details/${order._id}`)}
+                    <div key={order._id} className="order-card mb-3 p-3" style={{ cursor: "pointer" }}
+                        onClick={() => navigate(`/my-account/orders/order-details/${order._id}`)}
                     >
                         <div className="row ">
 
@@ -51,8 +51,8 @@ const MyOrders = () => {
                                 <p className="text-muted mb-0">
                                     {order.items[0]?.variant?.attributes && Object.entries(order.items[0].variant.attributes).map(([key, value], index) => (
                                         <span key={index} className="me-2">
-                                           {key}: {value}
-                                         </span>))
+                                            {key}: {value}
+                                        </span>))
                                     }
                                 </p>
 
@@ -64,19 +64,72 @@ const MyOrders = () => {
                             </div>
 
                             {/* Status */}
-                            <div className="col-md-3 text-left">
-                                {order.orderStatus === "delivered" && (<p className="text-success mb-0">
-                                    ● Delivered
-                                </p>)}
+                            <div className="col-md-3 text-left order-status">
 
-                                {order.orderStatus === "refund" && (<p className="text-danger mb-0">
-                                    ● Refund completed
-                                </p>)}
+                                {/* Processing */}
+                                {order.orderStatus === "processing" && (
+                                    <p className="text-warning mb-0">
+                                        ● Processing
+                                    </p>
+                                )}
 
-                                {order.orderStatus === "processing" && (<p className="text-warning mb-0">
-                                    ● Processing
-                                </p>)}
+                                {/* Confirmed */}
+                                {order.orderStatus === "confirmed" && (
+                                    <p className="text-info mb-0">
+                                        ● Order Confirmed
+                                    </p>
+                                )}
+
+                                {/* Shipped */}
+                                {order.orderStatus === "shipped" && (
+                                    <p className="text-primary mb-0">
+                                        ● Shipped
+                                    </p>
+                                )}
+
+                                {/* Out for delivery */}
+                                {order.orderStatus === "out_for_delivery" && (
+                                    <p className="text-secondary mb-0">
+                                        ● Out for Delivery
+                                    </p>
+                                )}
+
+                                {/* Delivered */}
+                                {order.orderStatus === "delivered" && (
+                                    <>
+                                        <p className="text-success mb-1">
+                                            ● Delivered
+                                        </p>
+
+                                        <span
+                                            className="text-primary"
+                                            style={{ fontSize: "14px", cursor: "pointer" }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                navigate(`/review/${order._id}`);
+                                            }}
+                                        >
+                                            ★ Rate & Review Product
+                                        </span>
+                                    </>
+                                )}
+
+                                {/* Cancelled */}
+                                {order.orderStatus === "cancelled" && (
+                                    <p className="text-danger mb-0">
+                                        ● Cancelled
+                                    </p>
+                                )}
+
+                                {/* Refund */}
+                                {order.orderStatus === "refund" && (
+                                    <p className="text-danger mb-0">
+                                        ● Refund Completed
+                                    </p>
+                                )}
+
                             </div>
+
 
                         </div>
                     </div>))}

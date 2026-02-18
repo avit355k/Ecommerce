@@ -11,9 +11,11 @@ import {IoMdSwap} from "react-icons/io";
 import ProductZoom from '../../components/ProductZoom';
 import QuantityBox from '../../components/QuantityBox';
 import RelatedProducts from "./Relatedproducts";
+import RecentlyViewed from "./RecentlyViewedProducts";
 
 import API from '../../Services/api';
 import {mycontext} from "../../App";
+
 
 const ProductDetails = () => {
     const {id} = useParams();
@@ -27,6 +29,7 @@ const ProductDetails = () => {
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [selectedAttributes, setSelectedAttributes] = useState({});
     const [quantity, setQuantity] = useState(1);
+    const [recentProducts, setRecentProducts] = useState([]);
 
 
     const [activeTabs, setActiveTabs] = useState(0);
@@ -166,6 +169,60 @@ const ProductDetails = () => {
             alert(error.response?.data?.message || "Failed to add to cart");
         }
     };
+
+    //add product to recetlyViewed
+    useEffect(() => {
+        const addToRecentlyViewed = async () => {
+            try {
+                const token = sessionStorage.getItem("token");
+                if (!token || !product || !selectedVariant) return;
+
+                await API.post(
+                    "/api/recentlyViewed/add",
+                    {
+                        productId: product._id,
+                        variantId: selectedVariant._id
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+            } catch (err) {
+                console.error("Recently viewed error", err);
+            }
+        };
+
+        addToRecentlyViewed();
+
+    }, [product, selectedVariant]);
+
+    //fetch RectlyViewd Products.
+    useEffect(() => {
+        const fetchRecentlyViewed = async () => {
+            try {
+                const token = sessionStorage.getItem("token");
+                if (!token) return;
+
+                const {data} = await API.get("/api/recentlyViewed", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (data.success) {
+                    setRecentProducts(data.data);
+                }
+
+            } catch (err) {
+                console.error("Fetch recently viewed error", err);
+            }
+        };
+
+        fetchRecentlyViewed();
+
+    }, []);
 
     //review array
     const [reviewsArr, setReviewsArr] = useState([
@@ -497,9 +554,10 @@ const ProductDetails = () => {
 
                 <br/>
                 {/* RELATED PRODUCTS */}
-                <RelatedProducts title="Related Products"/>
+                <RelatedProducts title="Related Products" productId={product._id}/>
 
-                <RelatedProducts title="Recently Viewed"/>
+
+                <RecentlyViewed title="Recently Viewed" products={recentProducts}/>
             </div>
         </section>
     )

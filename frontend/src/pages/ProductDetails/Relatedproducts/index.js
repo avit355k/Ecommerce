@@ -1,17 +1,44 @@
-import React from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react';
+import React, {useEffect, useState} from 'react';
+import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { Navigation } from 'swiper/modules';
+import {Navigation} from 'swiper/modules';
+
 import ProductItem from '../../../components/ProductItem';
+import API from "../../../Services/api";
 
 
-const RelatedProducts = (props) => {
+const RelatedProducts = ({title, productId}) => {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchRelatedProducts = async () => {
+            try {
+                if (!productId) return;
+
+                const {data} = await API.get(
+                    `/api/relatedProducts/${productId}`
+                );
+
+                if (data.success) {
+                    setProducts(data.data);
+                }
+            } catch (error) {
+                console.error("Related products error", error);
+            }
+        };
+
+        fetchRelatedProducts();
+
+    }, [productId]);
+
+    if (!products || products.length === 0) return null;
+
     return (
         <>
             <div className="d-flex align-items-center mt-4">
                 <div className="info w-75">
-                    <h3 className="mb-0 hd">{props.title}</h3>
+                    <h3 className="mb-0 hd">{title}</h3>
                 </div>
             </div>
 
@@ -24,34 +51,11 @@ const RelatedProducts = (props) => {
                     modules={[Navigation]}
                     className="mySwiper"
                 >
-                    <SwiperSlide>
-                        <ProductItem />
-                    </SwiperSlide>
-
-                    <SwiperSlide>
-                        <ProductItem />
-                    </SwiperSlide>
-
-                    <SwiperSlide>
-                        <ProductItem />
-                    </SwiperSlide>
-
-                    <SwiperSlide>
-                        <ProductItem />
-                    </SwiperSlide>
-
-                    <SwiperSlide>
-                        <ProductItem />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <ProductItem />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <ProductItem />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <ProductItem />
-                    </SwiperSlide>
+                    {products.map((product) => (
+                        <SwiperSlide key={product._id}>
+                            <ProductItem product={product}/>
+                        </SwiperSlide>
+                    ))}
 
                 </Swiper>
             </div>
@@ -59,4 +63,4 @@ const RelatedProducts = (props) => {
     )
 }
 
-export default RelatedProducts
+export default RelatedProducts;
