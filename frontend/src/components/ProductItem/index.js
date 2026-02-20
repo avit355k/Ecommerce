@@ -20,9 +20,11 @@ const ProductItem = ({product, itemView}) => {
     const navigate = useNavigate();
 
     if (!product) return null;
-    if (!context.wishlistLoaded) return null;
 
-    const isWishlisted = context.wishlistItems.includes(product._id);
+    const isWishlisted =
+        context.isLogin &&
+        context.wishlistItems.includes(product._id);
+
 
     const goToProduct = () => {
         navigate(`/product/${product._id}`);

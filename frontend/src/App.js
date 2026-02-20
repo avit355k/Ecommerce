@@ -17,6 +17,7 @@ import OrderSuccess from './pages/OrderSuccess/OrderSuccess';
 import MyAccount from "./pages/MyAccount";
 import MyOrders from "./pages/MyOrders";
 import OrderDetails from "./pages/OrderDetails";
+import MyWishlist from "./pages/MyWishlist";
 
 
 const mycontext = createContext();
@@ -111,9 +112,10 @@ function App() {
         }
 
         try {
-            await API.post("/api/wishlist/toggle", {productId});
+            await API.post("/api/wishlist/add", {productId});
         } catch (error) {
             console.error("Wishlist update failed:", error);
+            console.log(error);
             setWishlistItems(previousState); // rollback
         }
     };
@@ -139,6 +141,7 @@ function App() {
                     <Route path="/my-account" exact={true} element={<MyAccount/>}/>
                     <Route path="/my-account/orders" exact={true} element={<MyOrders/>}/>
                     <Route path="/my-account/orders/order-details/:id" exact={true} element={<OrderDetails/>}/>
+                    <Route path="/my-account/wishlist" exact={true} element={<MyWishlist/>}/>
                     <Route path="/signIn" exact={true} element={<SignIn/>}/>
                     <Route path="/signUp" exact={true} element={<SignUp/>}/>
                 </Routes>

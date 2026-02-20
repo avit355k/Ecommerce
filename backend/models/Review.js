@@ -12,14 +12,21 @@ const ReviewSchema = new mongoose.Schema(
             ref: "User",
             required: true
         },
-        comments: {type: String, required: true, trim: true},
-        images: [String],
-
+        title: {
+            type: String,
+            trim: true
+        },
+        description: {
+            type: String,
+            required: true,
+            trim: true
+        },
         dateCreated: {
             type: Date,
             default: Date.now,
         },
     }
 );
+ReviewSchema.index({product: 1, user: 1}, {unique: true});
 
 module.exports = mongoose.model('Review', ReviewSchema);

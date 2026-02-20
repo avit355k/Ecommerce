@@ -16,8 +16,10 @@ const ProductModal = ({product, isOpenModal, setIsOpenModal}) => {
     const context = useContext(mycontext);
 
     if (!product) return null;
-    
-    const isWishlisted = context.wishlistItems.includes(product._id);
+
+    const isWishlisted =
+        context.isLogin &&
+        context.wishlistItems.includes(product._id);
 
     return (
         <>
@@ -74,6 +76,7 @@ const ProductModal = ({product, isOpenModal, setIsOpenModal}) => {
                                 className={`btn-round btn-sml actions ${
                                     isWishlisted ? "activeWishlistModal" : ""
                                 }`}
+                                variant="outlined"
                             >
                                 {isWishlisted ? (
                                     <>

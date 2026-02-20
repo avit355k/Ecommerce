@@ -233,6 +233,7 @@ router.get('/product/:productId', async (req, res) => {
         });
     }
 });
+
 //Get Filters for a Category
 router.get("/filters/:slug", async (req, res) => {
     const category = await Category.findOne({slug: req.params.slug, isActive: true});

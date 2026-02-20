@@ -4,6 +4,8 @@ const slugify = require("slugify");
 
 const Product = require("../models/product");
 const Category = require("../models/category");
+const Rating = require("../models/Rating");
+const Review = require("../models/Review");
 
 
 const {uploadMultiple} = require("../middlewares/multer");
@@ -147,6 +149,10 @@ router.delete("/:id", async (req, res) => {
         for (const img of product.images) {
             await deleteImage(img.public_id);
         }
+
+        // delete ratings and reviews
+        await Rating.deleteMany({product: product._id});
+        await Review.deleteMany({product: product._id});
 
         await product.deleteOne();
 

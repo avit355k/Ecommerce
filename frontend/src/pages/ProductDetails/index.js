@@ -6,7 +6,7 @@ import Rating from '@mui/material/Rating';
 import LinearProgress from "@mui/material/LinearProgress";
 
 import {CiHeart} from "react-icons/ci";
-import {IoMdSwap} from "react-icons/io";
+import {IoIosHeart, IoMdSwap} from "react-icons/io";
 
 import ProductZoom from '../../components/ProductZoom';
 import QuantityBox from '../../components/QuantityBox';
@@ -20,7 +20,8 @@ import {mycontext} from "../../App";
 const ProductDetails = () => {
     const {id} = useParams();
 
-    const {setIsLogin, cartData, setCartData} = useContext(mycontext);
+    const context = useContext(mycontext);
+    const {setIsLogin, cartData, setCartData} = context;
 
 
     const [loading, setLoading] = useState(true);
@@ -33,6 +34,11 @@ const ProductDetails = () => {
 
 
     const [activeTabs, setActiveTabs] = useState(0);
+
+    const isWishlisted =
+        context.isLogin &&
+        context.wishlistItems.includes(product?._id);
+
 
     //fetch product details
     useEffect(() => {
@@ -368,9 +374,24 @@ const ProductDetails = () => {
                         </div>
 
                         <div className="d-flex align-items-center mt-5">
-                            <Button className="btn-round btn-sml actions" variant="outlined">
-                                <CiHeart/>&nbsp;Add to Wishlist
+                            <Button
+                                onClick={() => context.toggleWishlist(product._id)}
+                                className={`btn-round btn-sml actions ${
+                                    isWishlisted ? "activeWishlistModal" : ""
+                                }`}
+                                variant="outlined"
+                            >
+                                {isWishlisted ? (
+                                    <>
+                                        <IoIosHeart/> &nbsp; Wishlisted
+                                    </>
+                                ) : (
+                                    <>
+                                        <CiHeart/> &nbsp; Add to Wishlist
+                                    </>
+                                )}
                             </Button>
+
                             <Button className="btn-round btn-sml actions ml-3" variant="outlined">
                                 <IoMdSwap/> &nbsp;Compare
                             </Button>
@@ -563,4 +584,4 @@ const ProductDetails = () => {
     )
 }
 
-export default ProductDetails
+export default ProductDetails;
