@@ -34,6 +34,26 @@ const uploadMultipleImages = async (files, folder = "products") => {
     );
 };
 
+// upload user avatar
+const avatarUploadImage = (file, folder = "Avatar") => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            {folder},
+            (error, result) => {
+                if (result) resolve(
+                    {
+                        url: result.secure_url,
+                        public_id: result.public_id,
+                    }
+                );
+                else reject(error);
+            }
+        );
+
+        streamifier.createReadStream(file.buffer).pipe(stream);
+    });
+};
+
 //deleted images
 const deleteImage = async (public_id) => {
     if (!public_id) return;
@@ -44,5 +64,6 @@ module.exports = {
     cloudinary,
     uploadSingleImage,
     uploadMultipleImages,
+    avatarUploadImage,
     deleteImage,
 };

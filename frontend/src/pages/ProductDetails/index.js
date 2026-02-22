@@ -176,7 +176,7 @@ const ProductDetails = () => {
         }
     };
 
-    //add product to recetlyViewed
+    //add product to recentlyViewed
     useEffect(() => {
         const addToRecentlyViewed = async () => {
             try {
@@ -204,7 +204,7 @@ const ProductDetails = () => {
 
     }, [product, selectedVariant]);
 
-    //fetch RectlyViewd Products.
+    //fetch RecentlyViewed Products.
     useEffect(() => {
         const fetchRecentlyViewed = async () => {
             try {
@@ -230,33 +230,53 @@ const ProductDetails = () => {
 
     }, []);
 
-    //review array
-    const [reviewsArr, setReviewsArr] = useState([
-        {review: "Amazing phone with smooth performance!", rating: 5},
-        {review: "Battery life could have been better.", rating: 3.5},
-        {review: "The camera quality is outstanding.", rating: 4.5},
-    ]);
 
-    const [newReview, setNewReview] = useState("");
-    const [newRating, setNewRating] = useState(0);
+    const [reviewsArr, setReviewsArr] = useState([]);
+    const [reviewLoading, setReviewLoading] = useState(false);
+    const [ratingSummary, setRatingSummary] = useState(null);
+    const [totalReviews, setTotalReviews] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    //  Submit review handler
-    const submitReview = (e) => {
-        e.preventDefault();
-        if (newReview.trim() === "" || newRating === 0) {
-            alert("Please enter review text and rating.");
-            return;
-        }
+    //fetch full review
+    useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                const {data} = await API.get(
+                    `/api/review/full/${id}?page=${currentPage}`
+                );
 
-        const reviewObj = {
-            review: newReview,
-            rating: newRating,
+                if (data) {
+                    if (currentPage === 1) {
+                        setReviewsArr(data.reviews);
+                    } else {
+                        setReviewsArr(prev => [...prev, ...data.reviews]);
+                    }
+
+                    setTotalReviews(data.totalReviews);
+                }
+            } catch (err) {
+                console.error("Review fetch error", err);
+            }
         };
 
-        setReviewsArr([...reviewsArr, reviewObj]);
-        setNewReview("");
-        setNewRating(0);
-    };
+        if (id) fetchReviews();
+    }, [id, currentPage]);
+
+    //Fetch Rating Summary
+    useEffect(() => {
+        const fetchRatingSummary = async () => {
+            try {
+                const {data} = await API.get(`/api/rating/summary/${id}`);
+                if (data) {
+                    setRatingSummary(data);
+                }
+            } catch (err) {
+                console.error("Rating summary error", err);
+            }
+        };
+
+        if (id) fetchRatingSummary();
+    }, [id]);
 
     if (loading) return <p className="text-center mt-5">Loading...</p>;
     if (!product) return <p className="text-center mt-5">Product not found</p>;
@@ -284,8 +304,23 @@ const ProductDetails = () => {
                             </li>
                             <li className='list-inline-item'>
                                 <div className='d-flex align-items-center'>
-                                    <Rating name="read-only" value={5} readOnly size="small" precision={0.5}/>
-                                    <span className='ml-2 cursor'>6 Review</span>
+                                    <Rating
+                                        className="mt-2 mb-2"
+                                        name="read-only"
+                                        value={Number(product.averageRating) || 0}
+                                        size="small"
+                                        readOnly
+                                        precision={0.5}
+                                        sx={{
+                                            color:
+                                                product.averageRating <= 2
+                                                    ? "error.main"
+                                                    : product.averageRating === 3
+                                                        ? "warning.main"
+                                                        : "success.main"
+                                        }}
+                                    />
+                                    <span className='ml-2 cursor'>{product.numReviews || 0} Review</span>
                                 </div>
                             </li>
                         </ul>
@@ -424,7 +459,7 @@ const ProductDetails = () => {
                                     className={activeTabs === 2 ? "active" : ""}
                                     onClick={() => setActiveTabs(2)}
                                 >
-                                    Review (6)
+                                    Review ({product.numReviews})
                                 </Button>
                             </li>
                         </ul>
@@ -474,50 +509,38 @@ const ProductDetails = () => {
                                                         />
                                                     </div>
                                                     <span className="text-g d-block text-center font-weight-bold">
-                                                        User {index + 1}
+                                                       {item.user?.name}
                                                     </span>
                                                 </div>
 
                                                 <div className="info pl-5">
                                                     <div className="d-flex align-items-center w-100">
-                                                        <h5 className="text-light">25/08/2025</h5>
+                                                        <h5 className="">{new Date(item.dateCreated).toLocaleDateString()}</h5>
                                                         <div className="ml-auto">
                                                             <Rating
                                                                 name="half-rating-read"
-                                                                value={item.rating}
+                                                                value={item.stars}
                                                                 precision={0.5}
                                                                 readOnly
                                                             />
                                                         </div>
                                                     </div>
-                                                    <p>{item.review}</p>
+                                                    <h6>{item.title}</h6>
+                                                    <p>{item.description}</p>
                                                 </div>
                                             </div>
                                         ))}
 
-                                        {/* ADD REVIEW FORM */}
-                                        <form className="reviewForm mt-4" onSubmit={submitReview}>
-                                            <h4>Add a review</h4>
-                                            <Rating
-                                                name="user-rating"
-                                                value={newRating}
-                                                precision={0.5}
-                                                onChange={(e, newValue) => setNewRating(newValue)}
-                                            />
-                                            <textarea
-                                                className="form-control mt-2"
-                                                placeholder="Write your review..."
-                                                value={newReview}
-                                                onChange={(e) => setNewReview(e.target.value)}
-                                            ></textarea>
+                                        {/* See All Reviews*/}
+                                        {totalReviews > reviewsArr.length && (
                                             <Button
                                                 type="submit"
-                                                className="btn-blue btn-round mt-3"
-                                                variant="contained"
+                                                className="mt-3 btn-red"
+                                                variant="outlined"
                                             >
-                                                Submit Review
+                                                See All Reviews
                                             </Button>
-                                        </form>
+                                        )}
                                     </div>
 
                                     {/* RIGHT SIDE: Rating Summary */}
@@ -527,8 +550,14 @@ const ProductDetails = () => {
                                         <div className="rating-summary">
                                             <h4>Customer Rating</h4>
                                             <div className="overall-rating d-flex align-items-center">
-                                                <Rating value={4.8} precision={0.1} readOnly/>
-                                                <span className="ml-2">4.8 out of 5</span>
+                                                <Rating
+                                                    value={ratingSummary?.averageRating || 0}
+                                                    precision={0.1}
+                                                    readOnly
+                                                />
+                                                <span className="ml-2">
+                                                  {ratingSummary?.averageRating?.toFixed(1) || 0} out of 5
+                                                </span>
                                             </div>
 
                                             <ul className="rating-bars list-unstyled mt-3">
@@ -537,13 +566,7 @@ const ProductDetails = () => {
                                                         <span className="star-label">{star} star</span>
                                                         <LinearProgress
                                                             variant="determinate"
-                                                            value={
-                                                                star === 5 ? 75 :
-                                                                    star === 4 ? 50 :
-                                                                        star === 3 ? 55 :
-                                                                            star === 2 ? 35 :
-                                                                                25
-                                                            }
+                                                            value={ratingSummary?.starPercentages?.[star] || 0}
                                                             sx={{
                                                                 flex: 1,
                                                                 height: 10,
@@ -555,11 +578,7 @@ const ProductDetails = () => {
                                                             }}
                                                         />
                                                         <span className="percent-label">
-                                                            {star === 5 ? "75%" :
-                                                                star === 4 ? "50%" :
-                                                                    star === 3 ? "55%" :
-                                                                        star === 2 ? "35%" :
-                                                                            "25%"}
+                                                            {ratingSummary?.starPercentages?.[star] || 0}%
                                                         </span>
                                                     </li>
                                                 ))}

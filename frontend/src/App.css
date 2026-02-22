@@ -21,7 +21,7 @@ body {
 }
 
 .text-light {
-    color: rgba(0, 0, 0, 0.9) !important;
+    color: rgba(0, 0, 0, 0.99) !important;
 }
 
 .text-red {
@@ -245,6 +245,48 @@ body {
     opacity: 0.8;
 }
 
+{ /*Search Suggetions Dropdown */
+}
+.search-dropdown {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-radius: 8px;
+    max-height: 350px;
+    overflow-y: auto;
+    z-index: 1000;
+    border: 1px solid #eee;
+}
+
+.search-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.search-item:hover {
+    background-color: #f5f5f5;
+}
+
+.search-item img {
+    border-radius: 6px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.search-item .info h6 {
+    font-size: 14px;
+    margin: 0;
+}
+
+.search-item .info span {
+    font-size: 12px;
+}
+
+{ /*header  part3 */
+}
 .header .part3 {
     display: flex;
     align-items: center;
@@ -2188,4 +2230,116 @@ footer .linkWrap ul li a:hover {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+{ /*Search Result page*/
+}
+.search-result-page {
+    padding: 45px 0;
+}
+
+.search-result-page .SearchListing {
+    gap: 20px;
+}
+
+.search-result-page .SearchListing .filterTab {
+    width: 20%;
+    flex: 0 0 20%;
+}
+
+.search-result-page .SearchListing .filterTab .sortingBox {
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    gap: 8px;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 15px;
+    margin-top: 1px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 7px;
+}
+
+.search-result-page .SearchListing .filterTab .sortSelect {
+    min-width: unset;
+}
+
+.search-result-page .SearchListing .filterTab .sortSelect .MuiSelect-select {
+    padding: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #000;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.search-result-page .SearchListing .filterTab .sortSelect svg {
+    font-size: 14px;
+    margin-left: 2px;
+}
+
+.search-result-page .SearchListing .filterTab .sticky {
+    position: sticky;
+    top: 10px;
+    z-index: 10;
+}
+
+.search-result-page .SearchListing .filterTab .filterBox {
+    margin-bottom: 20px;
+}
+
+.search-result-page .SearchListing .filterTab .filterBox h6 {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.search-result-page .SearchListing .filterTab .filterBox .filterBoxContent {
+    padding-left: 10px;
+    max-height: 180px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.search-result-page .SearchListing .filterTab .filterBoxContent::-webkit-scrollbar {
+    width: 5px !important;
+}
+
+.search-result-page .SearchListing .filterTab .filterBoxContent ul li {
+    list-style-type: none;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.css-vuhw6e-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root {
+    padding: 2px !important;
+}
+
+.css-rizt0-MuiTypography-root {
+    font-size: 13px !important;
+}
+
+.css-12xagqm-MuiSwitchBase-root {
+    width: 25px !important;
+    height: 20px !important;
+}
+
+.range-slider .range-slider__thumb {
+    background: #ff0000 !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.range-slider .range-slider__range {
+    background: #ea2b0f !important;
+}
+
+.search-result-page .SearchListing .content-right {
+    width: 78%;
+    flex: 0 0 78%;
+    padding-left: 35px;
+}
+
 

@@ -19,6 +19,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    avatar: {
+        url: {
+            type: String,
+            default: "https://res.cloudinary.com/dw2gks8uv/image/upload/v1771607674/user-png_vhg2dz.png"
+        },
+        public_id: {
+            type: String,
+            default: ""
+        }
+    },
     isAdmin: {
         type: Boolean,
         default: false

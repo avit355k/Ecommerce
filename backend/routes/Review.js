@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 
 const Review = require("../models/Review");
+const Rating = require("../models/Rating");
 const Product = require("../models/product");
 const {authenticateToken} = require("../Auth/authUser");
 
@@ -63,23 +65,82 @@ router.post("/add", authenticateToken, async (req, res) => {
 });
 
 // Get All Reviews of a Product
-router.get("/product/:productId", async (req, res) => {
+router.get("/full/:productId", async (req, res) => {
     try {
         const {productId} = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).json({message: "Invalid product id"});
+        }
+
         const page = parseInt(req.query.page) || 1;
         const limit = 5;
         const skip = (page - 1) * limit;
 
-        const product = await Product.findById(productId);
-        if (!product) {
-            return res.status(404).json({message: "Product not found"});
-        }
+        const reviews = await Review.aggregate([
+            {
+                $match: {
+                    product: new mongoose.Types.ObjectId(productId)
+                }
+            },
 
-        const reviews = await Review.find({product: productId})
-            .populate("user", "name")
-            .sort({dateCreated: -1})
-            .skip(skip)
-            .limit(limit);
+            // Join User
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "user",
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            {$unwind: "$user"},
+
+            // Join Rating (same product + same user)
+            {
+                $lookup: {
+                    from: "ratings",
+                    let: {userId: "$user._id", productId: "$product"},
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        {$eq: ["$user", "$$userId"]},
+                                        {$eq: ["$product", "$$productId"]}
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: "ratingData"
+                }
+            },
+
+            {
+                $unwind: {
+                    path: "$ratingData",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+
+            {
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    description: 1,
+                    dateCreated: 1,
+                    "user._id": 1,
+                    "user.name": 1,
+                    stars: {
+                        $ifNull: ["$ratingData.stars", 0]
+                    }
+                }
+            },
+
+            {$sort: {dateCreated: -1}},
+            {$skip: skip},
+            {$limit: limit}
+        ]);
 
         const totalReviews = await Review.countDocuments({product: productId});
 
@@ -94,8 +155,7 @@ router.get("/product/:productId", async (req, res) => {
         res.status(500).json({error: error.message});
     }
 });
-
-//  Get Logged-in User’s Review for a Product
+// Get Logged-in User’s Review for a Product
 router.get("/user/:productId", authenticateToken, async (req, res) => {
     try {
         const review = await Review.findOne({

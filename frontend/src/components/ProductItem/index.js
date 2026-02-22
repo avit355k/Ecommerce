@@ -78,7 +78,22 @@ const ProductItem = ({product, itemView}) => {
                         {product.countInStock > 0 ? "In Stock" : "Out of Stock"}
                     </span>
 
-                    <Rating className="mt-2 mb-2" name="read-only" value={5} size="small" readOnly precision={0.5}/>
+                    <Rating
+                        className="mt-2 mb-2"
+                        name="read-only"
+                        value={Number(product.averageRating) || 0}
+                        size="small"
+                        readOnly
+                        precision={0.5}
+                        sx={{
+                            color:
+                                product.averageRating <= 2
+                                    ? "error.main"
+                                    : product.averageRating === 3
+                                        ? "warning.main"
+                                        : "success.main"
+                        }}
+                    />
 
                     <div className="d-flex">
                         <span className="price">₹ {product.price}</span>

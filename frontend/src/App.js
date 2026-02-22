@@ -18,6 +18,7 @@ import MyAccount from "./pages/MyAccount";
 import MyOrders from "./pages/MyOrders";
 import OrderDetails from "./pages/OrderDetails";
 import MyWishlist from "./pages/MyWishlist";
+import SearchResult from "./pages/SearchResult";
 
 
 const mycontext = createContext();
@@ -135,6 +136,7 @@ function App() {
                     <Route path="/" exact={true} element={<Home/>}/>
                     <Route path="/category/:slug" exact={true} element={<Listings/>}/>
                     <Route path="/product/:id" exact={true} element={<ProductDetails/>}/>
+                    <Route path="/search" element={<SearchResult/>}/>
                     <Route path="/cart" exact={true} element={<Cart/>}/>
                     <Route path="/checkout" exact={true} element={<Checkout/>}/>
                     <Route path="/order-success" element={<OrderSuccess/>}/>

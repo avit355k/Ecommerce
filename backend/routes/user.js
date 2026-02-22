@@ -5,6 +5,9 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const {authenticateToken} = require("../Auth/authUser");
+const {uploadSingle} = require("../middlewares/multer");
+const {avatarUploadImage, deleteImage} = require("../utils/cloudinary");
+
 
 //sign up
 router.post('/signup', async (req, res) => {
@@ -173,6 +176,45 @@ router.put('/:id', authenticateToken, async (req, res) => {
         return res.status(500).json({success: false, message: "Internal Server Error"});
     }
 })
+
+//add edit avatar
+router.put('/:id/avatar', authenticateToken, uploadSingle, async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({success: false, message: "User not found"});
+        }
+
+        if (!req.file) {
+            return res.status(400).json({success: false, message: "No image uploaded"});
+        }
+
+        // delete old image if exists
+        if (user.avatar?.public_id) {
+            await deleteImage(user.avatar.public_id);
+        }
+
+        const uploaded = await avatarUploadImage(req.file, "Avatar");
+
+        user.avatar = {
+            url: uploaded.url,
+            public_id: uploaded.public_id
+        };
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Avatar updated successfully",
+            avatar: user.avatar
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({success: false, message: "Internal Server Error"});
+    }
+});
 
 //delete user by id
 router.delete('/:id', authenticateToken, async (req, res) => {

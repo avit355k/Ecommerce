@@ -87,19 +87,74 @@ router.get("/user/:productId", authenticateToken, async (req, res) => {
 });
 
 // Get Rating Summary
-router.get("/:productId", async (req, res) => {
+router.get("/summary/:productId", async (req, res) => {
     try {
-        const product = await Product.findById(req.params.productId)
-            .select("averageRating");
+        const {productId} = req.params;
 
-        if (!product) {
-            return res.status(404).json({message: "Product not found"});
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).json({message: "Invalid product id"});
         }
 
-        res.json(product);
+        const stats = await Rating.aggregate([
+            {
+                $match: {
+                    product: new mongoose.Types.ObjectId(productId)
+                }
+            },
+            {
+                $group: {
+                    _id: "$stars",
+                    count: {$sum: 1}
+                }
+            }
+        ]);
 
-    } catch (err) {
-        res.status(500).json({error: err.message});
+        // Total Ratings
+        const totalRatings = stats.reduce((acc, item) => acc + item.count, 0);
+
+        // Initialize all stars to 0
+        const starCounts = {
+            5: 0,
+            4: 0,
+            3: 0,
+            2: 0,
+            1: 0
+        };
+
+        // Fill actual counts
+        stats.forEach(item => {
+            starCounts[item._id] = item.count;
+        });
+
+        // Calculate average rating
+        const averageRating = totalRatings > 0
+            ? (
+                Object.entries(starCounts).reduce(
+                    (acc, [star, count]) =>
+                        acc + Number(star) * count,
+                    0
+                ) / totalRatings
+            ).toFixed(1)
+            : 0;
+
+        // Calculate percentages
+        const starPercentages = {};
+        Object.keys(starCounts).forEach(star => {
+            starPercentages[star] = totalRatings
+                ? Number(((starCounts[star] / totalRatings) * 100).toFixed(1))
+                : 0;
+        });
+
+        res.json({
+            productId,
+            averageRating: Number(averageRating),
+            totalRatings,
+            starCounts,
+            starPercentages
+        });
+
+    } catch (error) {
+        res.status(500).json({error: error.message});
     }
 });
 
