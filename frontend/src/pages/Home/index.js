@@ -1,8 +1,5 @@
 import {useEffect, useState} from "react";
 
-import Button from "@mui/material/Button";
-import {FaAnglesRight} from "react-icons/fa6";
-
 import {Swiper, SwiperSlide} from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
@@ -18,6 +15,7 @@ const Home = () => {
 
     const [newProducts, setNewProducts] = useState([]);
     const [topDeals, setTopDeals] = useState([]);
+    const [featuredProducts, setFeaturedProducts] = useState([]);
 
     //fetch top deals products
     useEffect(() => {
@@ -52,6 +50,23 @@ const Home = () => {
         fetchNewProducts();
     }, []);
 
+    //fetch featured products
+    useEffect(() => {
+        const fetchFeaturedProducts = async () => {
+            try {
+                const {data} = await API.get("/api/featuredProducts/");
+
+                if (data.success) {
+                    setFeaturedProducts(data.data);
+                }
+            } catch (error) {
+                console.error("To deals Products error", error);
+            }
+        };
+
+        fetchFeaturedProducts();
+    }, []);
+
     return (
         <>
             <Homebanner/>
@@ -82,11 +97,6 @@ const Home = () => {
                                     <h3 className="mb-1 hd">Top Deals For You</h3>
                                     <p className="">Do not miss the current offers</p>
                                 </div>
-
-                                <Button className="viewAllBtn ml-auto">
-                                    View All
-                                    <FaAnglesRight/>
-                                </Button>
                             </div>
 
                             <div className="product_row w-100 mt-2">
@@ -112,12 +122,6 @@ const Home = () => {
                                     <h3 className="mb-1 hd">New Products</h3>
                                     <p className="">New products with updated stocks.</p>
                                 </div>
-
-                                <Button className="viewAllBtn ml-auto">
-                                    View All
-                                    <FaAnglesRight/>
-                                </Button>
-
                             </div>
 
                             <div className="product_row w-100 mt-2">
@@ -138,14 +142,15 @@ const Home = () => {
                             </div>
 
                             <div className="product_row product_row2 w-100 mt-4 d-flex">
-                                <ProductItem/>
-                                <ProductItem/>
-                                <ProductItem/>
-                                <ProductItem/>
-                                <ProductItem/>
-                                <ProductItem/>
-                                <ProductItem/>
-                                <ProductItem/>
+                                <div className="info w-75">
+                                    <h3 className="mb-1 hd">Featured Products</h3>
+                                    <p>top featured products right now</p>
+                                </div>
+
+                                {featuredProducts.map(product => (
+                                    <ProductItem key={product._id} product={product}/>
+                                ))
+                                }
                             </div>
 
                             <div className="d-flex mt-4 mb-5 bannerSec">

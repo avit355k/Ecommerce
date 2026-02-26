@@ -232,7 +232,6 @@ const ProductDetails = () => {
 
 
     const [reviewsArr, setReviewsArr] = useState([]);
-    const [reviewLoading, setReviewLoading] = useState(false);
     const [ratingSummary, setRatingSummary] = useState(null);
     const [totalReviews, setTotalReviews] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
@@ -504,7 +503,7 @@ const ProductDetails = () => {
                                                 <div className="image">
                                                     <div className="rounded-circle">
                                                         <img
-                                                            src="https://secure.gravatar.com/avatar/6b9c65833b765410a0a2b10d37a4dd3e5e552d84ebf8b50a540e389ad270fea8?s=60&d=mm&r=g"
+                                                            src={item.user?.avatar?.url}
                                                             alt="user"
                                                         />
                                                     </div>

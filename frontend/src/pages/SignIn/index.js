@@ -13,6 +13,12 @@ import {faFacebook} from '@fortawesome/free-brands-svg-icons';
 
 import API from '../../Services/api';
 
+import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
+import {firebaseApp} from "../../firebase";
+
+const auth = getAuth(firebaseApp);
+const googleProvider = new GoogleAuthProvider();
+
 const SignIn = () => {
     const {setIsHeaderFooterVisible} = useContext(mycontext);
     const {setIsLogin} = useContext(mycontext);
@@ -61,6 +67,38 @@ const SignIn = () => {
             alert(error?.response?.data?.message || 'Login failed');
         } finally {
             setLoading(false);
+        }
+    };
+
+    //google signin
+    const signInWithGoogle = async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+
+            const fields = {
+                name: user.displayName,
+                email: user.email,
+                password: null,
+                avatar: user.photoURL,
+                phone: user.phoneNumber,
+            };
+
+            const {data} = await API.post("/api/user/authWithGoogle", fields);
+
+            if (data.success) {
+                sessionStorage.setItem("token", data.token);
+                sessionStorage.setItem("_id", data.user._id);
+                sessionStorage.setItem("user", JSON.stringify(data.user));
+
+                setIsLogin(true);
+                alert("Google Login successful");
+                navigate("/");
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert("Google login failed");
         }
     };
 
@@ -140,7 +178,12 @@ const SignIn = () => {
 
                         <ul className='list list-inline mt-3 mb-3 socials text-center'>
                             <li className='list-inline-item mx-2'>
-                                <Link to="#"><FcGoogle size={40}/></Link>
+                                <Button
+                                    variant="outlined"
+                                    onClick={signInWithGoogle}
+                                >
+                                    <FcGoogle size={40}/>
+                                </Button>
                             </li>
                             <li className='list-inline-item mx-2'>
                                 <Link to="#"><FontAwesomeIcon icon={faFacebook} size="2x"/></Link>

@@ -131,6 +131,7 @@ router.get("/full/:productId", async (req, res) => {
                     dateCreated: 1,
                     "user._id": 1,
                     "user.name": 1,
+                    "user.avatar.url": 1,
                     stars: {
                         $ifNull: ["$ratingData.stars", 0]
                     }
@@ -155,6 +156,7 @@ router.get("/full/:productId", async (req, res) => {
         res.status(500).json({error: error.message});
     }
 });
+
 // Get Logged-in User’s Review for a Product
 router.get("/user/:productId", authenticateToken, async (req, res) => {
     try {
