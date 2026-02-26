@@ -19,6 +19,9 @@ import CityDropDown from "../CityDropDown";
 const Header = () => {
     const {cityList, isLogin, cartData, setCartData} = useContext(mycontext);
 
+    const storedUser = sessionStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+
     // Fetch cart
     useEffect(() => {
         if (!isLogin) {
@@ -90,7 +93,7 @@ const Header = () => {
                                                     <FaUser/>
                                                 </span>
 
-                                                <span className="user-name">AVIJIT</span>
+                                                <span className="user-name"> {user?.name?.split(" ")[0]}</span>
 
                                                 <FaChevronDown className="dropdown-icon"/>
                                             </Button>

@@ -49,6 +49,7 @@ const SignIn = () => {
             if (data.success) {
                 // store token
                 sessionStorage.setItem('token', data.token);
+                sessionStorage.setItem("_id", data.user._id);
                 sessionStorage.setItem('user', JSON.stringify(data.user));
 
                 alert('Login successful');

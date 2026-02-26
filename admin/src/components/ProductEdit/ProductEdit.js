@@ -2,6 +2,9 @@ import React, {useEffect, useState} from "react";
 import {Button, MenuItem, Select} from "@mui/material";
 import {IoCloseSharp, IoCloudUploadSharp} from "react-icons/io5";
 import {PiImageBrokenThin} from "react-icons/pi";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+
 import {LazyLoadImage} from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import API from "../../services/api";
@@ -21,7 +24,7 @@ const ProductEdit = ({product, onClose, onSuccess}) => {
     const [newImages, setNewImages] = useState([]);
     const [removedImages, setRemovedImages] = useState([]);
 
-    /* ================= LOAD PRODUCT ================= */
+    /* Load Product */
     useEffect(() => {
         if (!product) return;
 
@@ -45,20 +48,40 @@ const ProductEdit = ({product, onClose, onSuccess}) => {
         setRemovedImages([]);
     }, [product]);
 
-    /* ================= FETCH CATEGORIES ================= */
+    // Fetch categories from API
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchAllCategories = async () => {
             try {
-                const res = await API.get("/api/category/");
-                setCategories(Array.isArray(res.data.data) ? res.data.data : []);
+                let allCategories = [];
+                let currentPage = 1;
+                let totalPages = 1;
+
+                do {
+                    const res = await API.get(`/api/category?page=${currentPage}`);
+
+                    if (res.data && Array.isArray(res.data.data)) {
+                        allCategories = [...allCategories, ...res.data.data];
+                        totalPages = res.data.totalPages;
+                        currentPage++;
+                    } else {
+                        break;
+                    }
+
+                } while (currentPage <= totalPages);
+
+                setCategories(allCategories);
+
             } catch (error) {
-                console.error("Category fetch failed", error);
+                console.error("Error fetching categories:", error);
+                setCategories([]);
             }
         };
-        fetchCategories();
+
+        fetchAllCategories();
     }, []);
 
-    /* ================= SPECIFICATIONS ================= */
+
+    /* SPECIFICATIONS  */
     const addSpecification = () => {
         setSpecifications([...specifications, {field: "", value: ""}]);
     };
@@ -69,7 +92,7 @@ const ProductEdit = ({product, onClose, onSuccess}) => {
         setSpecifications(updated);
     };
 
-    /* ================= IMAGE HANDLERS ================= */
+    /* IMAGE HANDLERS  */
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
         setNewImages(prev => [...prev, ...files]);
@@ -84,7 +107,7 @@ const ProductEdit = ({product, onClose, onSuccess}) => {
         setRemovedImages(prev => [...prev, img.public_id]);
     };
 
-    /* ================= SUBMIT UPDATE ================= */
+    /*  SUBMIT UPDATE */
     const handleSubmit = async () => {
         try {
             const formData = new FormData();
@@ -160,21 +183,18 @@ const ProductEdit = ({product, onClose, onSuccess}) => {
             <div className="row mb-3">
                 <div className="col">
                     <h6>CATEGORY</h6>
-                    <Select
-                        value={categoryVal}
-                        onChange={(e) => setCategoryVal(e.target.value)}
-                        fullWidth
-                        displayEmpty
-                    >
-                        <MenuItem value="">
-                            <em>Select Category</em>
-                        </MenuItem>
-                        {categories.map(cat => (
-                            <MenuItem key={cat._id} value={cat._id}>
-                                {cat.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
+                    <Autocomplete
+                        options={categories}
+                        getOptionLabel={(option) => option.name || ""}
+                        value={categories.find(cat => cat._id === categoryVal) || null}
+                        onChange={(event, newValue) => {
+                            setCategoryVal(newValue ? newValue._id : "");
+                        }}
+                        isOptionEqualToValue={(option, value) => option._id === value._id}
+                        renderInput={(params) => (
+                            <TextField {...params} label="Select Category"/>
+                        )}
+                    />
                 </div>
 
                 <div className="col">

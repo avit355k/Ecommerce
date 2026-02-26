@@ -40,12 +40,14 @@ const Checkout = () => {
             const defaultAddress = data.find(a => a.isDefault);
             if (defaultAddress) {
                 setSelectedAddress(defaultAddress._id);
+                console.log(data);
             } else if (data.length > 0) {
                 setSelectedAddress(data[0]._id);
             }
 
         } catch (error) {
             console.log(error);
+            console.error(error);
         }
     };
 
@@ -171,7 +173,7 @@ const Checkout = () => {
                 console.log(response.error);
                 alert("Payment failed. Please try again.");
             });
-            
+
             paymentObject.open();
         } catch (error) {
             console.log("Payment Error:", error);

@@ -5,6 +5,9 @@ import Chip from "@mui/material/Chip";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from '@mui/material/Button';
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+
 import {IoCloseSharp, IoCloudUploadSharp} from "react-icons/io5";
 import {PiImageBrokenThin} from "react-icons/pi";
 import API from "../../services/api";
@@ -40,23 +43,34 @@ const Productupload = () => {
 
     // Fetch categories from API
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchAllCategories = async () => {
             try {
-                const res = await API.get("/api/category/");
-                console.log("Fetched categories:", res.data);
+                let allCategories = [];
+                let currentPage = 1;
+                let totalPages = 1;
 
-                if (res.data && Array.isArray(res.data.data)) {
-                    setCategories(res.data.data); // Use the correct array
-                } else {
-                    console.error("Unexpected categories format:", res.data);
-                    setCategories([]);
-                }
+                do {
+                    const res = await API.get(`/api/category?page=${currentPage}`);
+
+                    if (res.data && Array.isArray(res.data.data)) {
+                        allCategories = [...allCategories, ...res.data.data];
+                        totalPages = res.data.totalPages;
+                        currentPage++;
+                    } else {
+                        break;
+                    }
+
+                } while (currentPage <= totalPages);
+
+                setCategories(allCategories);
+
             } catch (error) {
                 console.error("Error fetching categories:", error);
                 setCategories([]);
             }
         };
-        fetchCategories();
+
+        fetchAllCategories();
     }, []);
 
     // Add a new specification input
@@ -182,21 +196,17 @@ const Productupload = () => {
                             <div className="row mb-3">
                                 <div className="col">
                                     <h6>CATEGORY</h6>
-                                    <Select
-                                        value={categoryVal}
-                                        onChange={(e) => setCategoryVal(e.target.value)}
-                                        displayEmpty
-                                        fullWidth
-                                    >
-                                        <MenuItem value="">
-                                            <em>Select Category</em>
-                                        </MenuItem>
-                                        {Array.isArray(categories) && categories.map(cat => (
-                                            <MenuItem key={cat._id} value={cat._id}>
-                                                {cat.name}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
+                                    <Autocomplete
+                                        options={categories}
+                                        getOptionLabel={(option) => option.name || ""}
+                                        value={categories.find(cat => cat._id === categoryVal) || null}
+                                        onChange={(event, newValue) => {
+                                            setCategoryVal(newValue ? newValue._id : "");
+                                        }}
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Select Category"/>
+                                        )}
+                                    />
 
                                 </div>
 

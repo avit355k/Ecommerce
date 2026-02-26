@@ -6,10 +6,13 @@ const AccountDropdown = () => {
     const {setIsLogin} = useContext(mycontext);
     const navigate = useNavigate();
 
+    const storedUser = sessionStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+
     const handleLogout = () => {
         // remove auth data
         sessionStorage.removeItem("token");
-        sessionStorage.removeItem("user"); // if you store user info
+        sessionStorage.removeItem("user");
 
         // update context
         setIsLogin(false);
@@ -23,7 +26,7 @@ const AccountDropdown = () => {
             <div className="account-header">
                 <Link to="/my-account">
                     <h6 className="account-title">My Account</h6>
-                    <p>9641404096</p>
+                    <p>{user?.phone}</p>
                 </Link>
             </div>
 
