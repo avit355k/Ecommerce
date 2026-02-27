@@ -79,8 +79,7 @@ const SignIn = () => {
             const fields = {
                 name: user.displayName,
                 email: user.email,
-                password: null,
-                avatar: user.photoURL,
+                avatar: user.photoURL || "https://res.cloudinary.com/dw2gks8uv/image/upload/v1771607674/user-png_vhg2dz.png",
                 phone: user.phoneNumber,
             };
 
@@ -171,7 +170,7 @@ const SignIn = () => {
                         </Button>
 
                         <p className='txt text-center mt-3'>
-                            Not Registered? <Link to="/signUp" className="border-effect cursor">Sign Up</Link>
+                            Not Registered? <Link to="/signUp" className=" cursor">Sign Up</Link>
                         </p>
 
                         <h5 className='mt-3 text-center font-weight-bold'>Or continue with social account</h5>
@@ -179,14 +178,15 @@ const SignIn = () => {
                         <ul className='list list-inline mt-3 mb-3 socials text-center'>
                             <li className='list-inline-item mx-2'>
                                 <Button
-                                    variant="outlined"
                                     onClick={signInWithGoogle}
                                 >
-                                    <FcGoogle size={40}/>
+                                    <FcGoogle size={35}/>
                                 </Button>
                             </li>
                             <li className='list-inline-item mx-2'>
-                                <Link to="#"><FontAwesomeIcon icon={faFacebook} size="2x"/></Link>
+                                <Button>
+                                    <FontAwesomeIcon icon={faFacebook} size="2x"/>
+                                </Button>
                             </li>
                         </ul>
                     </form>

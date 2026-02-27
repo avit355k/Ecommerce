@@ -79,6 +79,79 @@ router.post('/signin', async (req, res) => {
     }
 });
 
+//Sign-in with Google
+router.post('/authWithGoogle', async (req, res) => {
+    try {
+        const {name, email, avatar} = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: "Email is required"
+            });
+        }
+
+        //Check if user already exists with this email
+        let user = await User.findOne({email});
+
+        if (user) {
+            // USER ALREADY EXISTS (normal signup user)
+            // Just login with existing details
+            const token = jwt.sign(
+                {email: user.email, id: user._id},
+                process.env.Jwt_key,
+                {expiresIn: "12h"}
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: "Logged in with existing account",
+                user,
+                token
+            });
+        }
+
+        // New Google user → Create account
+
+        // Generate random password
+        const randomPassword = await bcrypt.hash(
+            Math.random().toString(36).slice(-8),
+            10
+        );
+
+        const newUser = await User.create({
+            name: name,
+            email: email,
+            phone: undefined, // user can edit later
+            password: randomPassword,
+            avatar: {
+                url: avatar || "https://res.cloudinary.com/dw2gks8uv/image/upload/v1771607674/user-png_vhg2dz.png",
+                public_id: ""
+            }
+        });
+
+        const token = jwt.sign(
+            {email: newUser.email, id: newUser._id},
+            process.env.Jwt_key,
+            {expiresIn: "12h"}
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Google account created successfully",
+            user: newUser,
+            token
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+});
+
 //get all users
 router.get('/', authenticateToken, async (req, res) => {
     try {
