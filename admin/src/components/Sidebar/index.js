@@ -6,6 +6,7 @@ import {BsMenuButtonFill} from "react-icons/bs";
 import {AiFillProduct} from "react-icons/ai";
 import {FaCartArrowDown, FaUser} from "react-icons/fa";
 import {SiRazorpay, SiSinglestore} from "react-icons/si";
+import {LuGalleryThumbnails} from "react-icons/lu";
 import {Link} from 'react-router-dom';
 
 const Sidebar = () => {
@@ -96,6 +97,22 @@ const Sidebar = () => {
                         <div className={`submenuWrapper ${activeTab === 5 ? 'colapse' : 'colapsed'}`}>
                             <ul className='submenu'>
                                 <li><Link to="/payment-details">Payment Details</Link></li>
+
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <Button className={`w-100 ${activeTab === 4 ? 'active' : ''}`}
+                                onClick={() => toggleSubmenu(4)}>
+                            <span className='icon'><LuGalleryThumbnails/></span>
+                            Banners
+                            <span className='arrow'><FaAngleRight/></span>
+                        </Button>
+                        <div className={`submenuWrapper ${activeTab === 4 ? 'colapse' : 'colapsed'}`}>
+                            <ul className='submenu'>
+                                <li><Link to="/banner/add">Add Banner</Link></li>
+                                <li><Link to="/banner/list">Banner List</Link></li>
 
                             </ul>
                         </div>

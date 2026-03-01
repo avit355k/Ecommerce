@@ -18,6 +18,8 @@ import ProductList from "./pages/ProductList/ProductList";
 import VarientAdd from "./pages/ProductVarientAdd/VarientAdd";
 import VarientList from './pages/ProductVarientList/VarientList';
 import OrderList from "./pages/OrderList";
+import BannerAdd from "./pages/BannerAdd";
+import BannerList from "./pages/BannerList";
 
 const Mycontext = createContext();
 
@@ -70,6 +72,8 @@ function App() {
                             <Route path="/product/varient/:productId/add" exact={true} element={<VarientAdd/>}/>
                             <Route path="/product/varient/list" exact={true} element={<VarientList/>}/>
                             <Route path="/Orderlist" exact={true} element={<OrderList/>}/>
+                            <Route path="/banner/add" exact={true} element={<BannerAdd/>}/>
+                            <Route path="/banner/list" exact={true} element={<BannerList/>}/>
                         </Routes>
                     </div>
                 </div>

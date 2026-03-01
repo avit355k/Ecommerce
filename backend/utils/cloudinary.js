@@ -54,6 +54,25 @@ const avatarUploadImage = (file, folder = "Avatar") => {
     });
 };
 
+// upload banner Image
+const uploadBanner = (file, folder = "banners") => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            {folder},
+            (error, result) => {
+                if (result) resolve(
+                    {
+                        url: result.secure_url,
+                        public_id: result.public_id,
+                    }
+                );
+                else reject(error);
+            }
+        );
+        streamifier.createReadStream(file.buffer).pipe(stream);
+    });
+}
+
 //deleted images
 const deleteImage = async (public_id) => {
     if (!public_id) return;
@@ -65,5 +84,6 @@ module.exports = {
     uploadSingleImage,
     uploadMultipleImages,
     avatarUploadImage,
+    uploadBanner,
     deleteImage,
 };
