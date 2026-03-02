@@ -66,18 +66,25 @@ router.post("/upload", uploadSingle, async (req, res) => {
 //get all banners
 router.get("/", async (req, res) => {
     try {
-        const {page = 1, limit = 10} = req.query;
+        const {page = 1, limit = 10, position} = req.query;
 
         const pageNumber = parseInt(page);
         const limitNumber = parseInt(limit);
 
         const skip = (pageNumber - 1) * limitNumber;
 
-        // Total count
-        const total = await Banner.countDocuments();
+        // 🔹 Build dynamic query
+        const query = {};
 
-        // Paginated result
-        const bannerList = await Banner.find()
+        if (position) {
+            query.position = position;
+        }
+
+        // 🔹 Total count based on filter
+        const total = await Banner.countDocuments(query);
+
+        // 🔹 Fetch filtered + paginated result
+        const bannerList = await Banner.find(query)
             .populate("category", "name slug")
             .sort({createdAt: -1})
             .skip(skip)

@@ -56,9 +56,7 @@ const CategoryList = () => {
     const [image, setImage] = useState(null);
     const [preview, setPreview] = useState(null);
 
-    /* ===============================
-       Debounced Fetch
-    =============================== */
+    /*  Debounced Fetch */
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
             fetchCategories();
@@ -90,9 +88,7 @@ const CategoryList = () => {
         }
     };
 
-    /* ===============================
-       Open Edit
-    =============================== */
+    /*  Open Edit*/
     const handleEditOpen = async (id) => {
         try {
             const res = await API.get(`/api/category/${id}`);
@@ -116,9 +112,7 @@ const CategoryList = () => {
         }
     };
 
-    /* ===============================
-       Update
-    =============================== */
+    /*  Update */
     const handleUpdate = async () => {
         if (!name.trim()) {
             alert("Category name is required");
