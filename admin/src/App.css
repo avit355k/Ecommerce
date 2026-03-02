@@ -1169,3 +1169,74 @@ table td .new {
     display: flex;
     gap: 10px;
 }
+
+.bannerUploadBox {
+    position: relative;
+    width: 350px;
+    height: 102px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+}
+
+.previewBox {
+    width: 100%;
+    height: 100%;
+    padding: 2px;
+}
+
+.previewBox img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+    background: #fff;
+}
+
+/* Remove Button */
+.bannerUploadBox .remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    z-index: 2;
+    background: #ef4444;
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* banner Upload Placeholder */
+.bannerUploadPlaceholder {
+    width: 350px;
+    height: 102px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.bannerUploadPlaceholder:hover {
+    background: #eef2ff;
+    border-color: #6366f1;
+}
+
+.bannerUploadPlaceholder .icon {
+    font-size: 26px;
+}
+
+.bannerUploadPlaceholder p {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 6px;
+}
