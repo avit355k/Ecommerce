@@ -4,7 +4,7 @@ import {MdDashboard, MdLogout, MdNotifications, MdOutlineMessage, MdOutlineSetti
 import {FaAngleRight} from "react-icons/fa6";
 import {BsMenuButtonFill} from "react-icons/bs";
 import {AiFillProduct} from "react-icons/ai";
-import {FaCartArrowDown, FaUser} from "react-icons/fa";
+import {FaCartArrowDown} from "react-icons/fa";
 import {SiRazorpay, SiSinglestore} from "react-icons/si";
 import {LuGalleryThumbnails} from "react-icons/lu";
 import {Link} from 'react-router-dom';
@@ -139,20 +139,6 @@ const Sidebar = () => {
                             <span className='arrow'><FaAngleRight/></span>
                         </Button>
                     </li>
-                    <li>
-                        <Button className='w-100'>
-                            <span className='icon'><FaUser/></span>
-                            Log In
-                            <span className='arrow'><FaAngleRight/></span>
-                        </Button>
-                    </li>
-                    <li>
-                        <Button className='w-100'>
-                            <span className='icon'><FaUser/></span>
-                            Sign Up
-                            <span className='arrow'><FaAngleRight/></span>
-                        </Button>
-                    </li>
                 </ul>
                 <div className='logoutWrapper'>
                     <div className='logoutBox'>
@@ -168,4 +154,4 @@ const Sidebar = () => {
     )
 }
 
-export default Sidebar
+export default Sidebar;

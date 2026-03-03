@@ -1,18 +1,59 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Mycontext} from "../../App";
 import {MdEmail, MdLock} from "react-icons/md";
-import {AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai";
 import Button from "@mui/material/Button";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import API from "../../services/api";
+
 
 const Login = () => {
     const context = useContext(Mycontext);
-    const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
 
     useEffect(() => {
         context.setisHideSidebarHeader(true);
     }, [context]);
+
+    const onChangeInput = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        try {
+            const res = await API.post("/api/user/signin", formData);
+
+            console.log("Full response:", res.data);
+
+            if (res.data.user?.isAdmin === true) {
+
+                sessionStorage.setItem('token', res.data.token);
+                sessionStorage.setItem('_id', res.data.user._id);
+                sessionStorage.setItem('user', JSON.stringify(res.data.user));
+
+                context.setisLogin(true);
+
+                alert('Login successful');
+                navigate("/");
+            } else {
+                alert("Access denied! Admin only.");
+            }
+
+        } catch (error) {
+            console.log(error.response?.data);
+            alert(error.response?.data?.message || "Login failed");
+        }
+    };
 
     return (
 
@@ -34,7 +75,7 @@ const Login = () => {
 
                     {/* Login Card */}
                     <div className="wrapper p-4 mt-3">
-                        <form>
+                        <form onSubmit={handleLogin}>
 
                             {/* Email */}
                             <div className="form-group mb-3 inputBox">
@@ -43,32 +84,34 @@ const Login = () => {
                                     type="email"
                                     className="form-control"
                                     placeholder="Email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={onChangeInput}
+                                    required
                                 />
                             </div>
 
                             {/* Password */}
                             <div className="form-group mb-3 inputBox">
-                       <span className="icon">
-                          <MdLock/>
-                       </span>
+                                <span className="icon">
+                                      <MdLock/>
+                                </span>
 
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     className="form-control"
                                     placeholder="Password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={onChangeInput}
+                                    required
                                 />
-
-                                <span
-                                    className="eyeIcon"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                >
-                                {showPassword ? <AiOutlineEyeInvisible/> : <AiOutlineEye/>}
-                       </span>
                             </div>
 
 
                             {/* Sign In */}
                             <Button
+                                type="submit"
                                 variant="contained"
                                 fullWidth
                                 className="mb-3 loginBtn"
@@ -101,16 +144,6 @@ const Login = () => {
                             </Button>
 
                         </form>
-
-                        {/* Footer */}
-                        <div className="footer mt-3 p-3 text-center">
-            <span>
-              Don’t have an account?
-              <Link to="/sign-up" className="ms-1">
-                Register
-              </Link>
-            </span>
-                        </div>
 
                     </div>
                 </div>

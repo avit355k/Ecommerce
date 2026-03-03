@@ -748,19 +748,6 @@ table td .new {
     border-color: #f83600;
 }
 
-.eyeIcon {
-    position: absolute;
-    top: 50%;
-    right: 12px;
-    transform: translateY(-50%);
-    font-size: 20px;
-    color: #f83600;
-    cursor: pointer;
-}
-
-.eyeIcon:hover {
-    color: #d92c00;
-}
 
 .loginBtn, .SignupBtn {
     background: linear-gradient(to right, #f83600, #f9d423) !important;

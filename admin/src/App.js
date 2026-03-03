@@ -9,7 +9,6 @@ import Header from './components/Header/index';
 import Sidebar from './components/Sidebar';
 import {createContext, useEffect, useState} from 'react';
 import Login from './pages/Login';
-import Signup from "./pages/SignUp";
 import ProductDetails from "./pages/ProductDetails";
 import Productupload from "./pages/Productupload";
 import CategoryAdd from "./pages/CategoryAdd";
@@ -20,13 +19,14 @@ import VarientList from './pages/ProductVarientList/VarientList';
 import OrderList from "./pages/OrderList";
 import BannerAdd from "./pages/BannerAdd";
 import BannerList from "./pages/BannerList";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 const Mycontext = createContext();
 
 function App() {
 
     const [isToggleSidebar, setIsToggleSidebar] = useState(true);
-    const [isLogin, setisLogin] = useState(true);
+    const [isLogin, setisLogin] = useState(false);
     const [isHideSidebarHeader, setisHideSidebarHeader] = useState(false);
 
     const values = {
@@ -37,6 +37,14 @@ function App() {
         isHideSidebarHeader,
         setisHideSidebarHeader
     };
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (token) {
+            setisLogin(true);
+        } else {
+            setisLogin(false);
+        }
+    }, []);
 
     useEffect(() => {
         console.log(isToggleSidebar);
@@ -61,19 +69,22 @@ function App() {
                     <div
                         className={`content ${isHideSidebarHeader === true && 'full'} ${!isToggleSidebar ? 'toggle' : ''}`}>
                         <Routes>
-                            <Route path="/" exact={true} element={<Dashboard/>}/>
                             <Route path="/login" exact={true} element={<Login/>}/>
-                            <Route path="/sign-up" exact={true} element={<Signup/>}/>
-                            <Route path="/category/list" exact={true} element={<CategoryList/>}/>
-                            <Route path="/category/add" exact={true} element={<CategoryAdd/>}/>
-                            <Route path="/product/list" exact={true} element={<ProductList/>}/>
-                            <Route path="/product/details" exact={true} element={<ProductDetails/>}/>
-                            <Route path="/product/upload" exact={true} element={<Productupload/>}/>
-                            <Route path="/product/varient/:productId/add" exact={true} element={<VarientAdd/>}/>
-                            <Route path="/product/varient/list" exact={true} element={<VarientList/>}/>
-                            <Route path="/Orderlist" exact={true} element={<OrderList/>}/>
-                            <Route path="/banner/add" exact={true} element={<BannerAdd/>}/>
-                            <Route path="/banner/list" exact={true} element={<BannerList/>}/>
+
+                            <Route element={<ProtectedRoute/>}>
+                                <Route path="/" exact={true} element={<Dashboard/>}/>
+                                <Route path="/category/list" exact={true} element={<CategoryList/>}/>
+                                <Route path="/category/add" exact={true} element={<CategoryAdd/>}/>
+                                <Route path="/product/list" exact={true} element={<ProductList/>}/>
+                                <Route path="/product/details" exact={true} element={<ProductDetails/>}/>
+                                <Route path="/product/upload" exact={true} element={<Productupload/>}/>
+                                <Route path="/product/varient/:productId/add" exact={true} element={<VarientAdd/>}/>
+                                <Route path="/product/varient/list" exact={true} element={<VarientList/>}/>
+                                <Route path="/Orderlist" exact={true} element={<OrderList/>}/>
+                                <Route path="/banner/add" exact={true} element={<BannerAdd/>}/>
+                                <Route path="/banner/list" exact={true} element={<BannerList/>}/>
+
+                            </Route>
                         </Routes>
                     </div>
                 </div>

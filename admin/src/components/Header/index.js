@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import Button from '@mui/material/Button';
 import {MdLightMode, MdMenuOpen, MdNotifications, MdOutlineMenu} from "react-icons/md";
@@ -13,6 +13,8 @@ import Divider from '@mui/material/Divider';
 import {Mycontext} from '../../App';
 
 const Header = () => {
+    const [user, setUser] = useState(null);
+    const context = useContext(Mycontext);
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -32,8 +34,19 @@ const Header = () => {
         setNotificationAnchorEl(null);
     };
 
-    const context = useContext(Mycontext);
 
+    useEffect(() => {
+        const userData = sessionStorage.getItem("user");
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+    }, []);
+
+    const handleLogout = () => {
+        sessionStorage.clear();
+        context.setisLogin(false);
+        window.location.href = "/login";
+    };
 
     return (
         <header className="header d-flex align-items-center">
@@ -158,86 +171,86 @@ const Header = () => {
                             </Menu>
                         </div>
 
-                        {
-                            context.isLogin !== true ?
-                                <Link to={'/login'}>
-                                    <Button className='btn-square'>Sign In</Button>
-                                </Link> :
-                                <div className="myAccWrapper d-flex align-items-center">
-                                    <Button className="myAcc d-flex align-items-center p-0" style={{gap: '0.5rem'}}
-                                            onClick={handleClick}
-                                    >
-                                        <div className="userImg">
-                      <span className="rounded-circle">
-                        <img
-                            src="/i_passport.jpg"
-                            className="rounded-circle"
-                            alt="User"
-                        />
-                      </span>
-                                        </div>
+                        {context.isLogin !== true ?
+                            <Link to={'/login'}>
+                                <Button className='btn-square'>Sign In</Button>
+                            </Link> :
+                            <div className="myAccWrapper d-flex align-items-center">
+                                <Button className="myAcc d-flex align-items-center p-0" style={{gap: '0.5rem'}}
+                                        onClick={handleClick}
+                                >
+                                    <div className="userImg">
+                                      <span className="rounded-circle">
+                                          <img
+                                              src={user?.avatar?.url}
+                                              className="rounded-circle"
+                                              alt="User"
+                                          />
+                                      </span>
+                                    </div>
 
-                                        <div className="userinfo">
-                                            <h5>Anand Bagchi</h5>
-                                            <p>@anand007</p>
-                                        </div>
+                                    <div className="userinfo">
+                                        <h5>{user?.name}</h5>
+                                    </div>
 
-                                    </Button>
-                                    <Menu
-                                        anchorEl={anchorEl}
-                                        id="account-menu"
-                                        open={open}
-                                        onClose={handleClose}
-                                        onClick={handleClose}
-                                        slotProps={{
-                                            paper: {
-                                                elevation: 0,
-                                                sx: {
-                                                    overflow: 'visible',
-                                                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                                                    mt: 1.5,
-                                                    '& .MuiAvatar-root': {
-                                                        width: 32,
-                                                        height: 32,
-                                                        ml: -0.5,
-                                                        mr: 1,
-                                                    },
-                                                    '&::before': {
-                                                        content: '""',
-                                                        display: 'block',
-                                                        position: 'absolute',
-                                                        top: 0,
-                                                        right: 14,
-                                                        width: 10,
-                                                        height: 10,
-                                                        bgcolor: 'background.paper',
-                                                        transform: 'translateY(-50%) rotate(45deg)',
-                                                        zIndex: 0,
-                                                    },
+                                </Button>
+                                <Menu
+                                    anchorEl={anchorEl}
+                                    id="account-menu"
+                                    open={open}
+                                    onClose={handleClose}
+                                    onClick={handleClose}
+                                    slotProps={{
+                                        paper: {
+                                            elevation: 0,
+                                            sx: {
+                                                overflow: 'visible',
+                                                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                                mt: 1.5,
+                                                '& .MuiAvatar-root': {
+                                                    width: 32,
+                                                    height: 32,
+                                                    ml: -0.5,
+                                                    mr: 1,
+                                                },
+                                                '&::before': {
+                                                    content: '""',
+                                                    display: 'block',
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    right: 14,
+                                                    width: 10,
+                                                    height: 10,
+                                                    bgcolor: 'background.paper',
+                                                    transform: 'translateY(-50%) rotate(45deg)',
+                                                    zIndex: 0,
                                                 },
                                             },
-                                        }}
-                                        transformOrigin={{horizontal: 'left', vertical: 'top'}}
-                                        anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                                    >
-                                        <MenuItem onClick={handleClose}>
-                                            <Avatar/> My account
-                                        </MenuItem>
+                                        },
+                                    }}
+                                    transformOrigin={{horizontal: 'left', vertical: 'top'}}
+                                    anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                >
+                                    <MenuItem>
+                                        <Avatar/> My account
+                                    </MenuItem>
 
-                                        <MenuItem onClick={handleClose}>
-                                            <ListItemIcon>
-                                                <FaShieldAlt/>
-                                            </ListItemIcon>
-                                            Reset Password
-                                        </MenuItem>
-                                        <MenuItem onClick={handleClose}>
-                                            <ListItemIcon>
-                                                <Logout/>
-                                            </ListItemIcon>
-                                            Logout
-                                        </MenuItem>
-                                    </Menu>
-                                </div>
+                                    <MenuItem>
+                                        <ListItemIcon>
+                                            <FaShieldAlt/>
+                                        </ListItemIcon>
+                                        Reset Password
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={handleLogout}
+                                    >
+                                        <ListItemIcon>
+                                            <Logout/>
+                                        </ListItemIcon>
+                                        Logout
+                                    </MenuItem>
+                                </Menu>
+                            </div>
                         }
 
                     </div>
