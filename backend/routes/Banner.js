@@ -108,17 +108,34 @@ router.get("/", async (req, res) => {
 });
 
 //Get Banners By category Slug
-router.get("/listing", async (req, res) => {
+router.get("/listing/:slug", async (req, res) => {
     try {
-        const banners = await Banner.find({position: "listingPage"})
+        const {slug} = req.params;
+
+        //Find category by slug
+        const category = await Category.findOne({slug});
+
+        if (!category) {
+            return res.status(404).json({
+                success: false,
+                message: "Category not found"
+            });
+        }
+
+        //  Find banners for that category + listing page
+        const banners = await Banner.find({
+            position: "listingPage",
+            category: category._id
+        })
             .populate("category", "name slug")
-            .sort({createdAt: -1});
+            .sort({createdAt: 1});
 
         res.status(200).json({
             success: true,
             total: banners.length,
             banners
         });
+
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -175,7 +192,7 @@ router.get("/position/:position", async (req, res) => {
         // Fetch banners
         const banners = await Banner.find({position})
             .populate("category", "name slug")
-            .sort({createdAt: -1});
+            .sort({createdAt: 1});
 
         res.status(200).json({
             success: true,

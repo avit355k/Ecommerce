@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
+import Slider from "react-slick";
 
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Pagination from '@mui/material/Pagination';
+
 import {TiThMenu} from "react-icons/ti";
 import {BsFillGridFill, BsGrid3X3GapFill} from "react-icons/bs";
 import {FaAngleDown} from "react-icons/fa6";
@@ -20,6 +22,8 @@ const Listings = () => {
     const [products, setProducts] = useState([]);
     const [filtersData, setFiltersData] = useState({});
     const [loading, setLoading] = useState(true);
+
+    const [banners, setBanners] = useState([]);
 
     const [productView, setProductView] = useState('four');
 
@@ -129,6 +133,40 @@ const Listings = () => {
         fetchProducts();
     }, [slug, filters]);
 
+    // fetch listing banners by category slug
+    useEffect(() => {
+        const fetchListingBanners = async () => {
+            try {
+                const {data} = await API.get(
+                    `/api/banner/listing/${slug}`
+                );
+
+                if (data.success) {
+                    setBanners(data.banners);
+                }
+            } catch (error) {
+                console.error("Listing banner fetch error", error);
+            }
+        };
+
+        if (slug) {
+            fetchListingBanners();
+        }
+
+    }, [slug]);
+
+    var settings = {
+        dots: false,
+        infinite: banners.length > 1,
+        speed: 500,
+        slidesToShow: 1,
+        spaceBetween: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 3500,
+        arrows: false,
+    };
+
     return (
         <>
             <section className='product_listings_page'>
@@ -141,9 +179,23 @@ const Listings = () => {
                         />
 
                         <div className='content-right'>
-                            <img
-                                src='https://m.media-amazon.com/images/G/31/img24hp/tf/WhatsApp_Image_2025-08-18_at_14.55.27_d0f5e261._CB802203197_.jpg'
-                                className='w-100' style={{borderRadius: '7px'}} alt='Banner'/>
+                            {/* Listing Banner */}
+                            <div className="listingBannerSection">
+                                <Slider {...settings}>
+                                    {banners.map((banner) => (
+                                        <div key={banner._id}>
+                                            <Link to={`/${banner.redirect?.type}/${banner.redirect?.value}`}>
+                                                <img
+                                                    src={banner.image?.url}
+                                                    className="w-100"
+                                                    style={{borderRadius: "7px"}}
+                                                    alt={banner.title}
+                                                />
+                                            </Link>
+                                        </div>
+                                    ))}
+                                </Slider>
+                            </div>
 
                             <div className='showBy mt-3 mb-3 d-flex align-items-center'>
                                 <div className='d-flex align-items-center btnWrapper'>

@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 
 import {Swiper, SwiperSlide} from 'swiper/react';
 // Import Swiper styles
@@ -16,6 +17,7 @@ const Home = () => {
     const [newProducts, setNewProducts] = useState([]);
     const [topDeals, setTopDeals] = useState([]);
     const [featuredProducts, setFeaturedProducts] = useState([]);
+    const [banners, setBanners] = useState([]);
 
     //fetch top deals products
     useEffect(() => {
@@ -67,6 +69,25 @@ const Home = () => {
         fetchFeaturedProducts();
     }, []);
 
+    //fetch Offer banners
+    useEffect(() => {
+        const fetchBanners = async () => {
+            try {
+                const res = await API.get(
+                    "http://localhost:5000/api/banner/position/offer"
+                );
+
+                if (res.data.success) {
+                    setBanners(res.data.banners);
+                }
+            } catch (error) {
+                console.error("Error fetching banners:", error);
+            }
+        };
+
+        fetchBanners();
+    }, []);
+
     return (
         <>
             <Homebanner/>
@@ -77,15 +98,18 @@ const Home = () => {
                     <div className="row">
                         <div className="col-md-3 ">
                             <div className="sticky">
-                                <div className="banner">
-                                    <img src="https://api.spicezgold.com/download/file_1734525757507_NewProject(34).jpg"
-                                         className="cursor w-100"/>
-                                </div>
-
-                                <div className="banner mt-4">
-                                    <img src="https://api.spicezgold.com/download/file_1734525767798_NewProject(35).jpg"
-                                         className="cursor w-100"/>
-                                </div>
+                                {banners.map((banner, index) => (
+                                    <div className="banner mt-2" key={banner._id}>
+                                        <Link
+                                            to={`/${banner.redirect?.type}/${banner.redirect?.value}`}
+                                        >
+                                            <img
+                                                src={banner.image?.url}
+                                                className="cursor w-100"
+                                            />
+                                        </Link>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 

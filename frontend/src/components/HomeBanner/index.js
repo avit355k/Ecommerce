@@ -1,53 +1,64 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Slider from "react-slick";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
+import API from "../../Services/api";
 
 
 const Homebanner = () => {
+    const [banners, setBanners] = useState([]);
+
+    useEffect(() => {
+        const fetchBanners = async () => {
+            try {
+                const res = await API.get(
+                    "/api/banner/position/homepage"
+                );
+
+                if (res.data.success) {
+                    setBanners(res.data.banners);
+                }
+            } catch (error) {
+                console.error("Error fetching banners:", error);
+            }
+        };
+
+        fetchBanners();
+    }, []);
+
     var settings = {
         dots: true,
         infinite: true,
         speed: 500,
         slidesToShow: 1,
-        spaceBetween:1,
+        spaceBetween: 1,
         slidesToScroll: 1,
         autoplay: true,
         autoplaySpeed: 3000,
         arrows: true,
     };
+
     return (
-     <div className="container mt-2">
-           <div className="homeBannerSection">
-            <Slider {...settings}>
-                 <div className="item">
-                    <img src="/Banner/smartphone_banner.jpg" className="w-100" />
-                </div>
-                <div className="item">
-                    <img src="/Banner/banner1.png" className="w-100" />
-                </div>
-                <div className="item">
-                    <img src="/Banner/banner2.png" className="w-100" />
-                </div>
-                <div className="item">
-                    <img src="/Banner/Furniture.png" className="w-100" />
-                </div>
-                <div className="item">
-                    <img src="/Banner/banner4.png" className="w-100" />
-                </div>
-                <div className="item">
-                     <Link to="/fashion">
-                        <img src="/Banner/banner5.png" className="w-100" alt="Fashion" />
-                    </Link>
-                </div>
-                 <div className="item">
-                     <Link to="/Grocery">
-                        <img src="/Banner/Grocery.jpg" className="w-100" alt="Grocery" />
-                    </Link>
-                </div>
-            </Slider>
+        <div className="container mt-2">
+            <div className="homeBannerSection">
+                <Slider {...settings}>
+                    {banners.map((banner, index) => (
+                        <div className="item" key={banner._id}>
+                            <Link
+                                to={`/${banner.redirect?.type}/${banner.redirect?.value}`}
+                            >
+                                <img
+                                    src={banner.image?.url}
+                                    className="w-100"
+                                    alt={banner.title}
+                                />
+                            </Link>
+                        </div>
+                    ))}
+
+                </Slider>
+            </div>
         </div>
-     </div>
     )
 }
 
-export default Homebanner 
+export default Homebanner; 

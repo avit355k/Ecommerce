@@ -124,7 +124,7 @@ const BannerList = () => {
                                 </MenuItem>
                                 <MenuItem value="homepage">Homepage</MenuItem>
                                 <MenuItem value="offer">Offer</MenuItem>
-                                <MenuItem value="listingpage">Listing Page</MenuItem>
+                                <MenuItem value="listingPage">Listing Page</MenuItem>
                                 <MenuItem value="promotion">Promotion</MenuItem>
                             </Select>
                         </FormControl>

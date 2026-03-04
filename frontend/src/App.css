@@ -1242,6 +1242,21 @@ footer .linkWrap ul li a:hover {
     padding-left: 35px;
 }
 
+{ /*banner section*/
+}
+.listingBannerSection .slick-slide {
+    overflow: inherit !important;
+}
+
+.listingBannerSection * {
+    outline: none !important;
+}
+
+.listingBannerSection img {
+    border-radius: 8px;
+    display: block;
+}
+
 .product_listings_page .productListing .content-right .showBy {
     width: 100%;
     height: auto;
@@ -2640,4 +2655,66 @@ footer .linkWrap ul li a:hover {
     padding: 6px 18px;
     border-radius: 6px;
     font-size: 14px;
+}
+
+{ /*order succes page*/
+}
+.order-success-container {
+    height: 100vh;
+    background: #37b36b; /* green background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.success-card {
+    background: #ffffff;
+    width: 70%;
+    max-width: 800px;
+    padding: 40px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.success-icon {
+    font-size: 70px !important;
+    color: #37b36b;
+    margin-bottom: 10px;
+}
+
+.thank-you-text {
+    color: #888;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.order-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.order-subtext {
+    color: #777;
+    margin-bottom: 30px;
+}
+
+.view-orders-btn {
+    background: #37b36b !important;
+    padding: 10px 25px !important;
+}
+
+.continue-shopping-btn {
+    margin-left: 5px;
+    background: #37b36b !important;
+    padding: 10px 25px !important;
+}
+
+.view-orders-btn:hover {
+    background: #37b36b !important;
+    color: #00ff59;
+}
+
+.continue-shopping-btn:hover {
+    background: #37b36b !important;
+    color: #00ff59;
 }
