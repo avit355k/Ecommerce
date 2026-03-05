@@ -6,6 +6,35 @@ const cors = require('cors');
 require("dotenv").config();
 require("./connection/conn");
 
+// CORS CONFIG
+const allowedOrigins = [
+    "http://localhost:3000",               // frontend local
+    "http://localhost:3001",               // admin local
+    "https://click-and-collect-ecommerce.vercel.app",     // live frontend
+];
+
+app.use(
+    cors({
+        origin: function (origin, callback) {
+
+            // Allow mobile apps, Postman, curl (no origin)
+            if (!origin) return callback(null, true);
+
+            // Check allowed origins
+            if (allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+
+            // If not allowed
+            console.log(" CORS BLOCKED:", origin);
+            return callback(new Error("Not allowed by CORS"));
+        },
+
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+        credentials: true
+    })
+);
+
 // Middleware
 app.use(cors());
 app.use(express.json({limit: "10mb"})); // replaces body-parser
