@@ -3,7 +3,7 @@ const router = express.Router();
 
 const Product = require("../models/product");
 const ProductVariant = require("../models/ProductVariant");
-const Category = require("../models/Category");
+const Category = require("../models/category");
 
 
 // GET /api/products/search
@@ -25,7 +25,7 @@ router.get("/results", async (req, res) => {
 
         const productQuery = {};
 
-        // 1️⃣ Keyword search (safe regex instead of $text)
+        // Keyword search (safe regex instead of $text)
         if (keyword && keyword.trim() !== "") {
             productQuery.$or = [
                 {name: {$regex: keyword, $options: "i"}},
@@ -34,19 +34,19 @@ router.get("/results", async (req, res) => {
             ];
         }
 
-        // 2️⃣ Category filter
+        // Category filter
         if (category) {
             const categories = category.split(",");
             productQuery.category = {$in: categories};
         }
 
-        // 3️⃣ Brand filter
+        // Brand filter
         if (brand) {
             const brands = brand.split(",");
             productQuery.brand = {$in: brands};
         }
 
-        // 4️⃣ Rating filter
+        // Rating filter
         if (rating) {
             const ratings = rating.split(",").map(Number);
             productQuery.averageRating = {$gte: Math.min(...ratings)};
@@ -66,25 +66,25 @@ router.get("/results", async (req, res) => {
 
         const productIds = products.map(p => p._id);
 
-        // 5️⃣ Variant Query
+        //  Variant Query
         const variantQuery = {
             product: {$in: productIds},
             isActive: true
         };
 
-        // 6️⃣ Price filter
+        //  Price filter
         if (minPrice || maxPrice) {
             variantQuery.price = {};
             if (minPrice) variantQuery.price.$gte = Number(minPrice);
             if (maxPrice) variantQuery.price.$lte = Number(maxPrice);
         }
 
-        // 7️⃣ Stock filter
+        //  Stock filter
         if (inStock === "true") {
             variantQuery.countInStock = {$gt: 0};
         }
 
-        // 8️⃣ Dynamic attributes
+        //  Dynamic attributes
         Object.keys(attributes).forEach(key => {
             const values = attributes[key].split(",");
             variantQuery[`attributes.${key}`] = {$in: values};
@@ -134,7 +134,7 @@ router.get("/results", async (req, res) => {
 
         let finalProducts = Array.from(productMap.values());
 
-        // 9️⃣ Sorting
+        // Sorting
         if (sortBy === "price_low_high") {
             finalProducts.sort((a, b) => a.price - b.price);
         } else if (sortBy === "price_high_low") {
@@ -147,7 +147,7 @@ router.get("/results", async (req, res) => {
             );
         }
 
-        // 🔟 Pagination
+        // Pagination
         const startIndex = (Number(page) - 1) * Number(limit);
         const paginated = finalProducts.slice(
             startIndex,
