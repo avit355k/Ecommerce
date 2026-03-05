@@ -59,8 +59,8 @@ const Header = () => {
             <div className='headeWrapper'>
                 <div className='top-strip bg-red'>
                     <div class="container">
-                        <p className='mb-0 mt-0 text-center'>Due to the <b>COVID 19</b> epidemic, orders may be
-                            processed with a slight delay</p>
+                        <p className='mb-0 mt-0 text-center'>On the <b>Online Payment</b> you will get free shipping
+                            charges on delivery</p>
                     </div>
                 </div>
 

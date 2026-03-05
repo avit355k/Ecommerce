@@ -8,8 +8,6 @@ import {IoIosArrowDown} from "react-icons/io";
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
-import {Link} from 'react-router-dom';
-
 const Sidebar = ({filters, setFilters, filtersData}) => {
 
     const [value, setValue] = useState([filters.minPrice, filters.maxPrice]);
@@ -225,17 +223,9 @@ const Sidebar = ({filters, setFilters, filtersData}) => {
                         </div>
                     ))}
 
-                <br/>
-
-                <Link to="#"><img
-                    src='https://m.media-amazon.com/images/G/31/img21/Watches2021/Dec_22_watches/New_launches_A/Titan-newlaunch._CB617707897_.gif'
-                    className='w-100'/></Link>
-                <Link to="#"><img
-                    src='https://m.media-amazon.com/images/G/31/2025/Auto/BIF/Helmets__riding_gears._SY530_QL85_FMpng_.png'
-                    className='mt-4 w-100'/></Link>
             </div>
         </div>
     )
 }
 
-export default Sidebar
+export default Sidebar;

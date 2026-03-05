@@ -826,10 +826,39 @@ body {
     padding-right: 1px !important;
 }
 
+/* Make arrows smaller */
+.product_row .swiper-button-next,
+.product_row .swiper-button-prev {
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Reduce arrow icon size */
+.product_row .swiper-button-next::after,
+.product_row .swiper-button-prev::after {
+    font-size: 12px;
+    font-weight: bold;
+
+}
+
+/* Move arrows outside */
+.product_row .swiper-button-prev {
+    left: -5px;
+}
+
+.product_row .swiper-button-next {
+    right: -5px;
+}
+
 .badge-primary {
     background: #2bbef2 !important;
 }
 
+{ /*home category */
+}
 .homecat {
     padding: 35px 0px;
 }
