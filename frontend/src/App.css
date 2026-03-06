@@ -478,6 +478,103 @@ body {
     font-size: 14px;
     font-weight: 600;
 }
+/* Mobile-first overrides */
+@media (max-width: 768px) {
+    .headeWrapper .top-strip p {
+        font-size: 11px;
+        padding: 0 8px;
+    }
+
+    .header {
+        flex-direction: column;
+        padding: 8px;
+    }
+
+    .logoWrapper {
+        justify-content: center;
+        text-align: center;
+        margin-bottom: 8px;
+    }
+
+    .logoWrapper img {
+        width: 120px; /* smaller logo */
+        height: auto;
+    }
+
+    .header .part2 {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .headeWrapper .header .part2 .citydropdown {
+        width: 100%;
+        height: 40px;
+        min-width: unset;
+        padding: 6px 12px;
+    }
+
+    .headerSearch {
+        width: 100%;
+        height: 42px;
+    }
+
+    .headerSearch input {
+        font-size: 14px;
+        height: 32px;
+        padding: 0 12px !important;
+    }
+
+    .headerSearch Button {
+        top: 2px;
+        right: 2px;
+        height: 36px !important;
+        width: 36px !important;
+    }
+
+    .header .part3 {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 8px;
+        margin-left: 0 !important;
+    }
+
+    .header .part3 .login-btn,
+    .header .part3 .account-btn {
+        height: 40px;
+        font-size: 14px;
+        padding: 4px 10px !important;
+    }
+
+    .carttab {
+        margin-top: 8px;
+        justify-content: center;
+    }
+
+    .carttab .cart-text {
+        display: none; /* hide text, keep icon */
+    }
+
+    .carttab .cart-icon,
+    .carttab .cart-icon-disabled {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logoWrapper img {
+        width: 100px;
+    }
+
+    .headerSearch input {
+        font-size: 13px;
+    }
+
+    .header .part3 .login-btn,
+    .header .part3 .account-btn {
+        font-size: 13px;
+    }
+}
 
 .navPart {
     position: relative;
@@ -594,8 +691,190 @@ body {
 .subSection a:hover {
     font-weight: 700 !important;
 }
+/* MOBILE HAMBURGER BUTTON */
+
+.mobileMenuToggle{
+    display:none;
+    border:none;
+    background:none;
+    font-size:22px;
+    margin-right:15px;
+}
 
 
+/* MOBILE SIDEBAR */
+
+.mobileMenu{
+
+    position:fixed;
+    top:0;
+    left:-320px;
+    width:320px;
+    height:100vh;
+    background:#fff;
+    z-index:2000;
+    padding:20px;
+    transition:all 0.3s ease;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+
+}
+
+.mobileMenu.active{
+    left:0;
+}
+
+/* Mobile menu */
+
+.mobileMenuHeader{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+
+}
+
+.mobileMenuHeader h4{
+    font-size:18px;
+    font-weight:600;
+}
+
+.mobileMenuHeader button{
+    border:none;
+    background:none;
+    font-size:26px;
+}
+/* CATEGORY LIST */
+.mobileMenu ul{
+    list-style:none;
+    padding:0;
+}
+
+.mobileMenu ul li{
+    padding:12px 0;
+    border-bottom:1px solid #eee;
+}
+
+.mobileMenu ul li a{
+    text-decoration:none;
+    color:#222;
+    font-size:15px;
+}
+/* MOBILE RESPONSIVE */
+@media (max-width:992px){
+
+    .mobileMenuToggle{
+        display:block;
+    }
+
+    nav ul{
+        display:none;
+    }
+
+}
+
+@media (max-width: 992px) {
+
+    /* header layout */
+    .header .row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .logoWrapper {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .logoWrapper img{
+        width:140px;
+    }
+
+    .header .part2 {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap:10px;
+    }
+
+    /* city dropdown */
+    .headeWrapper .header .part2 .citydropdown{
+        width:140px;
+        min-width:140px;
+        height:42px;
+    }
+
+    /* search box */
+    .headerSearch{
+        width:100%;
+        order:3;
+    }
+
+    /* account + cart */
+    .header .part3{
+        width:100%;
+        justify-content:center;
+        margin-top:5px;
+    }
+
+}
+
+/*  SMALL MOBILE  */
+@media (max-width: 576px) {
+
+    .headeWrapper .top-strip p{
+        font-size:11px;
+        padding:0 10px;
+    }
+
+    .headerSearch{
+        height:45px;
+    }
+
+    .headerSearch input{
+        font-size:14px;
+    }
+
+    .header .part3{
+        gap:8px;
+    }
+
+    /* login button */
+    .header .part3 .login-btn{
+        height:42px;
+        padding:5px 10px !important;
+        font-size:13px;
+    }
+
+    /* account button */
+    .header .part3 .account-btn{
+        height:42px;
+        padding:5px 10px !important;
+    }
+
+    /* cart button */
+    .carttab Button{
+        height:42px;
+        padding:5px 10px !important;
+    }
+
+}
+
+/*  NAVIGATION MOBILE  */
+@media (max-width:992px){
+
+    /* show hamburger */
+    .mobileMenuToggle{
+        display:block;
+    }
+
+    /* hide desktop category menu */
+    .navPart ul{
+        display:none;
+    }
+
+}
+
+/*  Home banner  */
 .homeBannerSection {
     margin-top: 10px;
     position: relative;
@@ -759,10 +1038,7 @@ body {
     opacity: 1 !important;
 }
 
-/* ===============================
-   Wishlist Active State
-================================ */
-
+/* Wishlist Active State*/
 /* Red background when wishlisted */
 .productItem .actions button.activeWishlist,
 .productItem .actions .MuiButton-root.activeWishlist {
@@ -812,6 +1088,50 @@ body {
 
 .productItem .imgWrapper:hover img {
     transform: scale(1.1);
+}
+/* Base stays the same, responsive overrides */
+@media (max-width: 768px) {
+    .productItem {
+        padding: 8px;
+        border-radius: 6px;
+    }
+
+    .productItem .imgWrapper {
+        height: 160px; /* smaller image box */
+    }
+
+    .productItem .info {
+        padding: 10px 0;
+    }
+
+
+
+    .info .price {
+        font-size: 14px;
+    }
+
+    .info .discountPrice {
+        font-size: 15px;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .productItem .imgWrapper {
+        height: 140px;
+    }
+
+    .productItem .info h4 {
+        font-size: 13px;
+    }
+
+    .info .price {
+        font-size: 13px;
+    }
+
+    .info .discountPrice {
+        font-size: 14px;
+    }
 }
 
 .product_row .item {
@@ -916,6 +1236,29 @@ body {
     font-weight: 600 !important;
     color: #000;
 }
+@media (max-width: 480px) {
+    .homecat .swiper .item {
+        height: 90px;
+        padding: 10px;
+    }
+
+    .homecat .swiper .item img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .homecat h6 {
+        font-size: 12px;
+        max-width: 80px;
+    }
+
+    .homecat .swiper-button-prev,
+    .homecat .swiper-button-next {
+        top: -25px !important;
+        width: 25px !important;
+        height: 25px !important;
+    }
+}
 
 .product_row2 {
     flex-wrap: wrap;
@@ -927,7 +1270,20 @@ body {
     overflow: hidden;
     border-right: 1px solid rgba(0, 0, 0, 0.6) !important;
 }
+/* Mobile view */
+@media (max-width: 768px) {
+    .product_row2 .productItem {
+        width: 48%;
+        border-right: none;
+    }
+}
 
+@media (max-width: 480px) {
+    .product_row2 .productItem {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+}
 .bannerSec {
     gap: 10px;
 }

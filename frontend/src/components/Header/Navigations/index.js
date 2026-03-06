@@ -1,9 +1,11 @@
 import {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import MobileMenu from "../../MobileMenu";
 
-const Navigation = () => {
-    const [isOpenSidebarValue, setIsOpenSidebarValue] = useState(false);
+
+const Navigation = ({mobileMenuOpen, setMobileMenuOpen}) => {
+
     const [categories, setCategories] = useState([]);
 
     // Fetch categories from backend
@@ -39,51 +41,60 @@ const Navigation = () => {
     const NAV_CATEGORIES = mapCategories(categories);
 
     return (
-        <nav>
-            <div className='container'>
-                <div className="row">
+        <>
+            {/* Mobile Sidebar */}
+            <MobileMenu
+                open={mobileMenuOpen}
+                setOpen={setMobileMenuOpen}
+                categories={NAV_CATEGORIES}
+            />
+            <nav>
+                <div className='container'>
+                    <div className="row">
 
-                    {/* Navbar Part 2 */}
-                    <div className='col-12 navPart d-flex align-items-center'>
-                        <ul className='list list-inline ml-auto'>
-                            {NAV_CATEGORIES.map((nav) => (
-                                <li key={nav.slug} className="list-inline-item megaParent">
-                                    {/* Main Category */}
-                                    <Link to={nav.path}>{nav.category}</Link>
+                        {/* Navbar Part 2 */}
+                        <div className='col-12 navPart d-flex align-items-center'>
 
-                                    {/* Mega Menu */}
-                                    {nav.subcategories && nav.subcategories.length > 0 && (
-                                        <div className="megaMenu shadow">
+                            <ul className='list list-inline ml-auto'>
+                                {NAV_CATEGORIES.map((nav) => (
+                                    <li key={nav.slug} className="list-inline-item megaParent">
+                                        {/* Main Category */}
+                                        <Link to={nav.path}>{nav.category}</Link>
 
-                                            {nav.subcategories.map((sub, i) => (
-                                                <div key={i} className="megaColumn">
-                                                    <div className="subSection">
-                                                        <h4 className='heading'>
-                                                            <Link to={sub.path}>{sub.name}</Link>
-                                                        </h4>
+                                        {/* Mega Menu */}
+                                        {nav.subcategories && nav.subcategories.length > 0 && (
+                                            <div className="megaMenu shadow">
 
-                                                        {/* Sub-items like tshirt,Dslr,shampoos */}
-                                                        {sub.items?.length > 0 && (
+                                                {nav.subcategories.map((sub, i) => (
+                                                    <div key={i} className="megaColumn">
+                                                        <div className="subSection">
+                                                            <h4 className='heading'>
+                                                                <Link to={sub.path}>{sub.name}</Link>
+                                                            </h4>
 
-                                                            sub.items.map((item, idx) => (
-                                                                <li key={idx}>
-                                                                    <Link to={item.path}>{item.name}</Link>
-                                                                </li>
-                                                            ))
+                                                            {/* Sub-items like tshirt,Dslr,shampoos */}
+                                                            {sub.items?.length > 0 && (
 
-                                                        )}
+                                                                sub.items.map((item, idx) => (
+                                                                    <li key={idx}>
+                                                                        <Link to={item.path}>{item.name}</Link>
+                                                                    </li>
+                                                                ))
+
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        </>
     );
 };
 

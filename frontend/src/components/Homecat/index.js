@@ -42,6 +42,28 @@ const Homecat = () => {
                     slidesPerGroup={1}
                     modules={[Navigation]}
                     className="mySwiper"
+                    breakpoints={{
+                        320: { // small phones
+                            slidesPerView: 3,
+                            spaceBetween: 10,
+                        },
+                        480: { // larger phones
+                            slidesPerView: 4,
+                            spaceBetween: 12,
+                        },
+                        768: { // tablets
+                            slidesPerView: 6,
+                            spaceBetween: 15,
+                        },
+                        1024: { // desktops
+                            slidesPerView: 8,
+                            spaceBetween: 15,
+                        },
+                        1280: { // large desktops
+                            slidesPerView: 10,
+                            spaceBetween: 15,
+                        },
+                    }}
                 >
                     {categories.map((cat) => (
                         <SwiperSlide key={cat._id}>

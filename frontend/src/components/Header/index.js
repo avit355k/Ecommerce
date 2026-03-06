@@ -1,4 +1,4 @@
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Logo from '../../assets/images/logo.png'
 import {Link} from 'react-router-dom';
@@ -6,7 +6,7 @@ import SearchBox from './SearchBox';
 import Navigation from './Navigations';
 import AccountDropdown from './../AccountDropdown/index';
 
-import {FaUser} from "react-icons/fa";
+import {FaUser,FaBars} from "react-icons/fa";
 import {FaChevronDown} from "react-icons/fa6"
 import {MdOutlineShoppingCart} from "react-icons/md";
 
@@ -18,6 +18,7 @@ import CityDropDown from "../CityDropDown";
 
 const Header = () => {
     const {cityList, isLogin, cartData, setCartData} = useContext(mycontext);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const storedUser = sessionStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
@@ -66,7 +67,17 @@ const Header = () => {
 
                 <header className='header'>
                     <div className='row justify-content-start'>
+                        {/* HAMBURGER */}
+                        <div className="col-2 d-lg-none">
+                            <button
+                                className="mobileMenuToggle"
+                                onClick={() => setMobileMenuOpen(true)}
+                            >
+                                <FaBars/>
+                            </button>
+                        </div>
                         <div className='logoWrapper d-flex align-items-center col-sm-2'>
+
                             <Link to={'/'}>
                                 <img src={Logo} alt='Ecommerce store logo'/>
                             </Link>
@@ -138,7 +149,10 @@ const Header = () => {
                     </div>
                 </header>
 
-                <Navigation/>
+                <Navigation
+                    mobileMenuOpen={mobileMenuOpen}
+                    setMobileMenuOpen={setMobileMenuOpen}
+                />
 
             </div>
         </>

@@ -4,11 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="faf3c8f1-3c56-436b-b552-e272138e05e9" name="Changes" comment="" />
+    <list default="true" id="faf3c8f1-3c56-436b-b552-e272138e05e9" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Header/Navigations/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header/Navigations/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Header/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Homecat/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Homecat/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Home/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Home/index.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -58,11 +72,24 @@
       <updated>1772723316503</updated>
       <workItem from="1772723316983" duration="1578000" />
       <workItem from="1772728126342" duration="793000" />
-      <workItem from="1772732387681" duration="1299000" />
+      <workItem from="1772732387681" duration="1985000" />
+      <workItem from="1772800717331" duration="8141000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/frontend/src/components/ProductItem/index.js</url>
+          <line>13</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

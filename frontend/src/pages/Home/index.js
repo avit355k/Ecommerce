@@ -131,6 +131,24 @@ const Home = () => {
                                     slidesPerGroup={1}
                                     modules={[Navigation]}
                                     className="mySwiper"
+                                    breakpoints={{
+                                        320: { // small phones
+                                            slidesPerView: 2,
+                                            spaceBetween: 10,
+                                        },
+                                        480: { // larger phones
+                                            slidesPerView: 2,
+                                            spaceBetween: 12,
+                                        },
+                                        768: { // tablets
+                                            slidesPerView: 3,
+                                            spaceBetween: 15,
+                                        },
+                                        1024: { // desktops
+                                            slidesPerView: 4,
+                                            spaceBetween: 15,
+                                        },
+                                    }}
                                 >
                                     {topDeals.map(product => (
                                         <SwiperSlide key={product._id}>
@@ -156,6 +174,24 @@ const Home = () => {
                                     slidesPerGroup={1}
                                     modules={[Navigation]}
                                     className="mySwiper"
+                                    breakpoints={{
+                                        320: { // small phones
+                                            slidesPerView: 2,
+                                            spaceBetween: 10,
+                                        },
+                                        480: { // larger phones
+                                            slidesPerView: 2,
+                                            spaceBetween: 12,
+                                        },
+                                        768: { // tablets
+                                            slidesPerView: 3,
+                                            spaceBetween: 15,
+                                        },
+                                        1024: { // desktops
+                                            slidesPerView: 4,
+                                            spaceBetween: 15,
+                                        },
+                                    }}
                                 >
                                     {newProducts.map(product => (
                                         <SwiperSlide key={product._id}>
