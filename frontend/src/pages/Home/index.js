@@ -74,7 +74,7 @@ const Home = () => {
         const fetchBanners = async () => {
             try {
                 const res = await API.get(
-                    "http://localhost:5000/api/banner/position/offer"
+                    "/api/banner/position/offer"
                 );
 
                 if (res.data.success) {
