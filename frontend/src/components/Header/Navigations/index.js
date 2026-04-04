@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
 import MobileMenu from "../../MobileMenu";
+import API from "../../../Services/api";
 
 
 const Navigation = ({mobileMenuOpen, setMobileMenuOpen}) => {
@@ -12,7 +12,7 @@ const Navigation = ({mobileMenuOpen, setMobileMenuOpen}) => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const {data} = await axios.get('http://localhost:5000/api/category/tree/all');
+                const {data} = await API.get('/api/category/tree/all');
                 if (data.success) setCategories(data.data);
             } catch (error) {
                 console.error("Failed to fetch categories:", error);
