@@ -1,44 +1,104 @@
 import React, {useContext, useEffect, useState} from 'react';
+import {Button, FormControl, InputLabel, MenuItem, Pagination, Select} from '@mui/material';
 
 import DashboardBox from './component/DashboardBox';
 import Graphbox from './component/Graphbox';
+import RevenueGraph from "./component/RevenueGraph";
+import LowStockProduct from "./component/LowStockProduct";
 
 import {FaEdit, FaEye, FaShoppingBag, FaUserCircle} from "react-icons/fa";
 import {MdDelete, MdShoppingCart} from "react-icons/md";
 import {TbStars} from "react-icons/tb";
 
-import {Button, FormControl, InputLabel, MenuItem, Pagination, Select} from '@mui/material';
 import {Mycontext} from "../../App";
+import API from "../../services/api";
+
+
 
 const Dashboard = () => {
+    const context = useContext(Mycontext);
+
+    const [stats, setStats] = useState({
+        totalUsers: 0,
+        totalProducts: 0,
+        totalOrders: 0,
+        totalRevenue: 0
+    });
+
+
     const [showBy, setShowBy] = useState('');
     const [categoryBy, setCategoryBy] = useState('');
 
-    const context = useContext(Mycontext);
+    // Fetch Dashboard Data
+    const fetchDashboardData = async () => {
+        try {
+            const res = await API.get("/api/dashboard/");
+            if (res.data.status === "success") {
+                setStats(res.data.data);
+            }
+        } catch (error) {
+            console.error("Dashboard fetch error:", error);
+        }
+    };
 
     useEffect(() => {
         context.setisHideSidebarHeader(false);
+        fetchDashboardData();
     }, []);
 
     return (
         <div className="right-content w-100">
+
             {/* DASHBOARD BOXES */}
             <div className="row dashboardBoxWrapperRow align-items-stretch">
-                <div className="col-md-8">
+                <div className="col-md-7">
                     <div className="dashboardBoxWrapper d-flex">
-                        <DashboardBox color={['#4CAF50', '#8BC34A']} icon={<FaUserCircle/>}/>
-                        <DashboardBox color={['#9C27B0', '#E91E63']} icon={<MdShoppingCart/>}/>
-                        <DashboardBox color={['#2196F3', '#64B5F6']} icon={<FaShoppingBag/>}/>
-                        <DashboardBox color={['#FFC107', '#FF9800']} icon={<TbStars/>}/>
+                        <DashboardBox
+                            title="Total Users"
+                            value={stats.totalUsers}
+                            color={['#4CAF50', '#8BC34A']}
+                            icon={<FaUserCircle/>}
+                        />
+                        <DashboardBox
+                            title="Total Orders"
+                            value={stats.totalOrders}
+                            color={['#9C27B0', '#E91E63']}
+                            icon={<MdShoppingCart/>}
+                        />
+                        <DashboardBox
+                            title="Total Products"
+                            value={stats.totalProducts}
+                            color={['#2196F3', '#64B5F6']}
+                            icon={<FaShoppingBag/>}
+                        />
+
+                        <DashboardBox
+                            title="Total Revenue"
+                            value={`₹${stats.totalRevenue}`}
+                            color={['#FFC107', '#FF9800']}
+                            icon={<TbStars/>}
+                        />
                     </div>
                 </div>
 
-                <div className="col-md-4 pl-0 d-flex">
+                <div className="col-md-5 pl-0 d-flex">
                     <div className="dashboardBoxWrapper w-100">
-                        <Graphbox color={['#1E5BD7', '#2F7AF8']}/>
+                            <Graphbox />
                     </div>
                 </div>
             </div>
+
+            {/* REVENUE + LOW STOCK */}
+            <div className="row dashboardBoxWrapperRow align-items-stretch mt-3">
+                <div className="col-md-7">
+                    <RevenueGraph />
+                </div>
+
+                <div className="col-md-5">
+                    <LowStockProduct lowStockProducts={stats.lowStockProducts || []}  />
+                </div>
+            </div>
+
 
             {/* PRODUCT TABLE */}
             <div className="card shadow border-0 p-3 mt-4">

@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="faf3c8f1-3c56-436b-b552-e272138e05e9" name="Changes" comment="" />
+    <list default="true" id="faf3c8f1-3c56-436b-b552-e272138e05e9" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/admin/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/admin/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/DashboardBox.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/DashboardBox.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/Graphbox.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/Graphbox.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/pages/Dashboard/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/pages/Dashboard/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/utils/category.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/category.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,6 +35,9 @@
   &quot;associatedIndex&quot;: 7
 }</component>
   <component name="ProjectId" id="3AWzrTmyPv4OBwVpynWYIT7XOLt" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -46,6 +59,7 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2025.3.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -72,7 +86,16 @@
       <workItem from="1773243949715" duration="15000" />
       <workItem from="1773927294000" duration="564000" />
       <workItem from="1774632958098" duration="606000" />
-      <workItem from="1775313404750" duration="622000" />
+      <workItem from="1775313404750" duration="2068000" />
+      <workItem from="1775320256814" duration="638000" />
+      <workItem from="1775378803788" duration="1951000" />
+      <workItem from="1775400319778" duration="3084000" />
+      <workItem from="1775454939496" duration="7490000" />
+      <workItem from="1775485766969" duration="4917000" />
+      <workItem from="1775626282400" duration="3267000" />
+      <workItem from="1775638192076" duration="1310000" />
+      <workItem from="1775653544548" duration="4561000" />
+      <workItem from="1775666679875" duration="1696000" />
     </task>
     <servers />
   </component>
@@ -90,8 +113,12 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/frontend/src/components/Homecat/index.js</url>
           <line>21</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/admin/src/pages/Dashboard/index.js</url>
+          <line>126</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

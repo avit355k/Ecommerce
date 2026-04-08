@@ -1,92 +1,99 @@
-import React, { useState } from "react";
-import { HiDotsVertical } from "react-icons/hi";
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import { Chart } from "react-google-charts";
+import React, { useEffect, useState } from "react";
+import Chart from "react-apexcharts";
 
-const filterOptions = ["Last Day", "Last Week", "Last Month", "Last Year"];
+import API from "../../../services/api";
 
-const pieData = [
-    ["Year", "Sales"],
-    ["2013", 2580],
-    ["2014", 3030],
-    ["2015", 1710],
-    ["2016", 1030],
-];
+const Graphbox = () => {
+    const [chartData, setChartData] = useState({
+        series: [],
+        labels: []
+    });
+    //fetch category sales data
+    useEffect(() => {
+        const fetchCategorySales = async () => {
+            try {
+                const res = await API.get("/api/dashboard/category-sales");
 
-const pieOptions = {
-    legend: {
-        position: "right",
-        textStyle: { color: "#fff", fontSize: 12 },
-    },
-    pieSliceText: "percentage",
-    backgroundColor: "transparent",
-    chartArea: { width: "90%", height: "80%" },
-};
+                if (res.data.status === "success") {
+                    const data = res.data.data;
 
-const ITEM_HEIGHT = 48;
+                    // Extract labels & percentages
+                    const labels = data.map(item => item.name);
+                    const series = data.map(item =>
+                        parseFloat(item.percentage)
+                    );
 
-const Graphbox = ({ color }) => {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [selectedOption, setSelectedOption] = useState("Last Month");
+                    setChartData({ labels, series });
+                }
+            } catch (error) {
+                console.error("Chart API Error:", error);
+            }
+        };
+
+        fetchCategorySales();
+    }, []);
+
+    // Apex Chart Options
+    const options = {
+        chart: {
+            type: "donut",
+            background: "transparent"
+        },
+        labels: chartData.labels,
+        legend: {
+            position: "bottom",
+            labels: {
+                colors: "#333"
+            },
+        },
+        dataLabels: {
+            enabled: true,
+            style: {
+                colors: ["#fff"],
+                fontSize: "14px"
+            }
+        },
+        tooltip: {
+            theme: "dark"
+        },
+        stroke: {
+            show: true
+        },
+        colors: [
+            "#ff1751",
+            "#834bd6",
+            "#0088ff",
+            "#00ed92",
+            "#e64302",
+            "#025863",
+            "#ffae00",
+        ],
+        plotOptions: {
+            pie: {
+                donut: {
+                    size: "55%",
+                    labels: {
+                        show: false
+                    }
+                }
+            }
+        }
+    };
 
     return (
-        <div
-            className="graphBox"
-            style={{
-                backgroundImage: `linear-gradient(to right, ${color[0]}, ${color[1]})`,
-            }}
-        >
+        <div  className="graphBox" >
             {/* Header */}
             <div className="graphBoxHeader">
-                <div>
-                    <h4>Total Sales</h4>
-                    <h2>$3,787,681.00</h2>
-                    <p>$3,578.90 in last month</p>
-                </div>
-
-                <Button
-                    className="toogleIcon"
-                    onClick={(e) => setAnchorEl(e.currentTarget)}
-                >
-                    <HiDotsVertical />
-                </Button>
-
-                <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={() => setAnchorEl(null)}
-                    PaperProps={{
-                        style: {
-                            maxHeight: ITEM_HEIGHT * 4.5,
-                            width: "20ch",
-                        },
-                    }}
-                >
-                    {filterOptions.map((option) => (
-                        <MenuItem
-                            key={option}
-                            selected={option === selectedOption}
-                            onClick={() => {
-                                setSelectedOption(option);
-                                setAnchorEl(null);
-                            }}
-                        >
-                            {option}
-                        </MenuItem>
-                    ))}
-                </Menu>
+                    <h4>Category Sales Mix</h4>
             </div>
 
-            {/* Chart */}
-            <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+            {/* Chart + Legend */}
+            <div className="chartWrapper">
                 <Chart
-                    chartType="PieChart"
-                    width="100%"
-                    height="100%"
-                    data={pieData}
-                    options={pieOptions}
+                    options={options}
+                    series={chartData.series}
+                    type="donut"
+                    height={280}
                 />
             </div>
         </div>

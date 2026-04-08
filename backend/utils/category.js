@@ -1,3 +1,4 @@
+//./utils/category.js
 const getAllChildCategories = (categories, parentId) => {
     let result = [];
 

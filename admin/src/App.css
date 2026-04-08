@@ -515,7 +515,7 @@ active.main .sidebarWrapper .sidebar ul li button.active .icon svg {
     min-height: 100%;
     border-radius: 10px;
     padding: 20px;
-    color: #fff;
+    background: #f5f6fa;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -531,20 +531,42 @@ active.main .sidebarWrapper .sidebar ul li button.active .icon svg {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 5px;
+    color: #2c3e50;
 }
 
-.graphBox h2 {
-    font-size: 26px;
-    font-weight: bold;
-    margin: 0;
+.graphBox .chartWrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.revenueCard {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-.graphBox p {
+.revenueCard .revenueData{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.revenueData  p {
     font-size: 13px;
-    opacity: 0.8;
+    color: #4cb04f;
     margin-top: 5px;
 }
 
+/* Chart spacing */
+.apexcharts-canvas {
+    margin-top: 10px;
+    max-width: 100% !important;
+}
 .card {
     margin: 20px 0;
     border-radius: 10px;
@@ -1227,3 +1249,73 @@ table td .new {
     color: #64748b;
     margin-top: 6px;
 }
+
+.lowStockCard {
+
+    display: flex;
+    flex-direction: column;
+}
+.lowStockHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.lowStockHeader h6 {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.lowStockHeader span {
+    font-size: 12px;
+    color: #888;
+}
+.lowStockList{
+    flex: 1;
+}
+.lowStockItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.lowStockItem:last-child {
+    border-bottom: none;
+}
+.lowStockLeft {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.lowStockLeft img {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.lowStockLeft h6 {
+    font-size: 13px;
+    margin: 0;
+    font-weight: 600;
+}
+
+.lowStockLeft p {
+    font-size: 12px;
+    color: #777;
+    margin: 2px 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* count product */
+.lowStockRight {
+    font-size: 16px;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+

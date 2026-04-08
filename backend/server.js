@@ -59,6 +59,7 @@ const relatedProductsRoutes = require('./routes/relatedProducts');
 const topDealRoutes = require('./routes/topDeals');
 const featuredProductRoutes = require('./routes/FeaturedProducts');
 const bannerRoutes = require('./routes/Banner');
+const dashboardRoutes = require('./routes/Dashboard');
 
 
 // Use Routes
@@ -80,6 +81,7 @@ app.use("/api/newProduct", newProductRoutes);
 app.use("/api/topDeals", topDealRoutes);
 app.use("/api/featuredProducts", featuredProductRoutes);
 app.use("/api/banner", bannerRoutes);
+app.use("/api/dashboard" , dashboardRoutes);
 
 // Start Server
 app.listen(process.env.PORT, () => {
