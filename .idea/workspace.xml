@@ -6,14 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="faf3c8f1-3c56-436b-b552-e272138e05e9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/admin/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/admin/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/DashboardBox.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/DashboardBox.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/Graphbox.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/Graphbox.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/RevenueGraph.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/RevenueGraph.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin/src/pages/Dashboard/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/pages/Dashboard/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/utils/category.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/category.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routes/Dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/Dashboard.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +91,8 @@
       <workItem from="1775626282400" duration="3267000" />
       <workItem from="1775638192076" duration="1310000" />
       <workItem from="1775653544548" duration="4561000" />
-      <workItem from="1775666679875" duration="1696000" />
+      <workItem from="1775666679875" duration="3069000" />
+      <workItem from="1775745414150" duration="3567000" />
     </task>
     <servers />
   </component>
@@ -116,9 +113,10 @@
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/admin/src/pages/Dashboard/index.js</url>
-          <line>126</line>
-          <option name="timeStamp" value="3" />
+          <url>file://$PROJECT_DIR$/admin/src/pages/Dashboard/component/RevenueGraph.jsx</url>
+          <line>12</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

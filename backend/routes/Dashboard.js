@@ -122,7 +122,14 @@ router.get("/top-sales", async (req, res) => {
                     as: "product"
                 }
             },
-
+            {
+                $lookup: {
+                    from: "categories",
+                    localField: "product.category",
+                    foreignField: "_id",
+                    as: "category"
+                }
+            },
             {
                 $lookup: {
                     from: "productvariants",
@@ -134,6 +141,7 @@ router.get("/top-sales", async (req, res) => {
 
             { $unwind: "$product" },
             { $unwind: "$variant" },
+            { $unwind: { path: "$category", preserveNullAndEmptyArrays: true } },
 
             {
                 $project: {
@@ -142,7 +150,11 @@ router.get("/top-sales", async (req, res) => {
                     product: {
                         _id: "$product._id",
                         name: "$product.name",
-                        images: "$product.images"
+                        images: "$product.images",
+                        description: "$product.description",
+                        category: "$category.name",
+                        brand: "$product.brand",
+                        rating: "$product.averageRating",
                     },
                     variant: {
                         _id: "$variant._id",

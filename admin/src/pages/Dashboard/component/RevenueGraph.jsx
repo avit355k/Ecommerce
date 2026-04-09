@@ -1,7 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useState ,useEffect } from "react";
 import Chart from "react-apexcharts";
+import API from "../../../services/api";
 
 const RevenueGraph = () => {
+    const [chartData, setChartData] = useState({
+        series: [],
+        categories: [],
+        totalRevenue: 0,
+        avgRevenue: 0
+    });
 
     useEffect(() => {
         const handleResize = () => {
@@ -23,16 +30,39 @@ const RevenueGraph = () => {
         return () => clearTimeout(timeout);
     }, []);
 
-    const series = [
-        {
-            name: "Revenue",
-            data: [12000, 18000, 15000, 22000, 27000, 32000, 30000, 35000, 40000, 42000, 46000, 50000]
-        },
-        {
-            name: "Avg Revenue",
-            data: [10000, 14000, 13000, 17000, 21000, 25000, 24000, 26000, 30000, 32000, 35000, 38000]
-        }
-    ];
+    // Fetch API
+    useEffect(() => {
+        const fetchRevenueData = async () => {
+            try {
+                const res = await API.get("/api/dashboard/monthly-revenue");
+
+                if (res.data.status === "success") {
+                    const data = res.data.data;
+
+                    const months = data.monthlyRevenue.map(item => item.month);
+
+                    const revenueSeries = data.monthlyRevenue.map(item => item.revenue);
+
+                    const avgSeries = data.monthlyAvgRevenue.map(item => item.revenue);
+
+                    setChartData({
+                        categories: months,
+                        series: [
+                            { name: "Revenue", data: revenueSeries },
+                            { name: "Avg Revenue", data: avgSeries }
+                        ],
+                        totalRevenue: data.totalRevenue,
+                        avgRevenue: data.avgRevenue
+                    });
+                }
+
+            } catch (error) {
+                console.error("Revenue API Error:", error);
+            }
+        };
+
+        fetchRevenueData();
+    }, []);
 
     const options = {
         chart: {
@@ -60,10 +90,7 @@ const RevenueGraph = () => {
         },
 
         xaxis: {
-            categories: [
-                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-            ]
+            categories: chartData.categories
         },
 
         tooltip: {
@@ -94,7 +121,7 @@ const RevenueGraph = () => {
 
             <Chart
                 options={options}
-                series={series}
+                series={chartData.series}
                 type="area"
                 height={250}
                 width="100%"
@@ -102,10 +129,10 @@ const RevenueGraph = () => {
 
             <div className="revenueData d-flex flex-row mt-4">
                 <p style={{ color: "#4cb04f" }}>
-                    Total: <b style={{ color: "black" }}>₹573</b>
+                    Total: <b style={{ color: "black" }}>₹{chartData.totalRevenue}</b>
                 </p>
                 <p style={{ color: "#2294f2" }}>
-                    Avg / month: <b style={{ color: "black" }}>₹450</b>
+                    Avg / month: <b style={{ color: "black" }}> ₹{chartData.avgRevenue}</b>
                 </p>
             </div>
         </div>

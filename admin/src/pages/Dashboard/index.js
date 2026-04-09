@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, FormControl, InputLabel, MenuItem, Pagination, Select} from '@mui/material';
+import {Button} from '@mui/material';
 
 import DashboardBox from './component/DashboardBox';
 import Graphbox from './component/Graphbox';
@@ -14,7 +14,6 @@ import {Mycontext} from "../../App";
 import API from "../../services/api";
 
 
-
 const Dashboard = () => {
     const context = useContext(Mycontext);
 
@@ -24,10 +23,7 @@ const Dashboard = () => {
         totalOrders: 0,
         totalRevenue: 0
     });
-
-
-    const [showBy, setShowBy] = useState('');
-    const [categoryBy, setCategoryBy] = useState('');
+    const [topSales, setTopSales] = useState([]);
 
     // Fetch Dashboard Data
     const fetchDashboardData = async () => {
@@ -41,9 +37,22 @@ const Dashboard = () => {
         }
     };
 
+    //Fetch TopSales Data
+    const fetchTopSales = async () => {
+        try {
+            const res = await API.get("/api/dashboard/top-sales/");
+            if (res.data.status === "success") {
+                setTopSales(res.data.data.topProducts);
+            }
+        }catch (error) {
+            console.error("Dashboard fetch error:", error);
+        }
+    };
+
     useEffect(() => {
         context.setisHideSidebarHeader(false);
         fetchDashboardData();
+        fetchTopSales();
     }, []);
 
     return (
@@ -99,49 +108,19 @@ const Dashboard = () => {
                 </div>
             </div>
 
+            {/* Order Stats */}
+            <div className="row dashboardBoxWrapperRow align-items-stretch mt-3">
+                  <div className="col-md-7">
+                      Recent orders
+                  </div>
 
+                <div className="col-md-5">
+                    Order Status
+                </div>
+            </div>
             {/* PRODUCT TABLE */}
             <div className="card shadow border-0 p-3 mt-4">
                 <h3 className="hd">Best Selling Products</h3>
-
-                {/* FILTERS */}
-                <div className="row cardFilters mt-3">
-                    <div className="col-md-3">
-                        <h4>Show By</h4>
-                        <FormControl size="small" fullWidth>
-                            <InputLabel id="showby-label">None</InputLabel>
-                            <Select
-                                labelId="showby-label"
-                                value={showBy}
-                                label="Show By"
-                                onChange={(e) => setShowBy(e.target.value)}
-                            >
-                                <MenuItem value=""><em>None</em></MenuItem>
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </div>
-
-                    <div className="col-md-3">
-                        <h4>Category By</h4>
-                        <FormControl size="small" fullWidth>
-                            <InputLabel id="categoryby-label">None</InputLabel>
-                            <Select
-                                labelId="categoryby-label"
-                                value={categoryBy}
-                                label="Category By"
-                                onChange={(e) => setCategoryBy(e.target.value)}
-                            >
-                                <MenuItem value=""><em>None</em></MenuItem>
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </div>
-                </div>
 
                 {/* TABLE */}
                 <div className="table-responsive mt-4">
@@ -157,64 +136,44 @@ const Dashboard = () => {
                             <th>RATING</th>
                             <th>ORDERS</th>
                             <th>SALES</th>
-                            <th>ACTION</th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>
-                                <div className="d-flex productBox align-items-center">
-                                    <div className="imgWrapper">
-                                        <img
-                                            src="https://rukminim2.flixcart.com/image/612/612/xif0q/shopsy-gown/r/6/e/xl-sleeveless-stitched-1020-fabfinds-resized-2-original-imahf7bjtzgyz52j.jpeg?q=70"
-                                            alt="Product"
-                                            className="w-100"
-                                        />
+                        {topSales.map((item, index) => (
+                            <tr key={item.product._id}>
+                                <td>{index + 1}</td>
+                                <td>
+                                    <div className="d-flex productBox align-items-center">
+                                        <div className="imgWrapper">
+                                            <img
+                                                src={item.product.images?.[0]?.url}
+                                                alt="Product"
+                                                className="w-100"
+                                            />
+                                        </div>
+                                        <div className="info ms-2">
+                                            <h6>{item.product.name}</h6>
+                                            <p>{item.product.description}</p>
+                                        </div>
                                     </div>
-                                    <div className="info ms-2">
-                                        <h6>Tops and skirt set for Female</h6>
-                                        <p>Women Printed Pure Cotton Anarkali Kurta</p>
+                                </td>
+                                <td>{item.product.category}</td>
+                                <td>{item.product.brand}</td>
+                                <td>
+                                    <div style={{width: '80px'}}>
+                                        <del className="old">₹{item.variant.price}</del>
+                                        <span className="new text-danger ms-2">₹{item.variant.discountedPrice}</span>
                                     </div>
-                                </div>
-                            </td>
-                            <td>Women</td>
-                            <td>Richman</td>
-                            <td>
-                                <div style={{width: '80px'}}>
-                                    <del className="old">₹220</del>
-                                    <span className="new text-danger ms-2">₹180</span>
-                                </div>
-                            </td>
-                            <td>1</td>
-                            <td>4.9 (16)</td>
-                            <td>380</td>
-                            <td>38k</td>
-                            <td>
-                                <div className="actions d-flex gap-1">
-                                    <Button size="small" color="secondary"><FaEye/></Button>
-                                    <Button size="small" color="success"><FaEdit/></Button>
-                                    <Button size="small" color="error"><MdDelete/></Button>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                                <td>1</td>
+                                <td>{item.product.rating}</td>
+                                <td>{item.totalSold}</td>
+                                <td>₹{item.totalSold * item.variant.discountedPrice}</td>
+                            </tr>
+                        ))}
                         </tbody>
                     </table>
-
-                    <div className="tableFooter">
-                        <p>
-                            Showing <b>12</b> of <b>60</b> results
-                        </p>
-
-                        <Pagination
-                            count={10}
-                            color="secondary"
-                            showFirstButton
-                            showLastButton
-                        />
-                    </div>
-
                 </div>
             </div>
         </div>
