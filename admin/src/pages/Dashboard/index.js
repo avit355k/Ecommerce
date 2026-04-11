@@ -1,13 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button} from '@mui/material';
 
 import DashboardBox from './component/DashboardBox';
 import Graphbox from './component/Graphbox';
 import RevenueGraph from "./component/RevenueGraph";
 import LowStockProduct from "./component/LowStockProduct";
+import RecentOrder from "./component/RecentOrder";
+import OrderStatus from "./component/OrderStatus";
 
-import {FaEdit, FaEye, FaShoppingBag, FaUserCircle} from "react-icons/fa";
-import {MdDelete, MdShoppingCart} from "react-icons/md";
+import { FaShoppingBag, FaUserCircle} from "react-icons/fa";
+import { MdShoppingCart} from "react-icons/md";
 import {TbStars} from "react-icons/tb";
 
 import {Mycontext} from "../../App";
@@ -53,7 +54,7 @@ const Dashboard = () => {
         context.setisHideSidebarHeader(false);
         fetchDashboardData();
         fetchTopSales();
-    }, []);
+    }, [context]);
 
     return (
         <div className="right-content w-100">
@@ -111,11 +112,11 @@ const Dashboard = () => {
             {/* Order Stats */}
             <div className="row dashboardBoxWrapperRow align-items-stretch mt-3">
                   <div className="col-md-7">
-                      Recent orders
+                      <RecentOrder recentOrders={stats.recentOrders || []}/>
                   </div>
 
                 <div className="col-md-5">
-                    Order Status
+                    <OrderStatus orderStatus={stats.ordersByStatus}/>
                 </div>
             </div>
             {/* PRODUCT TABLE */}

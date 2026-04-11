@@ -1318,4 +1318,137 @@ table td .new {
     color: #ff1751;
 }
 
+.recentOrderCard {
+    display: flex;
+    flex-direction: column;
+}
+.recentOrderHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.recentOrderHeader h6 {
+    font-size: 15px;
+    font-weight: 600;
+}
 
+.recentOrderHeader span {
+    font-size: 12px;
+    color: #888;
+}
+.recentOrderList{
+    flex: 1;
+}
+.recentOrderItem{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.recentOrderItem:last-child {
+    border-bottom: none;
+}
+.recentOrderLeft{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.recentOrderLeft img {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.recentOrderLeft h6 {
+    font-size: 13px;
+    margin: 0;
+    font-weight: 600;
+}
+
+.recentOrderLeft p {
+    font-size: 12px;
+    color: #777;
+    margin: 2px 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.recentOrderRight{
+    font-size: 16px;
+    font-weight: bold;
+}
+.statusBadge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+.order-card {
+    background: #f9f9fb;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    width: 100%;
+}
+
+.order-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.order-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.label {
+    font-size: 14px;
+    color: #444;
+}
+
+.value {
+    font-weight: 600;
+    color: #111;
+}
+
+/* Colored dots */
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.green {
+    background-color: #22c55e;
+}
+
+.blue {
+    background-color: #6366f1;
+}
+
+.orange {
+    background-color: #f59e0b;
+}
+
+.darkorange {
+    background-color: #d97706;
+}
+
+.red {
+    background-color: #ef4444;
+}

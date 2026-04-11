@@ -7,7 +7,6 @@
     <list default="true" id="faf3c8f1-3c56-436b-b552-e272138e05e9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/RevenueGraph.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/pages/Dashboard/component/RevenueGraph.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin/src/pages/Dashboard/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/pages/Dashboard/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/routes/Dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/Dashboard.js" afterDir="false" />
     </list>
@@ -59,6 +58,11 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\ecommerce\admin\src\pages\Dashboard\component" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -92,7 +96,8 @@
       <workItem from="1775638192076" duration="1310000" />
       <workItem from="1775653544548" duration="4561000" />
       <workItem from="1775666679875" duration="3069000" />
-      <workItem from="1775745414150" duration="3567000" />
+      <workItem from="1775745414150" duration="4218000" />
+      <workItem from="1775888763961" duration="4266000" />
     </task>
     <servers />
   </component>
@@ -115,8 +120,31 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/admin/src/pages/Dashboard/component/RevenueGraph.jsx</url>
           <line>12</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/admin/src/pages/Dashboard/index.js</url>
+          <line>29</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/backend/routes/Dashboard.js</url>
+          <line>12</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/admin/src/pages/Dashboard/component/RecentOrder.jsx</url>
+          <line>65</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/admin/src/pages/Dashboard/component/RecentOrder.jsx</url>
+          <line>24</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

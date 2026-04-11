@@ -63,6 +63,10 @@ router.get("/", async (req,res)=>{
         // 4. Recent Orders
         const recentOrders = await Order.find()
             .populate("user", "name email")
+            .populate({
+                path: "items.product",
+                select: "name images description"
+            })
             .sort({ createdAt: -1 })
             .limit(5);
 
